@@ -1,46 +1,240 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Dúvidas Frequentes - Casamento 2027</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Dúvidas frequentes sobre o casamento de Jefferson e Bia.">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/estilos.css">
-</head>
-<body class="pagina-faq">
-  <div class="overlay"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dúvidas frequentes - Jefferson & Bia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <header class="topbar">
-    <div class="topbar-inner">
-      <span class="brand">Jefferson &amp; Bia</span>
-      <nav>
-        <a href="index.html">Carta</a>
-        <a href="gifts.html">Lista de presentes</a>
-        <a href="faq.html" class="ativo">Dúvidas</a>
+    <meta
+      name="description"
+      content="Dúvidas frequentes sobre o casamento de Jefferson & Bia: cerimônia, recepção, traje, acompanhantes, crianças e hospedagem."
+    />
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              rosa: '#e91e63',
+              vinho: '#663244',
+              champagne: '#f5e6d3',
+            },
+            fontFamily: {
+              titulo: ['"Playfair Display"', 'serif'],
+              corpo: ['system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="stylesheet" href="./css/estilos.css" />
+  </head>
+  <body
+    class="bg-gradient-to-b from-champagne/60 via-rose-50 to-white font-corpo text-zinc-800"
+  >
+    <!-- Navbar -->
+    <header
+      class="w-full bg-white/80 backdrop-blur border-b border-white/60 sticky top-0 z-20"
+    >
+      <nav
+        class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3"
+      >
+        <a href="index.html" class="flex items-center gap-2">
+          <span
+            class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-vinho text-white text-sm"
+            >J&B</span
+          >
+          <span class="font-titulo text-lg text-vinho">
+            Jefferson &amp; Bia
+          </span>
+        </a>
+        <a
+          href="index.html"
+          class="text-xs font-medium text-vinho hover:underline"
+        >
+          Voltar ao início
+        </a>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="container">
-    <h1>Dúvidas Frequentes</h1>
+    <main class="max-w-5xl mx-auto px-4 py-10">
+      <!-- Cabeçalho -->
+      <section class="text-center mb-8">
+        <h1 class="font-titulo text-3xl text-vinho">Dúvidas frequentes</h1>
+        <p class="mt-3 text-sm text-zinc-600 max-w-xl mx-auto">
+          Reunimos aqui as principais informações sobre o dia do casamento.
+          Se ainda ficar alguma dúvida, pode falar com a gente pelo WhatsApp.
+        </p>
+      </section>
 
-    <section class="faq-list">
-      <h3>Posso levar crianças?</h3>
-      <p>Sim, crianças são bem-vindas e teremos um espaço especial para elas durante a cerimônia.</p>
+      <!-- FAQ -->
+      <section
+        class="bg-white/90 rounded-3xl border border-rose-100 shadow-sm p-4 md:p-6 space-y-3"
+      >
+        <!-- Item 1 -->
+        <details
+          class="group rounded-2xl border border-rose-100 bg-rose-50/40 px-4 py-3"
+          open
+        >
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-3"
+          >
+            <span class="text-sm font-medium text-vinho">
+              Onde será a cerimônia e a festa?
+            </span>
+            <span
+              class="shrink-0 text-vinho/70 transition-transform group-open:rotate-180"
+            >
+              ▾
+            </span>
+          </summary>
+          <div class="mt-2 text-xs text-zinc-700">
+            A cerimônia será às 16h na <strong>Igreja Exemplo</strong>, e a
+            recepção logo em seguida no <strong>Espaço Festa Exemplo</strong>.
+            Aqui você pode colocar o endereço completo e, se quiser, um link
+            para o mapa.
+          </div>
+        </details>
 
-      <h3>Tem recepção depois da missa?</h3>
-      <p>Ainda estamos organizando a recepção. Assim que tivermos tudo definido, atualizaremos aqui.</p>
+        <!-- Item 2 -->
+        <details
+          class="group rounded-2xl border border-rose-100 bg-rose-50/40 px-4 py-3"
+        >
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-3"
+          >
+            <span class="text-sm font-medium text-vinho">
+              Qual é o traje sugerido?
+            </span>
+            <span
+              class="shrink-0 text-vinho/70 transition-transform group-open:rotate-180"
+            >
+              ▾
+            </span>
+          </summary>
+          <div class="mt-2 text-xs text-zinc-700">
+            Sugerimos <strong>traje passeio completo</strong>. Cores claras são
+            bem-vindas. Pedimos apenas que evitem looks totalmente brancos para
+            manter o destaque dos noivos.
+          </div>
+        </details>
 
-      <h3>Qual é o dress code?</h3>
-      <p>Recomendamos roupas sociais, mas o mais importante é a sua presença e oração.</p>
+        <!-- Item 3 -->
+        <details
+          class="group rounded-2xl border border-rose-100 bg-rose-50/40 px-4 py-3"
+        >
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-3"
+          >
+            <span class="text-sm font-medium text-vinho">
+              Posso levar acompanhante?
+            </span>
+            <span
+              class="shrink-0 text-vinho/70 transition-transform group-open:rotate-180"
+            >
+              ▾
+            </span>
+          </summary>
+          <div class="mt-2 text-xs text-zinc-700">
+            Se o convite estiver endereçado a você e acompanhante, sua companhia
+            é muito bem-vinda. Em caso de dúvida, fale conosco antes para
+            alinharmos direitinho.
+          </div>
+        </details>
 
-      <h3>Aceitam presentes em dinheiro?</h3>
-      <p>Sim, aceitamos cotas para mobília e viagem de lua de mel. Qualquer ajuda é muito bem-vinda.</p>
+        <!-- Item 4 -->
+        <details
+          class="group rounded-2xl border border-rose-100 bg-rose-50/40 px-4 py-3"
+        >
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-3"
+          >
+            <span class="text-sm font-medium text-vinho">
+              Crianças são bem-vindas?
+            </span>
+            <span
+              class="shrink-0 text-vinho/70 transition-transform group-open:rotate-180"
+            >
+              ▾
+            </span>
+          </summary>
+          <div class="mt-2 text-xs text-zinc-700">
+            Amamos crianças! Porém, por conta do espaço e da estrutura, pedimos
+            que apenas as crianças indicadas no convite sejam levadas.
+          </div>
+        </details>
 
-      <h3>Onde posso estacionar?</h3>
-      <p>Há estacionamento disponível em frente à igreja.</p>
-    </section>
-  </main>
-</body>
+        <!-- Item 5 -->
+        <details
+          class="group rounded-2xl border border-rose-100 bg-rose-50/40 px-4 py-3"
+        >
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-3"
+          >
+            <span class="text-sm font-medium text-vinho">
+              Há sugestões de hospedagem por perto?
+            </span>
+            <span
+              class="shrink-0 text-vinho/70 transition-transform group-open:rotate-180"
+            >
+              ▾
+            </span>
+          </summary>
+          <div class="mt-2 text-xs text-zinc-700">
+            Sim! Aqui você pode listar 2 ou 3 hotéis ou pousadas próximos ao
+            local da festa, com nome, bairro e, se quiser, link para o site de
+            reservas.
+          </div>
+        </details>
+
+        <!-- Item 6 -->
+        <details
+          class="group rounded-2xl border border-rose-100 bg-rose-50/40 px-4 py-3"
+        >
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-3"
+          >
+            <span class="text-sm font-medium text-vinho">
+              Como faço para confirmar presença?
+            </span>
+            <span
+              class="shrink-0 text-vinho/70 transition-transform group-open:rotate-180"
+            >
+              ▾
+            </span>
+          </summary>
+          <div class="mt-2 text-xs text-zinc-700">
+            Você pode confirmar sua presença diretamente pelo nosso site, na
+            seção
+            <strong>“Confirme sua presença”</strong> na página inicial, que leva
+            para o nosso WhatsApp.
+          </div>
+        </details>
+      </section>
+
+      <!-- Contato / WhatsApp -->
+      <section class="mt-8 text-center text-xs text-zinc-600">
+        <p>
+          Se ainda tiver alguma dúvida, chame a gente no WhatsApp:
+          <a
+            href="#"
+            class="text-vinho font-semibold underline underline-offset-2"
+            >coloque o número aqui</a
+          >.
+        </p>
+      </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="mt-4 border-t border-rose-100 bg-white/60">
+      <div
+        class="max-w-5xl mx-auto px-4 py-5 text-center text-[0.7rem] text-zinc-500"
+      >
+        Mal podemos esperar para celebrar esse dia com você.
+      </div>
+    </footer>
+  </body>
 </html>

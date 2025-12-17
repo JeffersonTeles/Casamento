@@ -1,115 +1,240 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Lista de Presentes - Casamento 2027</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Lista de presentes do casamento de Jefferson e Bia. Escolha um presente, registre seu nome e ajude o casal a montar o novo lar.">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/estilos.css">
-</head>
-<body class="pagina-presentes">
-  <div class="overlay"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lista de presentes - Jefferson & Bia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <header class="topbar">
-    <div class="topbar-inner">
-      <span class="brand">Jefferson &amp; Bia</span>
-      <nav>
-        <a href="index.html">Carta</a>
-        <a href="gifts.html" class="ativo">Lista de presentes</a>
-        <a href="faq.html">Dúvidas</a>
+    <meta
+      name="description"
+      content="Lista de presentes do casamento de Jefferson & Bia. Sugestões para o novo lar e cota para a lua de mel."
+    />
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              rosa: '#e91e63',
+              vinho: '#663244',
+              champagne: '#f5e6d3',
+            },
+            fontFamily: {
+              titulo: ['"Playfair Display"', 'serif'],
+              corpo: ['system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="stylesheet" href="./css/estilos.css" />
+  </head>
+  <body
+    class="bg-gradient-to-b from-champagne/60 via-rose-50 to-white font-corpo text-zinc-800"
+  >
+    <!-- Navbar simples -->
+    <header
+      class="w-full bg-white/80 backdrop-blur border-b border-white/60 sticky top-0 z-20"
+    >
+      <nav
+        class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3"
+      >
+        <a href="index.html" class="flex items-center gap-2">
+          <span
+            class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-vinho text-white text-sm"
+            >J&B</span
+          >
+          <span class="font-titulo text-lg text-vinho">
+            Jefferson &amp; Bia
+          </span>
+        </a>
+        <a
+          href="index.html"
+          class="text-xs font-medium text-vinho hover:underline"
+        >
+          Voltar ao início
+        </a>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <div id="toast" class="toast">Obrigado! Seu presente foi reservado com carinho.</div>
+    <!-- Conteúdo -->
+    <main class="max-w-5xl mx-auto px-4 py-10">
+      <!-- Cabeçalho da página -->
+      <section class="text-center">
+        <h1 class="font-titulo text-3xl text-vinho">Lista de presentes</h1>
+        <p class="mt-3 text-sm text-zinc-600 max-w-xl mx-auto">
+          Sua presença é o nosso maior presente. Mas, se desejar nos presentear,
+          preparamos essa lista com muito carinho para montar nosso novo lar e
+          realizar a nossa lua de mel.
+        </p>
+      </section>
 
-  <main class="container">
-    <h1>Lista de Presentes</h1>
-    <p class="subtitle">
-      Casamento 2027 — 1) Escolha um ou mais presentes, 2) Digite seu nome, 3) Clique em “Confirmar presente”.
-    </p>
-    <p class="subtitle sub-faith">
-      Mais do que os presentes, o que mais desejamos é a presença, a amizade e a oração de cada um de vocês.
-    </p>
-
-    <p class="summary" id="summaryText">
-      Presentes reservados: 0 de 0.
-    </p>
-
-    <form id="giftForm">
-      <div class="gift-section-title">Cozinha</div>
-      <div class="gift-options">
-        <label class="card-option" data-gift="Jogo de Pratos">
-          <input type="checkbox" name="gift" value="Jogo de Pratos">
-          <div class="card-content">
-            <span class="card-title">Jogo de Pratos</span>
-            <span class="card-tag">Cozinha</span>
-            <span class="card-status">Disponível</span>
+      <!-- Aviso financeiro / pix -->
+      <section class="mt-8">
+        <div
+          class="bg-white/90 rounded-3xl border border-rose-100 shadow-sm p-4 md:p-5 flex flex-col md:flex-row gap-4 items-start md:items-center"
+        >
+          <div class="flex-1">
+            <p
+              class="text-xs font-semibold text-vinho uppercase tracking-wide"
+            >
+              Cota de lua de mel
+            </p>
+            <p class="mt-1 text-sm text-zinc-700">
+              Se preferir contribuir com qualquer valor para a nossa lua de mel,
+              você pode usar o PIX abaixo:
+            </p>
+            <p class="mt-2 text-sm font-mono text-vinho">
+              chave-pix-exemplo@email.com
+            </p>
           </div>
-        </label>
-        <!-- (repete para todos os presentes) -->
+          <button
+            class="mt-2 md:mt-0 inline-flex items-center justify-center rounded-full bg-vinho px-5 py-2 text-xs font-semibold text-white hover:bg-vinho/90 transition"
+            onclick="navigator.clipboard.writeText('chave-pix-exemplo@email.com')"
+          >
+            Copiar chave PIX
+          </button>
+        </div>
+      </section>
+
+      <!-- Grid de presentes -->
+      <section class="mt-10">
+        <h2
+          class="text-sm font-semibold text-vinho tracking-wide uppercase mb-3"
+        >
+          Sugestões de presentes
+        </h2>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <!-- Presente 1 -->
+          <article
+            class="bg-white/90 rounded-3xl border border-rose-100 shadow-sm p-4 flex flex-col justify-between"
+          >
+            <div class="flex-1">
+              <p
+                class="text-[0.7rem] uppercase tracking-wide text-vinho/70 mb-1"
+              >
+                Casa
+              </p>
+              <h3 class="font-semibold text-vinho text-sm">Jogo de cama king</h3>
+              <p class="mt-1 text-xs text-zinc-600">
+                Para deixar nossos dias mais confortáveis e cheios de aconchego.
+              </p>
+              <p class="mt-2 text-xs font-semibold text-zinc-700">
+                Sugestão: R$ 250,00
+              </p>
+            </div>
+            <a
+              href="#"
+              class="mt-3 inline-flex justify-center rounded-full bg-vinho px-4 py-2 text-xs font-medium text-white hover:bg-vinho/90 transition"
+            >
+              Ver opção na loja
+            </a>
+          </article>
+
+          <!-- Presente 2 -->
+          <article
+            class="bg-white/90 rounded-3xl border border-rose-100 shadow-sm p-4 flex flex-col justify-between"
+          >
+            <div class="flex-1">
+              <p
+                class="text-[0.7rem] uppercase tracking-wide text-vinho/70 mb-1"
+              >
+                Cozinha
+              </p>
+              <h3 class="font-semibold text-vinho text-sm">
+                Conjunto de panelas
+              </h3>
+              <p class="mt-1 text-xs text-zinc-600">
+                Para muitas receitas, jantares a dois e momentos especiais.
+              </p>
+              <p class="mt-2 text-xs font-semibold text-zinc-700">
+                Sugestão: R$ 400,00
+              </p>
+            </div>
+            <a
+              href="#"
+              class="mt-3 inline-flex justify-center rounded-full bg-vinho px-4 py-2 text-xs font-medium text-white hover:bg-vinho/90 transition"
+            >
+              Ver opção na loja
+            </a>
+          </article>
+
+          <!-- Presente 3 -->
+          <article
+            class="bg-white/90 rounded-3xl border border-rose-100 shadow-sm p-4 flex flex-col justify-between"
+          >
+            <div class="flex-1">
+              <p
+                class="text-[0.7rem] uppercase tracking-wide text-vinho/70 mb-1"
+              >
+                Decoração
+              </p>
+              <h3 class="font-semibold text-vinho text-sm">
+                Quadro decorativo
+              </h3>
+              <p class="mt-1 text-xs text-zinc-600">
+                Para dar um toque especial ao nosso cantinho favorito da casa.
+              </p>
+              <p class="mt-2 text-xs font-semibold text-zinc-700">
+                Sugestão: R$ 180,00
+              </p>
+            </div>
+            <a
+              href="#"
+              class="mt-3 inline-flex justify-center rounded-full bg-vinho px-4 py-2 text-xs font-medium text-white hover:bg-vinho/90 transition"
+            >
+              Ver opção na loja
+            </a>
+          </article>
+
+          <!-- Presente 4 - destaque lua de mel -->
+          <article
+            class="bg-rose-50/80 rounded-3xl border border-vinho/40 shadow-sm p-4 flex flex-col justify-between"
+          >
+            <div class="flex-1">
+              <p
+                class="text-[0.7rem] uppercase tracking-wide text-vinho/70 mb-1"
+              >
+                Lua de mel
+              </p>
+              <h3 class="font-semibold text-vinho text-sm">Cota viagem</h3>
+              <p class="mt-1 text-xs text-zinc-600">
+                Ajude a tornar nossa lua de mel inesquecível com uma
+                contribuição especial.
+              </p>
+              <p class="mt-2 text-xs font-semibold text-zinc-700">
+                Sugestão: R$ 150,00 (ou o valor que desejar)
+              </p>
+            </div>
+            <a
+              href="#"
+              class="mt-3 inline-flex justify-center rounded-full bg-vinho px-4 py-2 text-xs font-medium text-white hover:bg-vinho/90 transition"
+            >
+              Presentear
+            </a>
+          </article>
+        </div>
+
+        <p class="mt-6 text-[0.75rem] text-zinc-500 text-center">
+          Fique à vontade para escolher qualquer valor ou presente. O importante
+          é o carinho!
+        </p>
+      </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="mt-4 border-t border-rose-100 bg-white/60">
+      <div
+        class="max-w-5xl mx-auto px-4 py-5 text-center text-[0.7rem] text-zinc-500"
+      >
+        Obrigado por fazer parte desse momento especial.
       </div>
+    </footer>
 
-      <div class="gift-section-title">Mesa e Jantar</div>
-      <div class="gift-options">
-        <label class="card-option" data-gift="Jogo de Talheres">
-          <input type="checkbox" name="gift" value="Jogo de Talheres">
-          <div class="card-content">
-            <span class="card-title">Jogo de Talheres</span>
-            <span class="card-tag">Mesa posta</span>
-            <span class="card-status">Disponível</span>
-          </div>
-        </label>
-        <!-- (repete para todos os presentes) -->
-      </div>
-
-      <div class="gift-section-title">Quarto e Banho</div>
-      <div class="gift-options">
-        <label class="card-option" data-gift="Jogo de Lençóis Casal">
-          <input type="checkbox" name="gift" value="Jogo de Lençóis Casal">
-          <div class="card-content">
-            <span class="card-title">Jogo de Lençóis Casal</span>
-            <span class="card-tag">Quarto</span>
-            <span class="card-status">Disponível</span>
-          </div>
-        </label>
-        <!-- (repete para todos os presentes) -->
-      </div>
-
-      <div class="gift-section-title">Ajuda Especial</div>
-      <div class="gift-options">
-        <label class="card-option" data-gift="Cota para mobília da casa">
-          <input type="checkbox" name="gift" value="Cota para mobília da casa">
-          <div class="card-content">
-            <span class="card-title">Cota para mobília da casa</span>
-            <span class="card-tag">Ajuda financeira</span>
-            <span class="card-status">Disponível</span>
-          </div>
-        </label>
-        <!-- (repete para todos os presentes) -->
-      </div>
-
-      <label for="guestName" class="label-name">Seu nome</label>
-      <input type="text" id="guestName" placeholder="Seu nome" required>
-
-      <button type="submit" class="btn" id="submitBtn">Confirmar presente</button>
-
-      <p class="info">
-        Itens com o selo “Já escolhido” já foram reservados por alguém. Se o presente que você queria estiver marcado,
-        escolha outro à vontade. Obrigado por nos ajudar a montar nosso lar!
-      </p>
-    </form>
-
-    <section class="selected-list">
-      <div class="selected-header">
-        <h2>Presentes já escolhidos</h2>
-        <small id="countSpan">0 presentes reservados</small>
-      </div>
-      <ul id="selectedList"></ul>
-    </section>
-  </main>
-
-  <script src="js/gifts.js"></script>
-</body>
+    <script src="./js/gifts.js"></script>
+  </body>
 </html>

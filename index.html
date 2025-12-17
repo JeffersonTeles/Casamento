@@ -1,96 +1,331 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Carta de Agradecimento - Casamento 2027</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Site do casamento de Jefferson e Bia, com carta de agradecimento, informações da cerimônia e lista de presentes personalizada.">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/estilos.css">
-</head>
-<body class="pagina-carta">
-  <div class="overlay"></div>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Casamento Jefferson & Bia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <header class="topbar">
-    <div class="topbar-inner">
-      <span class="brand">Jefferson &amp; Bia</span>
-      <nav>
-        <a href="index.html" class="ativo">Carta</a>
-        <a href="gifts.html">Lista de presentes</a>
-        <a href="faq.html">Dúvidas</a>
+    <!-- SEO / Compartilhamento -->
+    <meta
+      name="description"
+      content="Site oficial do casamento de Jefferson & Bia. Veja data, local, lista de presentes e confirme sua presença."
+    />
+
+    <!-- Substitua SEU-USUARIO e SEU-REPO abaixo pelo seu usuário e repositório -->
+    <meta property="og:title" content="Casamento Jefferson & Bia" />
+    <meta
+      property="og:description"
+      content="Todas as informações sobre o nosso grande dia: data, local, presentes e confirmação de presença."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://SEU-USUARIO.github.io/SEU-REPO"
+    />
+    <meta
+      property="og:image"
+      content="https://SEU-USUARIO.github.io/SEU-REPO/img/capa.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              rosa: '#e91e63',
+              vinho: '#663244',
+              champagne: '#f5e6d3',
+            },
+            fontFamily: {
+              titulo: ['"Playfair Display"', 'serif'],
+              corpo: ['system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Seu CSS opcional -->
+    <link rel="stylesheet" href="./css/estilos.css" />
+  </head>
+  <body
+    class="bg-gradient-to-b from-champagne/60 via-rose-50 to-white font-corpo text-zinc-800"
+  >
+    <!-- Navbar -->
+    <header
+      class="w-full bg-white/70 backdrop-blur border-b border-white/60 sticky top-0 z-20"
+    >
+      <nav
+        class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3"
+      >
+        <a href="#topo" class="flex items-center gap-2">
+          <span
+            class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-vinho text-white text-sm"
+            >J&B</span
+          >
+          <span class="font-titulo text-xl text-vinho">
+            Jefferson &amp; Bia
+          </span>
+        </a>
+        <div class="hidden sm:flex items-center gap-4 text-xs font-medium">
+          <a href="#sobre" class="text-vinho/80 hover:text-vinho">Sobre</a>
+          <a href="#contagem" class="text-vinho/80 hover:text-vinho"
+            >Contagem</a
+          >
+          <a href="gifts.html" class="text-vinho/80 hover:text-vinho"
+            >Presentes</a
+          >
+          <a href="faq.html" class="text-vinho/80 hover:text-vinho">Dúvidas</a>
+          <a href="#rsvp" class="text-vinho/80 hover:text-vinho">Confirme</a>
+        </div>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="container">
-    <h1>Um grande obrigado</h1>
-    <h2>Com carinho, Jefferson &amp; Bia</h2>
+    <main id="topo">
+      <!-- Hero -->
+      <section
+        class="max-w-5xl mx-auto px-4 pt-10 pb-12 grid md:grid-cols-2 gap-8"
+      >
+        <div class="flex flex-col justify-center">
+          <p
+            class="uppercase tracking-[0.35em] text-[0.65rem] text-vinho/70 mb-2"
+          >
+            Save the date
+          </p>
+          <h1
+            class="font-titulo text-4xl md:text-5xl text-vinho leading-tight"
+          >
+            Jefferson <span class="text-rosa">&amp;</span> Bia
+          </h1>
+          <p class="mt-3 text-sm text-zinc-600">
+            12 de Outubro de 2026 • Curitiba - PR
+          </p>
 
-    <section class="verse">
-      <p>
-        “Acima de tudo, porém, revistam-se do amor, que é o elo perfeito.” (Cl 3,14)
-      </p>
-    </section>
+          <p class="mt-4 text-sm text-zinc-700 leading-relaxed">
+            É com muita alegria que convidamos você para celebrar conosco este
+            dia tão especial. Sua presença tornará tudo ainda mais inesquecível.
+          </p>
 
-    <p class="text">
-      Queridos amigos e familiares, é uma alegria enorme poder viver esse momento tão sonhado ao lado de vocês.
-      Cada oração, mensagem, abraço e gesto de carinho tem sido parte importante da nossa caminhada.
-    </p>
-    <p class="text">
-      Agradecemos a Deus por cada vida que Ele colocou em nosso caminho e por podermos celebrar este sacramento
-      cercados de pessoas tão especiais. Vocês fazem parte da nossa história e do que Ele está construindo em nós.
-    </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a
+              href="#contagem"
+              class="inline-flex items-center justify-center rounded-full bg-vinho px-6 py-2.5 text-xs font-semibold text-white shadow-md shadow-vinho/20 hover:bg-vinho/90 transition"
+            >
+              Ver contagem regressiva
+            </a>
+            <a
+              href="gifts.html"
+              class="inline-flex items-center justify-center rounded-full border border-vinho/60 px-6 py-2.5 text-xs font-semibold text-vinho hover:bg-vinho/5 transition"
+            >
+              Lista de presentes
+            </a>
+          </div>
+        </div>
 
-    <section class="story">
-      <h3>Nossa história</h3>
-      <p>
-        Deus nos uniu aos poucos, em conversas simples, risadas e muita caminhada juntos.
-        Entre igrejas, famílias e sonhos, Ele foi mostrando que nossos planos podiam ser um só.
-      </p>
-      <p>
-        Este site é um pedacinho dessa história, preparado com carinho para quem faz parte da nossa vida
-        e desse momento tão especial.
-      </p>
-    </section>
+        <div class="relative flex items-center justify-center md:justify-end">
+          <div
+            class="h-64 w-64 md:h-72 md:w-72 overflow-hidden rounded-[2.5rem] bg-rose-100 shadow-xl shadow-rose-200/70 border border-white/80"
+          >
+            <!-- coloque sua foto em img/casal.jpg -->
+            <img
+              src="./img/foto1.jpeg"
+              alt="Jefferson e Bia"
+              class="h-full w-full object-cover"
+            />
+          </div>
+          <div
+            class="hidden md:block absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white/90 rounded-2xl px-4 py-2 shadow-md text-[0.7rem] text-vinho"
+          >
+            <p class="font-semibold">“Um dia para guardar para sempre.”</p>
+          </div>
+        </div>
+      </section>
 
-    <section class="timeline">
-      <h3>Um pouco da nossa jornada</h3>
-      <ul>
-        <li><strong>2018:</strong> Nos conhecemos em uma missa.</li>
-        <li><strong>2020:</strong> Começamos a namorar.</li>
-        <li><strong>2027:</strong> Casamento!</li>
-      </ul>
-    </section>
+      <!-- Bloco informações rápidas -->
+      <section class="max-w-5xl mx-auto px-4 pb-10">
+        <div
+          class="grid gap-4 md:grid-cols-3 text-xs text-zinc-700 bg-white/80 rounded-3xl border border-white/70 shadow-sm p-4"
+        >
+          <div>
+            <p class="font-semibold text-vinho">Cerimônia</p>
+            <p class="mt-1">
+              16h00 • Nome da Igreja<br />
+              Endereço completo
+            </p>
+          </div>
+          <div>
+            <p class="font-semibold text-vinho">Recepção</p>
+            <p class="mt-1">
+              Após a cerimônia • Salão / Espaço<br />
+              Endereço completo
+            </p>
+          </div>
+          <div>
+            <p class="font-semibold text-vinho">Traje sugerido</p>
+            <p class="mt-1">
+              Passeio completo • Cores claras<br />
+              Evite branco total
+            </p>
+          </div>
+        </div>
+      </section>
 
-    <section class="details">
-      <h3>Detalhes do casamento</h3>
-      <p><strong>Ano:</strong> 2027 (data a confirmar)</p>
-      <p><strong>Horário:</strong> A definir</p>
-      <p><strong>Cerimônia:</strong> Igreja Católica &mdash; Paróquia Cancellli</p>
-      <p><strong>Cidade:</strong> Cascavel &mdash; PR</p>
-      <p class="details-note">
-        Assim que a data e o horário forem confirmados, vamos atualizar tudo aqui.
-        Fique à vontade para voltar ao site mais perto do grande dia.
-      </p>
-    </section>
+      <!-- História -->
+      <section id="sobre" class="bg-white/70 border-y border-white/80">
+        <div
+          class="max-w-5xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-8 items-start"
+        >
+          <div>
+            <h2 class="font-titulo text-2xl text-vinho mb-3">Nossa história</h2>
+            <p class="text-sm leading-relaxed text-zinc-700">
+  A nossa história começou de um jeito bem moderno: pelo Instagram. Depois de
+  muitas conversas e mensagens, decidimos nos ver pessoalmente em uma
+  sorveteria, onde a timidez dividiu espaço com sorrisos e olhares que já
+  diziam muita coisa.
+</p>
+<p class="mt-3 text-sm leading-relaxed text-zinc-700">
+  No encontro seguinte, assistimos a um filme juntos e percebemos que a nossa
+  companhia já tinha virado o lugar favorito um do outro. No outro encontro,
+  às margens do lago de Cascavel, veio o pedido de namoro – simples, sincero e
+  com a certeza de que era só o começo de uma linda caminhada lado a lado.
+</p>
 
-    <section class="map">
-      <h3>Como chegar</h3>
-      <p>
-        A cerimônia será na Paróquia Cancellli, em Cascavel – PR.
-        <a href="https://maps.google.com/maps?q=Paróquia+Cancellli+Cascavel" target="_blank">Clique aqui para ver no Google Maps</a>.
-      </p>
-      <p>
-        Estacionamento disponível em frente à igreja.
-      </p>
-    </section>
+            </p>
+          </div>
+          <div
+            class="space-y-3 text-xs text-zinc-700 bg-rose-50/80 rounded-3xl p-4 border border-rose-100"
+          >
+            <p class="font-semibold text-vinho">
+              “O amor é a força que transforma e melhora o mundo.”
+            </p>
+            <p>
+              Aqui pode entrar um versículo, um trecho de música ou uma frase
+              que represente o casal e esse novo capítulo.
+            </p>
+          </div>
+        </div>
+      </section>
 
-    <p class="signature">
-      Com amor e gratidão,<br>
-      Jefferson &amp; Bia
-    </p>
+      <!-- Contagem regressiva -->
+      <section id="contagem" class="max-w-5xl mx-auto px-4 py-12">
+        <h2 class="font-titulo text-2xl text-center text-vinho">
+          Falta pouco para o grande dia
+        </h2>
+        <p class="mt-2 text-center text-sm text-zinc-600">
+          Acompanhe a contagem regressiva até o momento do “sim”.
+        </p>
 
-    <a href="gifts.html" class="btn">Escolher presente</a>
-  </main>
-</body>
+        <div
+          class="mt-6 bg-white/90 border border-rose-100 rounded-3xl p-5 shadow-sm"
+        >
+          <div
+            id="countdown"
+            class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-vinho"
+          >
+            <div
+              class="bg-white/90 rounded-2xl py-4 shadow-sm border border-rose-100"
+            >
+              <div class="text-2xl font-semibold" id="days">0</div>
+              <div
+                class="mt-1 text-[0.65rem] uppercase tracking-wide text-zinc-500"
+              >
+                Dias
+              </div>
+            </div>
+            <div
+              class="bg-white/90 rounded-2xl py-4 shadow-sm border border-rose-100"
+            >
+              <div class="text-2xl font-semibold" id="hours">0</div>
+              <div
+                class="mt-1 text-[0.65rem] uppercase tracking-wide text-zinc-500"
+              >
+                Horas
+              </div>
+            </div>
+            <div
+              class="bg-white/90 rounded-2xl py-4 shadow-sm border border-rose-100"
+            >
+              <div class="text-2xl font-semibold" id="minutes">0</div>
+              <div
+                class="mt-1 text-[0.65rem] uppercase tracking-wide text-zinc-500"
+              >
+                Minutos
+              </div>
+            </div>
+            <div
+              class="bg-white/90 rounded-2xl py-4 shadow-sm border border-rose-100"
+            >
+              <div class="text-2xl font-semibold" id="seconds">0</div>
+              <div
+                class="mt-1 text-[0.65rem] uppercase tracking-wide text-zinc-500"
+              >
+                Segundos
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="mt-6 text-center text-xs text-zinc-600">
+          Em caso de dúvidas sobre horário, local ou presentes,
+          <a href="faq.html" class="text-vinho underline"
+            >veja as perguntas frequentes</a
+          >.
+        </p>
+      </section>
+
+      <!-- Seção RSVP -->
+      <section
+        id="rsvp"
+        class="max-w-5xl mx-auto px-4 pb-14 flex flex-col items-center"
+      >
+        <div
+          class="w-full bg-white/90 border border-rose-100 rounded-3xl shadow-sm p-5 md:p-6"
+        >
+          <h2 class="font-titulo text-2xl text-vinho text-center">
+            Confirme sua presença
+          </h2>
+          <p class="mt-2 text-sm text-zinc-600 text-center max-w-xl mx-auto">
+            Para nos ajudarem na organização, pedimos que confirmem presença até
+            <strong>20 de setembro de 2026</strong>. Basta clicar no botão
+            abaixo e enviar a mensagem no WhatsApp.
+          </p>
+
+          <div
+            class="mt-5 flex flex-col sm:flex-row gap-3 items-center justify-center"
+          >
+            <a
+              href="https://wa.me/5591999999999?text=Oi%2C%20aqui%20%C3%A9%20SEU%20NOME%2C%20confirmando%20minha%20presen%C3%A7a%20no%20casamento%20do%20Jefferson%20e%20da%20Bia.%20%F0%9F%92%8D"
+              target="_blank"
+              rel="noreferrer"
+              class="inline-flex items-center justify-center rounded-full bg-vinho px-6 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-vinho/90 transition"
+            >
+              Confirmar pelo WhatsApp
+            </a>
+            <p class="text-[0.7rem] text-zinc-500 text-center">
+              Você pode editar a mensagem antes de enviar.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="mt-6 border-t border-rose-100 bg-white/60">
+      <div
+        class="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[0.7rem] text-zinc-500"
+      >
+        <span>Com carinho, Jefferson &amp; Bia</span>
+        <span>Que esse seja apenas o começo de muitas comemorações.</span>
+      </div>
+    </footer>
+
+    <!-- Seus scripts -->
+    <script src="./js/countdown.js"></script>
+    <script src="./js/darkmode.js"></script>
+    <script src="./js/gifts.js"></script>
+  </body>
 </html>
