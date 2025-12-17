@@ -4,116 +4,32 @@
   <meta charset="UTF-8">
   <title>Carta de Agradecimento - Casamento 2027</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Site do casamento de Jefferson e Bia, com carta de agradecimento, informações da cerimônia e lista de presentes personalizada.">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --rosa: #e91e63;
-      --vinho: #663244;
-      --fonte-titulo: 'Playfair Display', serif;
-      --fonte-texto: 'Montserrat', sans-serif;
-    }
-
-    body {
-      font-family: var(--fonte-texto);
-      background: url('https://thumbs.dreamstime.com/b/cruz-cat%C3%B3lica-majestosa-em-cima-de-uma-paisagem-inspiradora-na-encosta-para-design-baseado-f%C3%A9-e-fotografia-produto-389395023.jpg')
-                  no-repeat center center fixed;
-      background-size: cover;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.35);
-      z-index: -1;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 800px;
-      background: rgba(255,255,255,0.94);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-      padding: 32px 24px 34px;
-    }
-
-    h1 {
-      text-align: center;
-      margin: 0 0 12px;
-      font-family: var(--fonte-titulo);
-      font-size: 2.4rem;
-      color: var(--rosa);
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
-    }
-
-    h2 {
-      text-align: center;
-      margin: 0 0 18px;
-      font-family: var(--fonte-titulo);
-      font-size: 1.4rem;
-      color: var(--vinho);
-    }
-
-    .text {
-      font-size: 1.05rem;
-      line-height: 1.7;
-      color: #4b303f;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .signature {
-      margin-top: 18px;
-      font-size: 1rem;
-      color: #5e3b4b;
-      text-align: center;
-      font-weight: 500;
-    }
-
-    .btn {
-      display: block;
-      width: 230px;
-      margin: 26px auto 0;
-      padding: 12px 24px;
-      background: linear-gradient(135deg, var(--rosa), #ff8bb3);
-      color: white;
-      border: none;
-      border-radius: 999px;
-      font-size: 1rem;
-      cursor: pointer;
-      text-align: center;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.22);
-      text-decoration: none;
-    }
-
-    .btn:hover {
-      filter: brightness(1.05);
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 26px 18px 30px;
-      }
-      h1 {
-        font-size: 2rem;
-      }
-      .text {
-        font-size: 0.98rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body>
+<body class="pagina-carta">
   <div class="overlay"></div>
 
-  <div class="container">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">Jefferson &amp; Bia</span>
+      <nav>
+        <a href="index.html" class="ativo">Carta</a>
+        <a href="gifts.html">Lista de presentes</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
     <h1>Um grande obrigado</h1>
-    <h2>Com carinho, Jefferson & Beatriz</h2>
+    <h2>Com carinho, Jefferson &amp; Bia</h2>
+
+    <section class="verse">
+      <p>
+        “Acima de tudo, porém, revistam-se do amor, que é o elo perfeito.” (Cl 3,14)
+      </p>
+    </section>
 
     <p class="text">
       Queridos amigos e familiares, é uma alegria enorme poder viver esse momento tão sonhado ao lado de vocês.
@@ -123,17 +39,37 @@
       Agradecemos a Deus por cada vida que Ele colocou em nosso caminho e por podermos celebrar este sacramento
       cercados de pessoas tão especiais. Vocês fazem parte da nossa história e do que Ele está construindo em nós.
     </p>
-    <p class="text">
-      Obrigado por estarem presentes, por nos apoiarem e por celebrarem conosco este passo tão importante.
-      Que o Senhor abençoe cada família representada aqui, com todo amor que Ele nos ensina.
-    </p>
+
+    <section class="story">
+      <h3>Nossa história</h3>
+      <p>
+        Deus nos uniu aos poucos, em conversas simples, risadas e muita caminhada juntos.
+        Entre igrejas, famílias e sonhos, Ele foi mostrando que nossos planos podiam ser um só.
+      </p>
+      <p>
+        Este site é um pedacinho dessa história, preparado com carinho para quem faz parte da nossa vida
+        e desse momento tão especial.
+      </p>
+    </section>
+
+    <section class="details">
+      <h3>Detalhes do casamento</h3>
+      <p><strong>Ano:</strong> 2027 (data a confirmar)</p>
+      <p><strong>Horário:</strong> A definir</p>
+      <p><strong>Cerimônia:</strong> Igreja Católica &mdash; Paróquia Cancellli</p>
+      <p><strong>Cidade:</strong> Cascavel &mdash; PR</p>
+      <p class="details-note">
+        Assim que a data e o horário forem confirmados, vamos atualizar tudo aqui.
+        Fique à vontade para voltar ao site mais perto do grande dia.
+      </p>
+    </section>
 
     <p class="signature">
       Com amor e gratidão,<br>
-      Jefferson & Beatriz
+      Jefferson &amp; Bia
     </p>
 
     <a href="gifts.html" class="btn">Escolher presente</a>
-  </div>
+  </main>
 </body>
 </html>

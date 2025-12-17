@@ -1,0 +1,473 @@
+:root {
+  --rosa: #e91e63;
+  --rosa-claro: #fde4f1;
+  --vinho: #663244;
+  --fonte-titulo: 'Playfair Display', serif;
+  --fonte-texto: 'Montserrat', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* CARTA */
+body.pagina-carta {
+  font-family: var(--fonte-texto);
+  background: url('https://thumbs.dreamstime.com/b/cruz-cat%C3%B3lica-majestosa-em-cima-de-uma-paisagem-inspiradora-na-encosta-para-design-baseado-f%C3%A9-e-fotografia-produto-389395023.jpg')
+              no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* LISTA */
+body.pagina-presentes {
+  font-family: var(--fonte-texto);
+  background: url('https://images.unsplash.com/photo-1529638402501-ad023c97f1d8')
+              no-repeat center center fixed;
+  background-size: cover;
+}
+
+body {
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: -1;
+}
+
+/* Navbar */
+
+.topbar {
+  position: fixed;
+  top: 10px;
+  left: 0;
+  right: 0;
+  padding: 0 16px;
+  z-index: 10;
+}
+
+.topbar-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.92);
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 18px;
+}
+
+.topbar .brand {
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  color: var(--vinho);
+}
+
+.topbar nav a {
+  margin-left: 12px;
+  font-size: 0.9rem;
+  color: #7b5b6a;
+  text-decoration: none;
+}
+
+.topbar nav a:hover {
+  color: var(--rosa);
+}
+
+.topbar nav a.ativo {
+  color: var(--rosa);
+  font-weight: 600;
+}
+
+/* Container */
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.30);
+  padding: 32px 24px 34px;
+  margin: 80px auto 24px;
+}
+
+h1 {
+  text-align: center;
+  margin: 0 0 12px;
+  font-family: var(--fonte-titulo);
+  font-size: 2.2rem;
+  color: var(--rosa);
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+}
+
+h2 {
+  text-align: center;
+  margin: 0 0 18px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.4rem;
+  color: var(--vinho);
+}
+
+/* Carta */
+
+.verse {
+  margin: 8px 0 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.9);
+  color: #5e3b4b;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.text {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #4b303f;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.story {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fff7fb;
+  color: #4b303f;
+}
+
+.story h3 {
+  margin: 0 0 8px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  color: var(--vinho);
+}
+
+.story p {
+  margin: 4px 0;
+  font-size: 0.97rem;
+}
+
+.details {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f9f0f6;
+  text-align: center;
+  color: #4b303f;
+}
+
+.details h3 {
+  margin: 0 0 8px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  color: var(--vinho);
+}
+
+.details p {
+  margin: 2px 0;
+  font-size: 0.95rem;
+}
+
+.details-note {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #7b5b6a;
+}
+
+.signature {
+  margin-top: 18px;
+  font-size: 1rem;
+  color: #5e3b4b;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Botão */
+
+.btn {
+  display: block;
+  width: 230px;
+  margin: 26px auto 0;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--rosa), #ff8bb3);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+  text-decoration: none;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Presentes */
+
+.subtitle {
+  text-align: center;
+  font-size: 0.98rem;
+  color: var(--vinho);
+  margin-bottom: 10px;
+}
+
+.sub-faith {
+  font-size: 0.9rem;
+  color: #6b4561;
+  margin-bottom: 16px;
+}
+
+.summary {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #7b5b6a;
+  margin-bottom: 16px;
+}
+
+.gift-section-title {
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--vinho);
+}
+
+.gift-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* Card */
+
+.card-option {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #f9f0f6;
+  border: 1px solid #e2c9d5;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s, background 0.18s;
+}
+
+.card-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-content {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--vinho);
+}
+
+.card-tag {
+  font-size: 0.78rem;
+  color: #7b5b6a;
+  background: #ffe7f1;
+  padding: 3px 8px;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+
+.card-status {
+  font-size: 0.8rem;
+  margin-top: 4px;
+  color: #4caf50;
+}
+
+.card-option:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* selecionado (antes de salvar) */
+.card-option input:checked + .card-content {
+  background: #ffe7f1;
+  border-color: var(--rosa);
+}
+
+.card-option input:checked + .card-content .card-title {
+  color: var(--rosa);
+}
+
+.card-option input:checked + .card-content .card-tag {
+  background: #ffd0e5;
+}
+
+/* já escolhido */
+
+.card-option.esgotado {
+  background: #f3f3f3;
+  border-color: #d0d0d0;
+  cursor: default;
+}
+
+.card-option.esgotado .card-title {
+  color: #9a9a9a;
+}
+
+.card-option.esgotado .card-tag {
+  background: #e0e0e0;
+  color: #777;
+}
+
+.card-option.esgotado .card-status {
+  color: #c62828;
+  font-weight: 600;
+  content: "Já escolhido";
+}
+
+.card-option.esgotado:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* campo nome */
+
+#guestName {
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2c9d5;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.info {
+  font-size: 0.8rem;
+  color: #7b5b6a;
+  margin-top: 6px;
+  text-align: left;
+}
+
+/* Lista */
+
+.selected-list {
+  margin-top: 22px;
+}
+
+.selected-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.selected-header h2 {
+  font-family: var(--fonte-titulo);
+  font-size: 1.15rem;
+  margin: 0;
+  color: var(--vinho);
+}
+
+.selected-header small {
+  font-size: 0.8rem;
+  color: #7b5b6a;
+}
+
+.selected-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.selected-list li {
+  background: #fff;
+  border: 1px solid #f1dce7;
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: #5e3b4b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.selected-main {
+  text-align: left;
+}
+
+.remove-btn {
+  background: transparent;
+  border: none;
+  color: #b54863;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  color: #8f2c44;
+}
+
+/* Toast */
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #4caf50;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 20;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsivo */
+
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+  .container {
+    padding: 22px 16px 26px;
+    margin-top: 80px;
+  }
+  h1 {
+    font-size: 1.9rem;
+  }
+  .text {
+    font-size: 0.98rem;
+  }
+}

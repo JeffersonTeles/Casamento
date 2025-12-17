@@ -4,365 +4,223 @@
   <meta charset="UTF-8">
   <title>Lista de Presentes - Casamento 2027</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lista de presentes do casamento de Jefferson e Bia. Escolha um presente, registre seu nome e ajude o casal a montar o novo lar.">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --rosa: #e91e63;
-      --rosa-claro: #fde4f1;
-      --vinho: #663244;
-      --fonte-titulo: 'Playfair Display', serif;
-      --fonte-texto: 'Montserrat', sans-serif;
-    }
-
-    body {
-      font-family: var(--fonte-texto);
-      background: url('https://images.unsplash.com/photo-1470240741416-29a9220b2102') no-repeat center center fixed;
-      background-size: cover;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-      z-index: -1;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 900px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.28);
-      padding: 26px 24px 30px;
-    }
-
-    h1 {
-      text-align: center;
-      margin: 0 0 6px;
-      font-family: var(--fonte-titulo);
-      font-size: 2.2rem;
-      color: var(--rosa);
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 0.98rem;
-      color: var(--vinho);
-      margin-bottom: 20px;
-    }
-
-    .back-link {
-      font-size: 0.85rem;
-      margin-bottom: 10px;
-      display: inline-block;
-      color: #7b5b6a;
-      text-decoration: none;
-    }
-
-    .back-link:hover {
-      text-decoration: underline;
-    }
-
-    form {
-      margin-bottom: 20px;
-    }
-
-    .gift-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .option {
-      background: #f9f0f6;
-      border: 1px solid #e2c9d5;
-      border-radius: 12px;
-      padding: 12px 10px;
-      font-size: 0.95rem;
-      color: var(--vinho);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: transform 0.18s, box-shadow 0.18s;
-    }
-
-    .option:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
-
-    .option input {
-      width: 18px;
-      height: 18px;
-    }
-
-    #guestName {
-      width: 100%;
-      margin-bottom: 8px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #e2c9d5;
-      font-size: 0.95rem;
-      box-sizing: border-box;
-    }
-
-    .btn {
-      display: block;
-      width: 230px;
-      margin: 8px auto 0;
-      padding: 10px 20px;
-      background: linear-gradient(135deg, var(--rosa), #ff8bb3);
-      color: white;
-      border: none;
-      border-radius: 999px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.18);
-    }
-
-    .btn:hover {
-      filter: brightness(1.05);
-    }
-
-    .info {
-      font-size: 0.8rem;
-      color: #7b5b6a;
-      margin-top: 6px;
-      text-align: left;
-    }
-
-    .selected-list {
-      margin-top: 22px;
-    }
-
-    .selected-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
-
-    .selected-header h2 {
-      font-family: var(--fonte-titulo);
-      font-size: 1.15rem;
-      margin: 0;
-      color: var(--vinho);
-    }
-
-    .selected-header small {
-      font-size: 0.8rem;
-      color: #7b5b6a;
-    }
-
-    .selected-list ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      max-height: 260px;
-      overflow-y: auto;
-    }
-
-    .selected-list li {
-      background: #fff;
-      border: 1px solid #f1dce7;
-      border-radius: 10px;
-      padding: 8px 10px;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
-      color: #5e3b4b;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .selected-main {
-      text-align: left;
-    }
-
-    .remove-btn {
-      background: transparent;
-      border: none;
-      color: #b54863;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-
-    .remove-btn:hover {
-      color: #8f2c44;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 22px 16px 26px;
-      }
-      h1 {
-        font-size: 1.9rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body>
+<body class="pagina-presentes">
   <div class="overlay"></div>
 
-  <div class="container">
-    <a href="index.html" class="back-link">← Voltar para a carta</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">Jefferson &amp; Bia</span>
+      <nav>
+        <a href="index.html">Carta</a>
+        <a href="gifts.html" class="ativo">Lista de presentes</a>
+      </nav>
+    </div>
+  </header>
+
+  <div id="toast" class="toast">Obrigado! Seu presente foi reservado com carinho.</div>
+
+  <main class="container">
     <h1>Lista de Presentes</h1>
     <p class="subtitle">
-      Casamento 2027 — Escolha um dos presentes abaixo. Cada opção só pode ser escolhida uma vez.
+      Casamento 2027 — 1) Escolha um ou mais presentes, 2) Digite seu nome, 3) Clique em “Confirmar presente”.
+    </p>
+    <p class="subtitle sub-faith">
+      Mais do que os presentes, o que mais desejamos é a presença, a amizade e a oração de cada um de vocês.
+    </p>
+
+    <p class="summary" id="summaryText">
+      Presentes reservados: 0 de 0.
     </p>
 
     <form id="giftForm">
+      <div class="gift-section-title">Cozinha</div>
       <div class="gift-options">
-        <label class="option">
+        <label class="card-option" data-gift="Jogo de Pratos">
           <input type="checkbox" name="gift" value="Jogo de Pratos">
-          <span>Jogo de Pratos</span>
+          <div class="card-content">
+            <span class="card-title">Jogo de Pratos</span>
+            <span class="card-tag">Cozinha</span>
+            <span class="card-status">Disponível</span>
+          </div>
         </label>
-        <label class="option">
+
+        <label class="card-option" data-gift="Liquidificador">
           <input type="checkbox" name="gift" value="Liquidificador">
-          <span>Liquidificador</span>
+          <div class="card-content">
+            <span class="card-title">Liquidificador</span>
+            <span class="card-tag">Cozinha</span>
+            <span class="card-status">Disponível</span>
+          </div>
         </label>
-        <label class="option">
+
+        <label class="card-option" data-gift="Aparelho de Café">
           <input type="checkbox" name="gift" value="Aparelho de Café">
-          <span>Aparelho de Café</span>
+          <div class="card-content">
+            <span class="card-title">Aparelho de Café</span>
+            <span class="card-tag">Café da manhã</span>
+            <span class="card-status">Disponível</span>
+          </div>
         </label>
-        <label class="option">
+
+        <label class="card-option" data-gift="Panela de Pressão">
           <input type="checkbox" name="gift" value="Panela de Pressão">
-          <span>Panela de Pressão</span>
+          <div class="card-content">
+            <span class="card-title">Panela de Pressão</span>
+            <span class="card-tag">Cozinha</span>
+            <span class="card-status">Disponível</span>
+          </div>
         </label>
-        <label class="option">
+
+        <label class="card-option" data-gift="Conjunto de Panelas">
+          <input type="checkbox" name="gift" value="Conjunto de Panelas">
+          <div class="card-content">
+            <span class="card-title">Conjunto de Panelas</span>
+            <span class="card-tag">Cozinha</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+
+        <label class="card-option" data-gift="Air Fryer">
+          <input type="checkbox" name="gift" value="Air Fryer">
+          <div class="card-content">
+            <span class="card-title">Air Fryer</span>
+            <span class="card-tag">Cozinha</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="gift-section-title">Mesa e Jantar</div>
+      <div class="gift-options">
+        <label class="card-option" data-gift="Jogo de Talheres">
           <input type="checkbox" name="gift" value="Jogo de Talheres">
-          <span>Jogo de Talheres</span>
+          <div class="card-content">
+            <span class="card-title">Jogo de Talheres</span>
+            <span class="card-tag">Mesa posta</span>
+            <span class="card-status">Disponível</span>
+          </div>
         </label>
-        <label class="option">
+
+        <label class="card-option" data-gift="Aparelho de Chá">
           <input type="checkbox" name="gift" value="Aparelho de Chá">
-          <span>Aparelho de Chá</span>
+          <div class="card-content">
+            <span class="card-title">Aparelho de Chá</span>
+            <span class="card-tag">Mesa posta</span>
+            <span class="card-status">Disponível</span>
+          </div>
         </label>
-        <label class="option">
-          <input type="checkbox" name="gift" value="Toalhas de Banho">
-          <span>Toalhas de Banho</span>
-        </label>
-        <label class="option">
+
+        <label class="card-option" data-gift="Aparelho de Jantar">
           <input type="checkbox" name="gift" value="Aparelho de Jantar">
-          <span>Aparelho de Jantar</span>
+          <div class="card-content">
+            <span class="card-title">Aparelho de Jantar</span>
+            <span class="card-tag">Mesa posta</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+
+        <label class="card-option" data-gift="Jogo de Copos">
+          <input type="checkbox" name="gift" value="Jogo de Copos">
+          <div class="card-content">
+            <span class="card-title">Jogo de Copos</span>
+            <span class="card-tag">Mesa posta</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+
+        <label class="card-option" data-gift="Jogo de Taças">
+          <input type="checkbox" name="gift" value="Jogo de Taças">
+          <div class="card-content">
+            <span class="card-title">Jogo de Taças</span>
+            <span class="card-tag">Mesa posta</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="gift-section-title">Quarto e Banho</div>
+      <div class="gift-options">
+        <label class="card-option" data-gift="Jogo de Lençóis Casal">
+          <input type="checkbox" name="gift" value="Jogo de Lençóis Casal">
+          <div class="card-content">
+            <span class="card-title">Jogo de Lençóis Casal</span>
+            <span class="card-tag">Quarto</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+
+        <label class="card-option" data-gift="Edredom Casal">
+          <input type="checkbox" name="gift" value="Edredom Casal">
+          <div class="card-content">
+            <span class="card-title">Edredom Casal</span>
+            <span class="card-tag">Quarto</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+
+        <label class="card-option" data-gift="Toalhas de Banho">
+          <input type="checkbox" name="gift" value="Toalhas de Banho">
+          <div class="card-content">
+            <span class="card-title">Toalhas de Banho</span>
+            <span class="card-tag">Banho</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+
+        <label class="card-option" data-gift="Tapete de Banheiro">
+          <input type="checkbox" name="gift" value="Tapete de Banheiro">
+          <div class="card-content">
+            <span class="card-title">Tapete de Banheiro</span>
+            <span class="card-tag">Banho</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="gift-section-title">Ajuda Especial</div>
+      <div class="gift-options">
+        <label class="card-option" data-gift="Cota para mobília da casa">
+          <input type="checkbox" name="gift" value="Cota para mobília da casa">
+          <div class="card-content">
+            <span class="card-title">Cota para mobília da casa</span>
+            <span class="card-tag">Ajuda financeira</span>
+            <span class="card-status">Disponível</span>
+          </div>
+        </label>
+
+        <label class="card-option" data-gift="Cota para viagem de lua de mel">
+          <input type="checkbox" name="gift" value="Cota para viagem de lua de mel">
+          <div class="card-content">
+            <span class="card-title">Cota para viagem de lua de mel</span>
+            <span class="card-tag">Ajuda financeira</span>
+            <span class="card-status">Disponível</span>
+          </div>
         </label>
       </div>
 
       <input type="text" id="guestName" placeholder="Seu nome" required>
 
-      <button type="submit" class="btn">Confirmar presente</button>
+      <button type="submit" class="btn" id="submitBtn">Confirmar presente</button>
 
       <p class="info">
-        Dica: se o presente que você queria já estiver escolhido, sinta-se à vontade para escolher outro.
-        Obrigado por nos ajudar a montar nossa casa com carinho!
+        Itens com o selo “Já escolhido” já foram reservados por alguém. Se o presente que você queria estiver marcado,
+        escolha outro à vontade. Obrigado por nos ajudar a montar nosso lar!
       </p>
     </form>
 
-    <div class="selected-list">
+    <section class="selected-list">
       <div class="selected-header">
         <h2>Presentes já escolhidos</h2>
         <small id="countSpan">0 presentes reservados</small>
       </div>
       <ul id="selectedList"></ul>
-    </div>
-  </div>
+    </section>
+  </main>
 
-  <script>
-    const form = document.getElementById('giftForm');
-    const guestNameInput = document.getElementById('guestName');
-    const selectedList = document.getElementById('selectedList');
-    const countSpan = document.getElementById('countSpan');
-
-    const STORAGE_KEY = 'listaPresentesCasamento2027_checkbox';
-
-    function loadGifts() {
-      try {
-        const data = localStorage.getItem(STORAGE_KEY);
-        return data ? JSON.parse(data) : [];
-      } catch (e) {
-        return [];
-      }
-    }
-
-    function saveGifts(gifts) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(gifts));
-    }
-
-    function render() {
-      const gifts = loadGifts();
-      selectedList.innerHTML = '';
-
-      // desmarcar todos checkboxes
-      const allCheckboxes = document.querySelectorAll('input[name="gift"]');
-      allCheckboxes.forEach(cb => cb.disabled = false);
-
-      gifts.forEach((gift, index) => {
-        // desabilitar checkbox do presente já escolhido
-        const cb = Array.from(allCheckboxes).find(c => c.value === gift.gift);
-        if (cb) cb.disabled = true;
-
-        const li = document.createElement('li');
-
-        const main = document.createElement('div');
-        main.className = 'selected-main';
-        main.textContent = `${gift.guest} escolheu: ${gift.gift}`;
-
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-btn';
-        removeBtn.type = 'button';
-        removeBtn.textContent = 'remover';
-        removeBtn.addEventListener('click', () => {
-          const updated = loadGifts().filter((_, i) => i !== index);
-          saveGifts(updated);
-          render();
-        });
-
-        li.appendChild(main);
-        li.appendChild(removeBtn);
-        selectedList.appendChild(li);
-      });
-
-      countSpan.textContent =
-        gifts.length === 1
-          ? '1 presente reservado'
-          : `${gifts.length} presentes reservados`;
-    }
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const guest = guestNameInput.value.trim();
-      if (!guest) return;
-
-      const checkedBoxes = document.querySelectorAll('input[name="gift"]:checked');
-      if (checkedBoxes.length === 0) return;
-
-      const gifts = loadGifts();
-
-      checkedBoxes.forEach(cb => {
-        const value = cb.value;
-        // só adiciona se ainda não tiver esse presente
-        if (!gifts.some(g => g.gift === value)) {
-          gifts.push({ guest, gift: value });
-        }
-        cb.checked = false;
-      });
-
-      saveGifts(gifts);
-      guestNameInput.value = '';
-      render();
-    });
-
-    render();
-  </script>
+  <script src="js/gifts.js"></script>
 </body>
 </html>
