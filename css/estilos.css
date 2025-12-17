@@ -471,3 +471,80 @@ h2 {
     font-size: 0.98rem;
   }
 }
+.timeline {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fff7fb;
+  color: #4b303f;
+}
+
+.timeline h3 {
+  margin: 0 0 8px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  color: var(--vinho);
+}
+
+.timeline ul {
+  margin: 4px 0;
+  padding-left: 18px;
+  color: #4b303f;
+}
+
+.timeline li {
+  margin: 4px 0;
+  font-size: 0.97rem;
+}
+
+/* Map */
+
+.map {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f9f0f6;
+  color: #4b303f;
+}
+
+.map h3 {
+  margin: 0 0 8px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  color: var(--vinho);
+}
+
+.map a {
+  color: var(--rosa);
+  text-decoration: underline;
+}
+
+/* FAQ */
+
+.pagina-faq .faq-list {
+  margin-top: 18px;
+}
+
+.pagina-faq .faq-list h3 {
+  margin: 18px 0 6px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  color: var(--vinho);
+}
+
+.pagina-faq .faq-list p {
+  margin: 4px 0;
+  color: #4b303f;
+  font-size: 0.97rem;
+}
+
+/* Label nome */
+
+.label-name {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+  color: var(--vinho);
+  font-weight: 600;
+}
