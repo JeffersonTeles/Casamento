@@ -42,7 +42,7 @@
 
 <body class="bg-gradient-to-b from-champagne/60 via-rose-50 to-white font-corpo text-zinc-800">
   <header class="w-full bg-white/70 backdrop-blur border-b border-white/60 sticky top-0 z-20">
-    <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+    <nav class="max-w-5xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 py-3">
       <a href="#topo" class="flex items-center gap-2">
         <span
           class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-vinho text-white text-sm">J&B</span>
@@ -50,20 +50,20 @@
           Jefferson &amp; Bia
         </span>
       </a>
-      <div class="flex items-center gap-3 text-[11px] sm:text-xs font-medium overflow-x-auto whitespace-nowrap pl-3">
-        <a href="#sobre" class="text-vinho/80 hover:text-vinho">Sobre</a>
-        <a href="#contagem" class="text-vinho/80 hover:text-vinho">Contagem</a>
-        <a href="gifts.html" class="text-vinho/80 hover:text-vinho">Presentes</a>
-        <a href="faq.html" class="text-vinho/80 hover:text-vinho">Dúvidas</a>
-        <a href="organizacao.html" class="text-vinho/80 hover:text-vinho">Organização</a>
-        <a href="#rsvp" class="text-vinho/80 hover:text-vinho">Confirme</a>
+      <div class="w-full sm:w-auto flex items-center gap-2 text-sm sm:text-xs font-medium overflow-x-auto whitespace-nowrap">
+        <a href="#sobre" class="text-vinho/80 hover:text-vinho px-3 py-2 rounded-full bg-white/60">Sobre</a>
+        <a href="#contagem" class="text-vinho/80 hover:text-vinho px-3 py-2 rounded-full bg-white/60">Contagem</a>
+        <a href="gifts.html" class="text-vinho/80 hover:text-vinho px-3 py-2 rounded-full bg-white/60">Presentes</a>
+        <a href="faq.html" class="text-vinho/80 hover:text-vinho px-3 py-2 rounded-full bg-white/60">Dúvidas</a>
+        <a href="organizacao.html" class="text-vinho/80 hover:text-vinho px-3 py-2 rounded-full bg-white/60">Organização</a>
+        <a href="#rsvp" class="text-vinho/80 hover:text-vinho px-3 py-2 rounded-full bg-white/60">Confirme</a>
       </div>
     </nav>
   </header>
 
   <main id="topo">
 
-    <section class="max-w-5xl mx-auto px-4 pt-10 pb-12 grid md:grid-cols-2 gap-8">
+    <section class="max-w-5xl mx-auto px-4 pt-8 sm:pt-10 pb-12 grid md:grid-cols-2 gap-6 md:gap-8">
       <div class="flex flex-col justify-center">
         <p class="uppercase tracking-[0.35em] text-[0.65rem] text-vinho/70 mb-2">
           Save the date
