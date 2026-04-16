@@ -160,6 +160,75 @@
       resize: vertical;
     }
 
+    .section-title {
+      letter-spacing: 0.01em;
+    }
+
+    .toast-stack {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 11000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: min(92vw, 360px);
+    }
+
+    .toast-item {
+      border-radius: 0.9rem;
+      padding: 0.75rem 0.9rem;
+      color: #fff;
+      font-size: 0.86rem;
+      font-weight: 600;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.24);
+      animation: toast-in 220ms ease;
+    }
+
+    .toast-item.success {
+      background: #15803d;
+    }
+
+    .toast-item.error {
+      background: #b91c1c;
+    }
+
+    .toast-item.info {
+      background: #475569;
+    }
+
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes reveal-up {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .mini-pill {
+        font-size: 0.8rem;
+      }
+
+      .stat-value {
+        font-size: 1.55rem;
+      }
+    }
+
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -263,7 +332,7 @@
           </div>
           <div class="flex flex-col md:flex-row gap-2 mb-4">
             <input type="text" id="newTask" placeholder="Nova tarefa..." class="flex-1 p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-            <button onclick="addTask()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition">Adicionar</button>
+            <button id="addTaskBtn" onclick="addTask()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition">Adicionar</button>
           </div>
           <div id="taskList" class="space-y-3"></div>
 
@@ -287,7 +356,7 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
             <input type="text" id="guestName" placeholder="Nome" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
             <input type="text" id="guestGroup" placeholder="Grupo (ex: Família)" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-            <button onclick="addGuest()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition">Adicionar</button>
+            <button id="addGuestBtn" onclick="addGuest()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition">Adicionar</button>
           </div>
           <div id="guestList" class="space-y-3"></div>
         </section>
@@ -302,9 +371,9 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
             <input type="text" id="expItem" placeholder="Item" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-            <input type="number" id="expAmount" placeholder="Valor R$" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
+            <input type="text" inputmode="decimal" id="expAmount" placeholder="Valor R$" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
             <input type="text" id="expCat" placeholder="Categoria" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-            <button onclick="addExpense()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition md:col-span-3">Adicionar gasto</button>
+            <button id="addExpenseBtn" onclick="addExpense()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition md:col-span-3">Adicionar gasto</button>
           </div>
           <div id="expenseList" class="space-y-3"></div>
         </section>
@@ -382,7 +451,7 @@
       <input type="hidden" id="editExpenseId" />
       <div class="mt-4 space-y-3">
         <input type="text" id="editExpenseItem" placeholder="Item" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-        <input type="number" step="0.01" id="editExpenseAmount" placeholder="Valor R$" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
+        <input type="text" inputmode="decimal" id="editExpenseAmount" placeholder="Valor R$" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
         <input type="text" id="editExpenseCategory" placeholder="Categoria" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
       </div>
       <div class="mt-4 flex gap-2 justify-end">
@@ -391,6 +460,8 @@
       </div>
     </div>
   </div>
+
+  <div id="toastStack" class="toast-stack" aria-live="polite" aria-atomic="true"></div>
 
   <script>
     const ORG_ACCESS_USERNAME = 'deus';
@@ -431,6 +502,11 @@
     const saveNotesBtn = document.getElementById('saveNotesBtn');
     const notesStatus = document.getElementById('notesStatus');
     const suggestedTaskList = document.getElementById('suggestedTaskList');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const addGuestBtn = document.getElementById('addGuestBtn');
+    const addExpenseBtn = document.getElementById('addExpenseBtn');
+    const expAmountInput = document.getElementById('expAmount');
+    const toastStack = document.getElementById('toastStack');
     const expenseEditModal = document.getElementById('expenseEditModal');
     const editExpenseId = document.getElementById('editExpenseId');
     const editExpenseItem = document.getElementById('editExpenseItem');
@@ -481,6 +557,55 @@
       return 'bg-slate-100 text-slate-700 border border-slate-200';
     }
 
+    function showToast(message, type = 'info') {
+      if (!toastStack) return;
+      const toast = document.createElement('div');
+      toast.className = `toast-item ${type}`;
+      toast.textContent = message;
+      toastStack.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 2500);
+    }
+
+    function setButtonLoading(button, loading, loadingText = 'Salvando...') {
+      if (!button) return;
+      if (loading) {
+        button.dataset.originalText = button.textContent;
+        button.textContent = loadingText;
+        button.disabled = true;
+        button.classList.add('opacity-70', 'cursor-not-allowed');
+        return;
+      }
+      button.textContent = button.dataset.originalText || button.textContent;
+      button.disabled = false;
+      button.classList.remove('opacity-70', 'cursor-not-allowed');
+    }
+
+    function formatCurrencyInput(input) {
+      const digits = String(input.value || '').replace(/\D/g, '');
+      if (!digits) {
+        input.value = '';
+        return;
+      }
+      const amount = Number(digits) / 100;
+      input.value = amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function parseCurrencyInput(value) {
+      const digits = String(value || '').replace(/\D/g, '');
+      if (!digits) return Number.NaN;
+      return Number(digits) / 100;
+    }
+
+    function applyEntryMotion() {
+      const cards = document.querySelectorAll('.glass-card, .summary-card, .item-card');
+      cards.forEach((card, index) => {
+        card.style.animation = 'reveal-up 320ms ease both';
+        card.style.animationDelay = `${Math.min(index * 35, 280)}ms`;
+      });
+    }
+
     function renderSuggestedTasks() {
       if (!suggestedTaskList) return;
       const pendingSuggestions = DEFAULT_SUGGESTED_TASKS.filter((task) => !dashboardState.addedSuggestedTaskIds.has(task.id));
@@ -512,7 +637,7 @@
         .select();
 
       if (error) {
-        alert('Erro ao adicionar tarefa sugerida: ' + error.message);
+        showToast('Erro ao adicionar tarefa sugerida.', 'error');
         return;
       }
 
@@ -522,6 +647,7 @@
       }
 
       if (notesStatus) notesStatus.textContent = '✓ Tarefa adicionada ao painel!';
+      showToast('Tarefa sugerida adicionada.', 'success');
       setTimeout(() => {
         if (notesStatus) notesStatus.textContent = 'Anotações livres para decisões e lembretes rápidos.';
       }, 2000);
@@ -646,18 +772,24 @@
       const input = document.getElementById('newTask');
       const title = String(input.value || '').trim();
       if (!title) {
-        alert('Digite uma tarefa antes de adicionar.');
+        showToast('Digite uma tarefa antes de adicionar.', 'error');
         return;
       }
-      const { data, error } = await supabaseClient.from('tasks').insert([{ title, status: 'pendente' }]).select();
-      if (error) {
-        alert('Erro ao adicionar tarefa: ' + error.message);
-        return;
-      }
-      if (data) {
-        await logAction('tasks', data[0].id, 'INSERT', { title });
-        input.value = '';
-        fetchTasks();
+      setButtonLoading(addTaskBtn, true, 'Adicionando...');
+      try {
+        const { data, error } = await supabaseClient.from('tasks').insert([{ title, status: 'pendente' }]).select();
+        if (error) {
+          showToast('Erro ao adicionar tarefa.', 'error');
+          return;
+        }
+        if (data) {
+          await logAction('tasks', data[0].id, 'INSERT', { title });
+          input.value = '';
+          showToast('Tarefa adicionada com sucesso.', 'success');
+          fetchTasks();
+        }
+      } finally {
+        setButtonLoading(addTaskBtn, false);
       }
     }
 
@@ -673,10 +805,11 @@
       const task = dashboardState.tasks.find(t => t.id === id);
       const { error } = await supabaseClient.from('tasks').delete().eq('id', id);
       if (error) {
-        alert('Erro ao deletar tarefa: ' + error.message);
+        showToast('Erro ao deletar tarefa.', 'error');
         return;
       }
       await logAction('tasks', id, 'DELETE', { title: task?.title });
+      showToast('Tarefa deletada.', 'success');
       fetchTasks();
     }
 
@@ -708,19 +841,25 @@
       const name = String(document.getElementById('guestName').value || '').trim();
       const group = String(document.getElementById('guestGroup').value || '').trim();
       if (!name) {
-        alert('Digite o nome do convidado antes de adicionar.');
+        showToast('Digite o nome do convidado.', 'error');
         return;
       }
-      const { data, error } = await supabaseClient.from('guests').insert([{ name, group: group || null, rsvp_status: 'aguardando', invite_token: Math.random().toString(36).substring(2, 15) }]).select();
-      if (error) {
-        alert('Erro ao adicionar convidado: ' + error.message);
-        return;
-      }
-      if (data) {
-        await logAction('guests', data[0].id, 'INSERT', { name, group });
-        document.getElementById('guestName').value = '';
-        document.getElementById('guestGroup').value = '';
-        fetchGuests();
+      setButtonLoading(addGuestBtn, true, 'Adicionando...');
+      try {
+        const { data, error } = await supabaseClient.from('guests').insert([{ name, group: group || null, rsvp_status: 'aguardando', invite_token: Math.random().toString(36).substring(2, 15) }]).select();
+        if (error) {
+          showToast('Erro ao adicionar convidado.', 'error');
+          return;
+        }
+        if (data) {
+          await logAction('guests', data[0].id, 'INSERT', { name, group });
+          document.getElementById('guestName').value = '';
+          document.getElementById('guestGroup').value = '';
+          showToast('Convidado adicionado.', 'success');
+          fetchGuests();
+        }
+      } finally {
+        setButtonLoading(addGuestBtn, false);
       }
     }
 
@@ -736,10 +875,11 @@
       const guest = dashboardState.guests.find(g => g.id === id);
       const { error } = await supabaseClient.from('guests').delete().eq('id', id);
       if (error) {
-        alert('Erro ao remover convidado: ' + error.message);
+        showToast('Erro ao remover convidado.', 'error');
         return;
       }
       await logAction('guests', id, 'DELETE', { name: guest?.name });
+      showToast('Convidado removido.', 'success');
       fetchGuests();
     }
 
@@ -758,6 +898,7 @@
               <div class="flex w-full sm:w-auto items-center gap-2">
                 <span class="font-semibold text-slate-800">R$ ${Number(expense.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                 <button onclick="openExpenseEditor('${expense.id}')" class="ml-auto px-3 py-2.5 rounded text-sm font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition">Editar</button>
+                <button onclick="duplicateExpense('${expense.id}')" class="px-3 py-2.5 rounded text-sm font-medium bg-amber-100 text-amber-700 hover:bg-amber-200 transition">Duplicar</button>
                 <button onclick="deleteExpense('${expense.id}')" class="px-3 py-2.5 rounded text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 transition">Deletar</button>
               </div>
             </div>
@@ -768,26 +909,54 @@
 
     async function addExpense() {
       const item = String(document.getElementById('expItem').value || '').trim();
-      const amount = String(document.getElementById('expAmount').value || '').trim();
+      const amountRaw = String(document.getElementById('expAmount').value || '').trim();
       const category = String(document.getElementById('expCat').value || '').trim();
       if (!item) {
-        alert('Digite o item de despesa.');
+        showToast('Digite o item da despesa.', 'error');
         return;
       }
-      if (!amount || isNaN(parseFloat(amount))) {
-        alert('Digite um valor válido.');
+      const amount = parseCurrencyInput(amountRaw);
+      if (!Number.isFinite(amount)) {
+        showToast('Digite um valor válido.', 'error');
         return;
       }
-      const { data, error } = await supabaseClient.from('expenses').insert([{ item, amount: parseFloat(amount), category: category || null }]).select();
+      setButtonLoading(addExpenseBtn, true, 'Adicionando...');
+      try {
+        const { data, error } = await supabaseClient.from('expenses').insert([{ item, amount, category: category || null }]).select();
+        if (error) {
+          showToast('Erro ao adicionar despesa.', 'error');
+          return;
+        }
+        if (data) {
+          await logAction('expenses', data[0].id, 'INSERT', { item, amount });
+          document.getElementById('expItem').value = '';
+          document.getElementById('expAmount').value = '';
+          document.getElementById('expCat').value = '';
+          showToast('Despesa adicionada.', 'success');
+          fetchExpenses();
+        }
+      } finally {
+        setButtonLoading(addExpenseBtn, false);
+      }
+    }
+
+    async function duplicateExpense(id) {
+      const original = dashboardState.expenses.find((entry) => entry.id === id);
+      if (!original) return;
+
+      const { data, error } = await supabaseClient
+        .from('expenses')
+        .insert([{ item: `${original.item} (copia)`, amount: Number(original.amount || 0), category: original.category || null }])
+        .select();
+
       if (error) {
-        alert('Erro ao adicionar despesa: ' + error.message);
+        showToast('Erro ao duplicar lançamento.', 'error');
         return;
       }
-      if (data) {
-        await logAction('expenses', data[0].id, 'INSERT', { item, amount });
-        document.getElementById('expItem').value = '';
-        document.getElementById('expAmount').value = '';
-        document.getElementById('expCat').value = '';
+
+      if (data && data[0]) {
+        await logAction('expenses', data[0].id, 'INSERT', { item: data[0].item, amount: data[0].amount, category: data[0].category });
+        showToast('Lançamento duplicado.', 'success');
         fetchExpenses();
       }
     }
@@ -797,7 +966,7 @@
       if (!expense || !expenseEditModal) return;
       editExpenseId.value = expense.id;
       editExpenseItem.value = expense.item || '';
-      editExpenseAmount.value = expense.amount ?? '';
+      editExpenseAmount.value = Number(expense.amount || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
       editExpenseCategory.value = expense.category || '';
       expenseEditModal.classList.add('active');
       expenseEditModal.setAttribute('aria-hidden', 'false');
@@ -812,25 +981,27 @@
     async function saveExpenseEdit() {
       const id = String(editExpenseId.value || '').trim();
       const newItem = String(editExpenseItem.value || '').trim();
-      const newAmount = String(editExpenseAmount.value || '').trim();
+      const newAmountRaw = String(editExpenseAmount.value || '').trim();
       const newCategory = String(editExpenseCategory.value || '').trim();
 
       if (!id || !newItem) {
-        alert('Informe o item da despesa.');
+        showToast('Informe o item da despesa.', 'error');
         return;
       }
-      if (!newAmount || isNaN(parseFloat(newAmount))) {
-        alert('Valor inválido.');
+      const newAmount = parseCurrencyInput(newAmountRaw);
+      if (!Number.isFinite(newAmount)) {
+        showToast('Valor inválido.', 'error');
         return;
       }
 
-      const { error } = await supabaseClient.from('expenses').update({ item: newItem, amount: parseFloat(newAmount), category: newCategory || null }).eq('id', id);
+      const { error } = await supabaseClient.from('expenses').update({ item: newItem, amount: newAmount, category: newCategory || null }).eq('id', id);
       if (error) {
-        alert('Erro ao editar despesa: ' + error.message);
+        showToast('Erro ao editar despesa.', 'error');
         return;
       }
       await logAction('expenses', id, 'UPDATE', { item: newItem, amount: newAmount, category: newCategory || null });
       closeExpenseEditor();
+      showToast('Despesa atualizada.', 'success');
       fetchExpenses();
     }
 
@@ -843,10 +1014,11 @@
       const expense = dashboardState.expenses.find(e => e.id === id);
       const { error } = await supabaseClient.from('expenses').delete().eq('id', id);
       if (error) {
-        alert('Erro ao deletar despesa: ' + error.message);
+        showToast('Erro ao deletar despesa.', 'error');
         return;
       }
       await logAction('expenses', id, 'DELETE', { item: expense?.item, amount: expense?.amount });
+      showToast('Despesa deletada.', 'success');
       fetchExpenses();
     }
 
@@ -882,8 +1054,18 @@
 
     if (saveNotesBtn) {
       saveNotesBtn.addEventListener('click', async () => {
+        setButtonLoading(saveNotesBtn, true, 'Salvando...');
         await saveNotesToSupabase(String(meetingNotes.value || '').trim());
+        setButtonLoading(saveNotesBtn, false);
       });
+    }
+
+    if (expAmountInput) {
+      expAmountInput.addEventListener('input', () => formatCurrencyInput(expAmountInput));
+    }
+
+    if (editExpenseAmount) {
+      editExpenseAmount.addEventListener('input', () => formatCurrencyInput(editExpenseAmount));
     }
 
     if (meetingNotes) {
@@ -901,6 +1083,7 @@
       await fetchExpenses();
       await fetchLogs();
       initRealtime();
+      applyEntryMotion();
       updateOverviewStats();
       if (notesStatus && !meetingNotes.value) {
         notesStatus.textContent = 'Anotações livres para decisões e lembretes rápidos.';
