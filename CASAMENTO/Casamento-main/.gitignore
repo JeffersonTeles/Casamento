@@ -1,0 +1,38 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Supabase (local config)
+supabase/
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+build/
+dist/
+*.min.js
+*.min.css
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+OUTROS/
+OrganizarCasamento/
+SCRIPT PROMO/
+*.tmp
