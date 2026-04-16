@@ -1,0 +1,19 @@
+# Secrets and local env
+.env
+.env.*
+
+# Vercel local metadata
+.vercel/
+
+# Node
+node_modules/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Local folders not for deploy
+OUTROS/
+OrganizarCasamento/
+SCRIPT PROMO/
