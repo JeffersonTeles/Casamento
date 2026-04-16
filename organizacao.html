@@ -435,6 +435,7 @@
               </div>
               <div class="flex gap-2">
                 <button id="seedBudgetBtn" onclick="seedBudgetDefaults()" class="px-3 py-2 rounded-xl text-sm font-medium bg-amber-100 text-amber-700 hover:bg-amber-200 transition">Criar base sugerida</button>
+                <button id="addBudgetCategoryBtn" onclick="addBudgetCategory()" class="px-3 py-2 rounded-xl text-sm font-medium bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition">Adicionar categoria</button>
                 <button id="refreshBudgetBtn" onclick="fetchBudget()" class="px-3 py-2 rounded-xl text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Atualizar</button>
               </div>
             </div>
@@ -605,6 +606,7 @@
     const addGuestBtn = document.getElementById('addGuestBtn');
     const addExpenseBtn = document.getElementById('addExpenseBtn');
     const seedBudgetBtn = document.getElementById('seedBudgetBtn');
+    const addBudgetCategoryBtn = document.getElementById('addBudgetCategoryBtn');
     const refreshBudgetBtn = document.getElementById('refreshBudgetBtn');
     const expAmountInput = document.getElementById('expAmount');
     const toastStack = document.getElementById('toastStack');
@@ -805,7 +807,10 @@
             <td class="${balance < 0 ? 'text-red-700' : 'text-slate-700'} font-medium">${formatCurrencyValue(balance)}</td>
             <td><span class="budget-status ${status.className}">${status.label}</span></td>
             <td>
-              <button onclick="editBudgetCategory('${entry.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Editar meta</button>
+              <div class="flex items-center gap-2">
+                <button onclick="editBudgetCategory('${entry.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Editar meta</button>
+                <button onclick="deleteBudgetCategory('${entry.id}')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition">Excluir</button>
+              </div>
             </td>
           </tr>
         `;
@@ -864,6 +869,58 @@
       }
 
       showToast('Meta atualizada.', 'success');
+      await fetchBudget();
+    }
+
+    async function addBudgetCategory() {
+      const category = String(prompt('Nome da nova categoria:') || '').trim();
+      if (!category) return;
+
+      const plannedRaw = prompt('Meta planejada para ' + category + ' (apenas número):', '0');
+      if (plannedRaw === null) return;
+
+      const planned = Number(String(plannedRaw).replace(',', '.'));
+      if (!Number.isFinite(planned) || planned < 0) {
+        showToast('Meta inválida para a nova categoria.', 'error');
+        return;
+      }
+
+      setButtonLoading(addBudgetCategoryBtn, true, 'Salvando...');
+      try {
+        const { error } = await supabaseClient
+          .from('budget_categories')
+          .insert([{ category, planned_amount: planned }]);
+
+        if (error) {
+          showToast('Não foi possível adicionar categoria (talvez já exista).', 'error');
+          return;
+        }
+
+        showToast('Categoria adicionada.', 'success');
+        await fetchBudget();
+      } finally {
+        setButtonLoading(addBudgetCategoryBtn, false);
+      }
+    }
+
+    async function deleteBudgetCategory(id) {
+      const budgetEntry = dashboardState.budget.find((entry) => String(entry.id) === String(id));
+      if (!budgetEntry) return;
+
+      const confirmDelete = confirm('Excluir categoria "' + budgetEntry.category + '"?');
+      if (!confirmDelete) return;
+
+      const { error } = await supabaseClient
+        .from('budget_categories')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        showToast('Erro ao excluir categoria.', 'error');
+        return;
+      }
+
+      showToast('Categoria excluída.', 'success');
       await fetchBudget();
     }
 
@@ -1272,6 +1329,8 @@
     window.saveExpenseEdit = saveExpenseEdit;
     window.seedBudgetDefaults = seedBudgetDefaults;
     window.editBudgetCategory = editBudgetCategory;
+    window.addBudgetCategory = addBudgetCategory;
+    window.deleteBudgetCategory = deleteBudgetCategory;
 
     async function deleteExpense(id) {
       if (!confirm('Tem certeza que deseja deletar esta despesa?')) return;
