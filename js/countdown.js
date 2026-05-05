@@ -1,5 +1,5 @@
 // Data do casamento (AJUSTE AQUI)
-const weddingDateValue = "October 12, 2026 16:00:00";
+const weddingDateValue = "February 6, 2027 16:00:00";
 const weddingDate = new Date(weddingDateValue).getTime();
 const rsvpOpenDate = new Date(weddingDateValue);
 rsvpOpenDate.setMonth(rsvpOpenDate.getMonth() - 3);
