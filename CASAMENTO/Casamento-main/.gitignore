@@ -36,3 +36,5 @@ OUTROS/
 OrganizarCasamento/
 SCRIPT PROMO/
 *.tmp
+.vercel
+.env*.local
