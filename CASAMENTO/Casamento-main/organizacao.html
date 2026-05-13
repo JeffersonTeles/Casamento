@@ -268,11 +268,52 @@
             </div>
             <div class="mini-pill">Família, amigos e próximos</div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-4">
             <input type="text" id="guestName" placeholder="Nome" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
+            <input type="text" id="guestPhone" placeholder="Telefone (opcional)" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
             <input type="text" id="guestGroup" placeholder="Grupo (ex: Família)" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
+            <select id="guestOwner" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa bg-white">
+              <option value="Jefferson">Convidado de Jefferson</option>
+              <option value="Bia">Convidado de Bia</option>
+              <option value="Ambos">Convidado de ambos</option>
+            </select>
             <button onclick="addGuest()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition">Adicionar</button>
           </div>
+          <div class="flex gap-2 mb-4 flex-wrap">
+            <button onclick="filterGuests('all')" id="filter-all" class="px-3 py-1.5 rounded-full text-xs font-medium bg-vinho text-white">Todos</button>
+            <button onclick="filterGuests('Jefferson')" id="filter-Jefferson" class="px-3 py-1.5 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200">Jefferson</button>
+            <button onclick="filterGuests('Bia')" id="filter-Bia" class="px-3 py-1.5 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200">Bia</button>
+            <button onclick="filterGuests('Ambos')" id="filter-Ambos" class="px-3 py-1.5 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200">Ambos</button>
+            <button onclick="exportGuestsToCSV()" class="px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-700 border border-green-200 hover:bg-green-200 transition">Exportar CSV</button>
+          </div>
+          
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            <div class="bg-white/90 rounded-xl p-3 border border-slate-200">
+              <p class="text-[0.65rem] uppercase tracking-wide text-slate-500">Total</p>
+              <p class="text-xl font-semibold text-vinho" id="stat-total">0</p>
+            </div>
+            <div class="bg-green-50 rounded-xl p-3 border border-green-200">
+              <p class="text-[0.65rem] uppercase tracking-wide text-green-700">Confirmados</p>
+              <p class="text-xl font-semibold text-green-700" id="stat-confirmed">0</p>
+            </div>
+            <div class="bg-amber-50 rounded-xl p-3 border border-amber-200">
+              <p class="text-[0.65rem] uppercase tracking-wide text-amber-700">Aguardando</p>
+              <p class="text-xl font-semibold text-amber-700" id="stat-pending">0</p>
+            </div>
+            <div class="bg-red-50 rounded-xl p-3 border border-red-200">
+              <p class="text-[0.65rem] uppercase tracking-wide text-red-700">Recusados</p>
+              <p class="text-xl font-semibold text-red-700" id="stat-declined">0</p>
+            </div>
+          </div>
+          
+          <div class="bg-white/90 rounded-xl p-3 border border-slate-200 mb-4">
+            <p class="text-[0.65rem] uppercase tracking-wide text-slate-500 mb-2">Taxa de resposta</p>
+            <div class="w-full bg-slate-200 rounded-full h-3">
+              <div id="response-rate-bar" class="bg-vinho h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <p class="text-xs text-slate-600 mt-1"><span id="response-rate-text">0%</span> dos convidados responderam</p>
+          </div>
+          
           <div id="guestList" class="space-y-3"></div>
         </section>
 
@@ -404,6 +445,7 @@
       guests: [],
       expenses: [],
       addedSuggestedTaskIds: new Set(),
+      guestFilter: 'all',
     };
 
     function openOrgApp() {
@@ -521,10 +563,14 @@
       const groupedCount = dashboardState.guests.filter((guest) => String(guest.group || '').trim().length > 0).length;
       const expenseTotal = dashboardState.expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
 
+      const jeffersonGuests = dashboardState.guests.filter((guest) => guest.invited_by === 'Jefferson').length;
+      const biaGuests = dashboardState.guests.filter((guest) => guest.invited_by === 'Bia').length;
+      const ambosGuests = dashboardState.guests.filter((guest) => guest.invited_by === 'Ambos').length;
+
       if (tasksStat) tasksStat.textContent = String(taskCount);
       if (tasksStatHint) tasksStatHint.textContent = pendingCount === 1 ? '1 pendente no painel' : `${pendingCount} pendentes no painel`;
       if (guestsStat) guestsStat.textContent = String(guestCount);
-      if (guestsStatHint) guestsStatHint.textContent = guestCount === 1 ? '1 pessoa na lista' : `${guestCount} pessoas na lista`;
+      if (guestsStatHint) guestsStatHint.textContent = `Jefferson: ${jeffersonGuests} | Bia: ${biaGuests} | Ambos: ${ambosGuests}`;
       if (confirmedStat) confirmedStat.textContent = String(confirmedCount);
       if (expenseStat) expenseStat.textContent = `R$ ${expenseTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
       if (pendingTasksStat) pendingTasksStat.textContent = String(pendingCount);
@@ -595,6 +641,7 @@
                 <button onclick="toggleTask('${task.id}', '${task.status}')" class="px-3 py-2 rounded-full text-xs font-medium ${done ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-600'}">
                   ${done ? 'Desfazer' : 'Concluir'}
                 </button>
+                <button onclick="editTask('${task.id}', '${task.title.replace(/'/g, "\\'")}')" class="px-3 py-2 rounded-full text-xs font-medium bg-amber-100 text-amber-700 hover:bg-amber-200 transition">Editar</button>
                 <button onclick="deleteTask('${task.id}')" class="px-3 py-2 rounded-full text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition">Deletar</button>
               </div>
             </div>
@@ -642,45 +689,159 @@
       fetchTasks();
     }
 
+    async function editTask(id, currentTitle) {
+      const newTitle = prompt('Editar tarefa:', currentTitle);
+      if (!newTitle) return;
+      
+      const { error } = await supabaseClient.from('tasks').update({ title: newTitle }).eq('id', id);
+      
+      if (error) {
+        alert('Erro ao editar tarefa: ' + error.message);
+        return;
+      }
+      await logAction('tasks', id, 'UPDATE', { title: newTitle });
+      fetchTasks();
+    }
+
+    window.editTask = editTask;
+
     async function fetchGuests() {
       const { data } = await supabaseClient.from('guests').select('*').order('created_at', { ascending: false });
       dashboardState.guests = Array.isArray(data) ? data : [];
+      renderGuestList();
+      updateOverviewStats();
+    }
+
+    function renderGuestList() {
       const list = document.getElementById('guestList');
       if (!list) return;
-      list.innerHTML = dashboardState.guests.length
-        ? dashboardState.guests.map((guest) => `
+
+      const filteredGuests = dashboardState.guests.filter((guest) => {
+        if (dashboardState.guestFilter === 'all') return true;
+        return guest.invited_by === dashboardState.guestFilter;
+      });
+
+      list.innerHTML = filteredGuests.length
+        ? filteredGuests.map((guest) => `
             <div class="item-card ${guest.rsvp_status === 'confirmado' ? 'confirmed' : ''} flex items-center justify-between gap-3">
               <div>
                 <p class="font-medium text-slate-800">${guest.name}</p>
-                <p class="text-xs text-slate-500 mt-1">${guest.group || 'Sem grupo'}</p>
+                <p class="text-xs text-slate-500 mt-1">${guest.group || 'Sem grupo'} • ${guest.invited_by || 'Sem dono'}</p>
               </div>
               <div class="flex gap-2">
                 <button onclick="toggleGuest('${guest.id}', '${guest.rsvp_status}')" class="px-3 py-2 rounded-full text-xs font-medium ${guest.rsvp_status === 'confirmado' ? 'bg-blue-100 text-blue-700' : 'bg-slate-200 text-slate-600'}">
                   ${guest.rsvp_status === 'confirmado' ? 'Confirmado' : 'Aguardando'}
                 </button>
+                <button onclick="copyGuestLink('${guest.invite_token}')" class="px-3 py-2 rounded-full text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 transition">Link</button>
+                <button onclick="editGuest('${guest.id}', '${guest.name.replace(/'/g, "\\'")}', '${(guest.phone || '').replace(/'/g, "\\'")}', '${(guest.group || '').replace(/'/g, "\\'")}', '${guest.invited_by || 'Jefferson'}')" class="px-3 py-2 rounded-full text-xs font-medium bg-amber-100 text-amber-700 hover:bg-amber-200 transition">Editar</button>
                 <button onclick="deleteGuest('${guest.id}')" class="px-3 py-2 rounded-full text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition">Remover</button>
               </div>
             </div>
           `).join('')
         : '<p class="text-sm text-slate-500 italic">Nenhum convidado adicionado ainda.</p>';
-      updateOverviewStats();
+      
+      updateGuestStats();
     }
+
+    function updateGuestStats() {
+      const total = dashboardState.guests.length;
+      const confirmed = dashboardState.guests.filter(g => g.rsvp_status === 'confirmado').length;
+      const pending = dashboardState.guests.filter(g => g.rsvp_status === 'aguardando').length;
+      const declined = dashboardState.guests.filter(g => g.rsvp_status === 'recusado').length;
+      const responseRate = total > 0 ? Math.round(((confirmed + declined) / total) * 100) : 0;
+
+      if (document.getElementById('stat-total')) document.getElementById('stat-total').textContent = total;
+      if (document.getElementById('stat-confirmed')) document.getElementById('stat-confirmed').textContent = confirmed;
+      if (document.getElementById('stat-pending')) document.getElementById('stat-pending').textContent = pending;
+      if (document.getElementById('stat-declined')) document.getElementById('stat-declined').textContent = declined;
+      if (document.getElementById('response-rate-bar')) document.getElementById('response-rate-bar').style.width = responseRate + '%';
+      if (document.getElementById('response-rate-text')) document.getElementById('response-rate-text').textContent = responseRate + '%';
+    }
+
+    function filterGuests(filter) {
+      dashboardState.guestFilter = filter;
+      
+      document.querySelectorAll('[id^="filter-"]').forEach((btn) => {
+        btn.classList.remove('bg-vinho', 'text-white');
+        btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+      });
+      
+      const activeBtn = document.getElementById('filter-' + filter);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-vinho', 'text-white');
+        activeBtn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+      }
+      
+      renderGuestList();
+    }
+
+    window.filterGuests = filterGuests;
+
+    function copyGuestLink(token) {
+      const baseUrl = window.location.origin + window.location.pathname.replace('organizacao.html', '');
+      const link = `${baseUrl}rsvp.html?token=${token}`;
+      navigator.clipboard.writeText(link).then(() => {
+        alert('Link copiado para a área de transferência!\n\n' + link);
+      }).catch(() => {
+        prompt('Copie o link manualmente:', link);
+      });
+    }
+
+    window.copyGuestLink = copyGuestLink;
+
+    function exportGuestsToCSV() {
+      if (dashboardState.guests.length === 0) {
+        alert('Não há convidados para exportar.');
+        return;
+      }
+
+      const headers = ['Nome', 'Telefone', 'Grupo', 'Convidado de', 'Status', 'Token'];
+      const rows = dashboardState.guests.map(guest => [
+        guest.name || '',
+        guest.phone || '',
+        guest.group || '',
+        guest.invited_by || '',
+        guest.rsvp_status || '',
+        guest.invite_token || ''
+      ]);
+
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `convidados_casamento_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    window.exportGuestsToCSV = exportGuestsToCSV;
 
     async function addGuest() {
       const name = String(document.getElementById('guestName').value || '').trim();
+      const phone = String(document.getElementById('guestPhone').value || '').trim();
       const group = String(document.getElementById('guestGroup').value || '').trim();
+      const invitedBy = String(document.getElementById('guestOwner').value || 'Jefferson').trim();
       if (!name) {
         alert('Digite o nome do convidado antes de adicionar.');
         return;
       }
-      const { data, error } = await supabaseClient.from('guests').insert([{ name, group: group || null, rsvp_status: 'aguardando', invite_token: Math.random().toString(36).substring(2, 15) }]).select();
+      const { data, error } = await supabaseClient.from('guests').insert([{ name, phone: phone || null, group: group || null, rsvp_status: 'aguardando', invite_token: Math.random().toString(36).substring(2, 15), invited_by: invitedBy }]).select();
       if (error) {
         alert('Erro ao adicionar convidado: ' + error.message);
         return;
       }
       if (data) {
-        await logAction('guests', data[0].id, 'INSERT', { name, group });
+        await logAction('guests', data[0].id, 'INSERT', { name, phone, group, invited_by: invitedBy });
         document.getElementById('guestName').value = '';
+        document.getElementById('guestPhone').value = '';
         document.getElementById('guestGroup').value = '';
         fetchGuests();
       }
@@ -704,6 +865,37 @@
       await logAction('guests', id, 'DELETE', { name: guest?.name });
       fetchGuests();
     }
+
+    async function editGuest(id, currentName, currentPhone, currentGroup, currentInvitedBy) {
+      const newName = prompt('Nome do convidado:', currentName);
+      if (!newName) return;
+      
+      const newPhone = prompt('Telefone:', currentPhone || '');
+      
+      const newGroup = prompt('Grupo (ex: Família):', currentGroup || '');
+      
+      const newInvitedBy = prompt('De quem é o convidado? (Jefferson, Bia ou Ambos):', currentInvitedBy || 'Jefferson');
+      if (newInvitedBy && !['Jefferson', 'Bia', 'Ambos'].includes(newInvitedBy)) {
+        alert('Valor inválido. Use: Jefferson, Bia ou Ambos');
+        return;
+      }
+      
+      const { error } = await supabaseClient.from('guests').update({ 
+        name: newName, 
+        phone: newPhone || null,
+        group: newGroup || null, 
+        invited_by: newInvitedBy || 'Jefferson' 
+      }).eq('id', id);
+      
+      if (error) {
+        alert('Erro ao editar convidado: ' + error.message);
+        return;
+      }
+      await logAction('guests', id, 'UPDATE', { name: newName, phone: newPhone, group: newGroup, invited_by: newInvitedBy });
+      fetchGuests();
+    }
+
+    window.editGuest = editGuest;
 
     async function fetchExpenses() {
       const { data } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false });

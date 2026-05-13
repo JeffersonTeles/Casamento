@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirme sua presença — Jefferson & Bia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rosa: '#e91e63',
+            vinho: '#663244',
+            champagne: '#f5e6d3',
+          },
+          fontFamily: {
+            titulo: ['"Playfair Display"', 'serif'],
+            corpo: ['system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(180deg, #f5e6d3 0%, #fce4ec 100%);
+    }
+  </style>
+</head>
+<body class="font-corpo text-slate-800 min-h-screen">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white/90 backdrop-blur rounded-3xl shadow-xl p-6 md:p-8">
+      <div class="text-center mb-6">
+        <h1 class="font-titulo text-3xl text-vinho mb-2">Jefferson & Bia</h1>
+        <p class="text-sm text-slate-600">Confirmação de presença</p>
+      </div>
+
+      <div id="loading" class="text-center py-8">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-vinho"></div>
+        <p class="mt-3 text-sm text-slate-600">Carregando...</p>
+      </div>
+
+      <div id="error" class="hidden text-center py-8">
+        <div class="text-5xl mb-4">😕</div>
+        <p class="text-red-600 font-medium mb-2">Convite não encontrado</p>
+        <p class="text-sm text-slate-600">Verifique se o link está correto ou entre em contato com o casal.</p>
+      </div>
+
+      <div id="rsvp-form" class="hidden">
+        <div class="bg-rose-50 rounded-2xl p-4 mb-6">
+          <p class="text-sm text-slate-700">
+            Olá, <strong id="guest-name" class="text-vinho"></strong>!
+          </p>
+          <p class="text-xs text-slate-600 mt-1">
+            Por favor, confirme sua presença no nosso casamento.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Você vai?</label>
+            <div class="flex gap-3">
+              <button onclick="selectRsvp('confirmado')" id="btn-confirmar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-vinho hover:text-vinho transition">
+                ✅ Sim, vou!
+              </button>
+              <button onclick="selectRsvp('recusado')" id="btn-recusar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition">
+                ❌ Não posso
+              </button>
+            </div>
+          </div>
+
+          <div id="plus-ones-section" class="hidden">
+            <label class="block text-sm font-medium text-slate-700 mb-2">Quantos acompanhantes?</label>
+            <select id="plus-ones" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa">
+              <option value="0">Nenhum acompanhante</option>
+              <option value="1">1 acompanhante</option>
+              <option value="2">2 acompanhantes</option>
+              <option value="3">3 acompanhantes</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Restrições alimentares (opcional)</label>
+            <textarea id="dietary" rows="2" placeholder="Ex: vegetariano, alergia a nozes, etc." class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa resize-none"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Mensagem para o casal (opcional)</label>
+            <textarea id="message" rows="3" placeholder="Deixe uma mensagem carinhosa para nós..." class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa resize-none"></textarea>
+          </div>
+
+          <button onclick="submitRsvp()" id="submit-btn" class="w-full bg-vinho text-white py-3 rounded-xl hover:bg-vinho/90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            Enviar confirmação
+          </button>
+        </div>
+      </div>
+
+      <div id="success" class="hidden text-center py-8">
+        <div class="text-5xl mb-4">💍</div>
+        <p class="text-green-600 font-medium text-lg mb-2">Confirmação enviada!</p>
+        <p class="text-sm text-slate-600 mb-4" id="success-message">
+          Obrigado por confirmar sua presença. Mal podemos esperar para te ver no nosso grande dia!
+        </p>
+        <a href="index.html" class="inline-block bg-vinho text-white px-6 py-2 rounded-full text-sm hover:bg-vinho/90 transition">
+          Voltar ao site
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://ysadooisujkjindusjbu.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let guestData = null;
+    let selectedRsvp = null;
+
+    async function loadGuest() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      if (!token) {
+        showError();
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient.rpc('get_guest_public_by_token', { p_invite_token: token });
+        
+        if (error || !data || data.length === 0) {
+          showError();
+          return;
+        }
+
+        guestData = data[0];
+        document.getElementById('guest-name').textContent = guestData.name;
+        
+        if (guestData.rsvp_status === 'confirmado') {
+          showAlreadyConfirmed();
+        } else {
+          showForm();
+        }
+      } catch (err) {
+        showError();
+      }
+    }
+
+    function showError() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('error').classList.remove('hidden');
+    }
+
+    function showForm() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('rsvp-form').classList.remove('hidden');
+    }
+
+    function showAlreadyConfirmed() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('success').classList.remove('hidden');
+      document.getElementById('success-message').textContent = 'Você já confirmou sua presença! Obrigado.';
+    }
+
+    function selectRsvp(status) {
+      selectedRsvp = status;
+      
+      const btnConfirmar = document.getElementById('btn-confirmar');
+      const btnRecusar = document.getElementById('btn-recusar');
+      const plusOnesSection = document.getElementById('plus-ones-section');
+      const submitBtn = document.getElementById('submit-btn');
+
+      btnConfirmar.classList.remove('border-vinho', 'text-vinho', 'bg-vinho/5');
+      btnRecusar.classList.remove('border-red-500', 'text-red-500', 'bg-red-50');
+
+      if (status === 'confirmado') {
+        btnConfirmar.classList.add('border-vinho', 'text-vinho', 'bg-vinho/5');
+        plusOnesSection.classList.remove('hidden');
+      } else {
+        btnRecusar.classList.add('border-red-500', 'text-red-500', 'bg-red-50');
+        plusOnesSection.classList.add('hidden');
+      }
+
+      submitBtn.disabled = false;
+    }
+
+    async function submitRsvp() {
+      if (!selectedRsvp) {
+        alert('Por favor, selecione se você vai ou não.');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      try {
+        const { error } = await supabaseClient.rpc('confirm_guest_rsvp', {
+          p_invite_token: token,
+          p_rsvp_status: selectedRsvp
+        });
+
+        if (error) {
+          alert('Erro ao enviar confirmação. Tente novamente.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Enviar confirmação';
+          return;
+        }
+
+        document.getElementById('rsvp-form').classList.add('hidden');
+        document.getElementById('success').classList.remove('hidden');
+        
+        if (selectedRsvp === 'recusado') {
+          document.getElementById('success-message').textContent = 'Entendemos que você não poderá comparecer. Agradecemos por nos avisar!';
+        }
+      } catch (err) {
+        alert('Erro ao enviar confirmação. Tente novamente.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enviar confirmação';
+      }
+    }
+
+    window.onload = loadGuest;
+  </script>
+</body>
+</html>
