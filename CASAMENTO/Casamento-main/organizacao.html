@@ -796,11 +796,11 @@
       });
     }
 
-    function renderGuestList() {
+    function renderGuestList(guests) {
       const list = document.getElementById('guestList');
       if (!list) return;
 
-      let filteredGuests = dashboardState.guests.filter((guest) => {
+      let filteredGuests = guests.filter((guest) => {
         if (dashboardState.guestFilter === 'all') return true;
         return guest.invited_by === dashboardState.guestFilter;
       });
