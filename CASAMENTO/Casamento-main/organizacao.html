@@ -666,19 +666,29 @@
     async function addTask() {
       const input = document.getElementById('newTask');
       const title = String(input.value || '').trim();
+      
       if (!title) {
-        alert('Digite uma tarefa antes de adicionar.');
+        showToast('Digite uma tarefa antes de adicionar.', 'error');
+        input.focus();
         return;
       }
+      
+      if (title.length < 3) {
+        showToast('A tarefa deve ter pelo menos 3 caracteres.', 'error');
+        input.focus();
+        return;
+      }
+      
       const { data, error } = await supabaseClient.from('tasks').insert([{ title, status: 'pendente' }]).select();
       if (error) {
-        alert('Erro ao adicionar tarefa: ' + error.message);
+        showToast('Erro ao adicionar tarefa: ' + error.message, 'error');
         return;
       }
       if (data) {
         await logAction('tasks', data[0].id, 'INSERT', { title });
         input.value = '';
         fetchTasks();
+        showToast('Tarefa adicionada com sucesso!', 'success');
       }
     }
 
@@ -972,10 +982,26 @@
       const phone = String(document.getElementById('guestPhone').value || '').trim();
       const group = String(document.getElementById('guestGroup').value || '').trim();
       const invitedBy = String(document.getElementById('guestOwner').value || 'Jefferson').trim();
+      
+      // Validação
       if (!name) {
         showToast('Digite o nome do convidado antes de adicionar.', 'error');
+        document.getElementById('guestName').focus();
         return;
       }
+      
+      if (name.length < 2) {
+        showToast('O nome deve ter pelo menos 2 caracteres.', 'error');
+        document.getElementById('guestName').focus();
+        return;
+      }
+      
+      if (phone && !/^\d{10,11}$/.test(phone.replace(/\D/g, ''))) {
+        showToast('Telefone inválido. Use apenas números (10 ou 11 dígitos).', 'error');
+        document.getElementById('guestPhone').focus();
+        return;
+      }
+      
       const { data, error } = await supabaseClient.from('guests').insert([{ name, phone: phone || null, group: group || null, rsvp_status: 'aguardando', invite_token: Math.random().toString(36).substring(2, 15), invited_by: invitedBy }]).select();
       if (error) {
         showToast('Erro ao adicionar convidado: ' + error.message, 'error');
@@ -1068,17 +1094,34 @@
       const item = String(document.getElementById('expItem').value || '').trim();
       const amount = String(document.getElementById('expAmount').value || '').trim();
       const category = String(document.getElementById('expCat').value || '').trim();
+      
       if (!item) {
-        alert('Digite o item de despesa.');
+        showToast('Digite o item de despesa.', 'error');
+        document.getElementById('expItem').focus();
         return;
       }
+      
+      if (item.length < 3) {
+        showToast('O item deve ter pelo menos 3 caracteres.', 'error');
+        document.getElementById('expItem').focus();
+        return;
+      }
+      
       if (!amount || isNaN(parseFloat(amount))) {
-        alert('Digite um valor válido.');
+        showToast('Digite um valor válido.', 'error');
+        document.getElementById('expAmount').focus();
         return;
       }
+      
+      if (parseFloat(amount) <= 0) {
+        showToast('O valor deve ser maior que zero.', 'error');
+        document.getElementById('expAmount').focus();
+        return;
+      }
+      
       const { data, error } = await supabaseClient.from('expenses').insert([{ item, amount: parseFloat(amount), category: category || null }]).select();
       if (error) {
-        alert('Erro ao adicionar despesa: ' + error.message);
+        showToast('Erro ao adicionar despesa: ' + error.message, 'error');
         return;
       }
       if (data) {
@@ -1087,6 +1130,7 @@
         document.getElementById('expAmount').value = '';
         document.getElementById('expCat').value = '';
         fetchExpenses();
+        showToast('Despesa adicionada com sucesso!', 'success');
       }
     }
 
