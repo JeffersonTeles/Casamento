@@ -159,6 +159,40 @@
       min-height: 170px;
       resize: vertical;
     }
+
+    .loading-spinner {
+      border: 3px solid rgba(102, 50, 68, 0.1);
+      border-top: 3px solid #663244;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .btn-loading {
+      opacity: 0.7;
+      pointer-events: none;
+      position: relative;
+    }
+
+    .btn-loading::after {
+      content: '';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
   </style>
 </head>
 <body class="font-corpo text-slate-800 min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(233,30,99,0.10),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(245,230,211,0.95),transparent_32%),linear-gradient(160deg,var(--bg-1),var(--bg-2))]">
@@ -666,6 +700,7 @@
     async function addTask() {
       const input = document.getElementById('newTask');
       const title = String(input.value || '').trim();
+      const btn = document.querySelector('button[onclick="addTask()"]');
       
       if (!title) {
         showToast('Digite uma tarefa antes de adicionar.', 'error');
@@ -679,7 +714,12 @@
         return;
       }
       
+      if (btn) btn.classList.add('btn-loading');
+      
       const { data, error } = await supabaseClient.from('tasks').insert([{ title, status: 'pendente' }]).select();
+      
+      if (btn) btn.classList.remove('btn-loading');
+      
       if (error) {
         showToast('Erro ao adicionar tarefa: ' + error.message, 'error');
         return;
@@ -982,6 +1022,7 @@
       const phone = String(document.getElementById('guestPhone').value || '').trim();
       const group = String(document.getElementById('guestGroup').value || '').trim();
       const invitedBy = String(document.getElementById('guestOwner').value || 'Jefferson').trim();
+      const btn = document.querySelector('button[onclick="addGuest()"]');
       
       // Validação
       if (!name) {
@@ -1002,7 +1043,14 @@
         return;
       }
       
+      // Mostrar loading
+      if (btn) btn.classList.add('btn-loading');
+      
       const { data, error } = await supabaseClient.from('guests').insert([{ name, phone: phone || null, group: group || null, rsvp_status: 'aguardando', invite_token: Math.random().toString(36).substring(2, 15), invited_by: invitedBy }]).select();
+      
+      // Remover loading
+      if (btn) btn.classList.remove('btn-loading');
+      
       if (error) {
         showToast('Erro ao adicionar convidado: ' + error.message, 'error');
         return;
@@ -1094,6 +1142,7 @@
       const item = String(document.getElementById('expItem').value || '').trim();
       const amount = String(document.getElementById('expAmount').value || '').trim();
       const category = String(document.getElementById('expCat').value || '').trim();
+      const btn = document.querySelector('button[onclick="addExpense()"]');
       
       if (!item) {
         showToast('Digite o item de despesa.', 'error');
@@ -1119,7 +1168,12 @@
         return;
       }
       
+      if (btn) btn.classList.add('btn-loading');
+      
       const { data, error } = await supabaseClient.from('expenses').insert([{ item, amount: parseFloat(amount), category: category || null }]).select();
+      
+      if (btn) btn.classList.remove('btn-loading');
+      
       if (error) {
         showToast('Erro ao adicionar despesa: ' + error.message, 'error');
         return;
