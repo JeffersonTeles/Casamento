@@ -303,7 +303,7 @@
             </div>
             <div class="mini-pill">Família, amigos e próximos</div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-4">
+          <div class="grid grid-cols-1 md:grid-cols-6 gap-2 mb-4">
             <input type="text" id="guestName" placeholder="Nome" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
             <input type="text" id="guestPhone" placeholder="Telefone (opcional)" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
             <input type="text" id="guestGroup" placeholder="Grupo (ex: Família)" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
@@ -311,6 +311,9 @@
               <option value="Jefferson">Convidado de Jefferson</option>
               <option value="Bia">Convidado de Bia</option>
               <option value="Ambos">Convidado de ambos</option>
+            </select>
+            <select id="guestPartner" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa bg-white">
+              <option value="">Sem parceiro</option>
             </select>
             <button onclick="addGuest()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition">Adicionar</button>
           </div>
@@ -768,10 +771,29 @@
     window.editTask = editTask;
 
     async function fetchGuests() {
-      const { data } = await supabaseClient.from('guests').select('*').order('created_at', { ascending: false });
-      dashboardState.guests = Array.isArray(data) ? data : [];
-      renderGuestList();
-      updateOverviewStats();
+      const { data, error } = await supabaseClient.from('guests').select('*').order('created_at', { ascending: false });
+      if (error) {
+        console.error('Erro ao buscar convidados:', error);
+        return;
+      }
+      allGuests = data || [];
+      renderGuestList(allGuests);
+      updateGuestStats();
+      updatePartnerDropdown();
+    }
+
+    function updatePartnerDropdown() {
+      const partnerSelect = document.getElementById('guestPartner');
+      if (!partnerSelect) return;
+      
+      partnerSelect.innerHTML = '<option value="">Sem parceiro</option>';
+      
+      allGuests.forEach(guest => {
+        const option = document.createElement('option');
+        option.value = guest.id;
+        option.textContent = guest.name;
+        partnerSelect.appendChild(option);
+      });
     }
 
     function renderGuestList() {
@@ -1022,6 +1044,7 @@
       const phone = String(document.getElementById('guestPhone').value || '').trim();
       const group = String(document.getElementById('guestGroup').value || '').trim();
       const invitedBy = String(document.getElementById('guestOwner').value || 'Jefferson').trim();
+      const partnerId = String(document.getElementById('guestPartner').value || '').trim();
       const btn = document.querySelector('button[onclick="addGuest()"]');
       
       // Validação
@@ -1046,7 +1069,20 @@
       // Mostrar loading
       if (btn) btn.classList.add('btn-loading');
       
-      const { data, error } = await supabaseClient.from('guests').insert([{ name, phone: phone || null, group: group || null, rsvp_status: 'aguardando', invite_token: Math.random().toString(36).substring(2, 15), invited_by: invitedBy }]).select();
+      const guestData = {
+        name,
+        phone: phone || null,
+        group: group || null,
+        rsvp_status: 'aguardando',
+        invite_token: Math.random().toString(36).substring(2, 15),
+        invited_by: invitedBy
+      };
+      
+      if (partnerId) {
+        guestData.partner_id = partnerId;
+      }
+      
+      const { data, error } = await supabaseClient.from('guests').insert([guestData]).select();
       
       // Remover loading
       if (btn) btn.classList.remove('btn-loading');
@@ -1056,10 +1092,11 @@
         return;
       }
       if (data) {
-        await logAction('guests', data[0].id, 'INSERT', { name, phone, group, invited_by: invitedBy });
+        await logAction('guests', data[0].id, 'INSERT', { name, phone, group, invited_by: invitedBy, partner_id: partnerId });
         document.getElementById('guestName').value = '';
         document.getElementById('guestPhone').value = '';
         document.getElementById('guestGroup').value = '';
+        document.getElementById('guestPartner').value = '';
         fetchGuests();
         showToast('Convidado adicionado com sucesso!', 'success');
       }
