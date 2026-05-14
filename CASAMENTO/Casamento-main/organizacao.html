@@ -389,11 +389,37 @@
             </div>
             <div class="mini-pill">Orçamento do casamento</div>
           </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 shadow-lg text-white">
+              <p class="text-[0.65rem] uppercase tracking-wide text-white/80">Total Gasto</p>
+              <p class="text-2xl font-bold" id="stat-total-spent">R$ 0</p>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-4 shadow-lg text-white">
+              <p class="text-[0.65rem] uppercase tracking-wide text-white/80">Orçamento</p>
+              <p class="text-2xl font-bold" id="stat-budget">R$ 50.000</p>
+            </div>
+            <div class="bg-gradient-to-br from-vinho to-vinho/80 rounded-xl p-4 shadow-lg text-white">
+              <p class="text-[0.65rem] uppercase tracking-wide text-white/80">Saldo Restante</p>
+              <p class="text-2xl font-bold" id="stat-remaining">R$ 50.000</p>
+            </div>
+          </div>
+          
+          <div class="bg-white/90 rounded-xl p-4 border border-slate-200 mb-4 shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-[0.65rem] uppercase tracking-wide text-slate-500">Progresso do orçamento</p>
+              <p class="text-sm font-semibold text-vinho" id="budget-progress-text">0%</p>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-4">
+              <div id="budget-progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-500 h-4 rounded-full transition-all duration-500 shadow-sm" style="width: 0%"></div>
+            </div>
+          </div>
+          
           <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
-            <input type="text" id="expItem" placeholder="Item" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-            <input type="number" id="expAmount" placeholder="Valor R$" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-            <input type="text" id="expCat" placeholder="Categoria" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-            <button onclick="addExpense()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition md:col-span-3">Adicionar gasto</button>
+            <input type="text" id="expItem" placeholder="Item" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa text-sm" />
+            <input type="number" id="expAmount" placeholder="Valor R$" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa text-sm" />
+            <input type="text" id="expCat" placeholder="Categoria" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa text-sm" />
+            <button onclick="addExpense()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition md:col-span-3 text-sm">Adicionar gasto</button>
           </div>
           <div id="expenseList" class="space-y-3"></div>
         </section>
@@ -1197,7 +1223,31 @@
             </div>
           `).join('')
         : '<p class="text-sm text-slate-500 italic">Nenhum gasto lançado ainda.</p>';
+      updateExpenseStats();
       updateOverviewStats();
+    }
+
+    function updateExpenseStats() {
+      const BUDGET = 50000; // Orçamento fixo de R$ 50.000
+      const totalSpent = dashboardState.expenses.reduce((sum, exp) => sum + (Number(exp.amount) || 0), 0);
+      const remaining = BUDGET - totalSpent;
+      const progress = BUDGET > 0 ? Math.round((totalSpent / BUDGET) * 100) : 0;
+
+      if (document.getElementById('stat-total-spent')) {
+        document.getElementById('stat-total-spent').textContent = `R$ ${totalSpent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      }
+      if (document.getElementById('stat-budget')) {
+        document.getElementById('stat-budget').textContent = `R$ ${BUDGET.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      }
+      if (document.getElementById('stat-remaining')) {
+        document.getElementById('stat-remaining').textContent = `R$ ${remaining.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      }
+      if (document.getElementById('budget-progress-bar')) {
+        document.getElementById('budget-progress-bar').style.width = `${progress}%`;
+      }
+      if (document.getElementById('budget-progress-text')) {
+        document.getElementById('budget-progress-text').textContent = `${progress}%`;
+      }
     }
 
     async function addExpense() {
