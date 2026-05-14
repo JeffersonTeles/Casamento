@@ -306,15 +306,25 @@
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        document.getElementById('days').textContent = days;
-        document.getElementById('hours').textContent = hours;
-        document.getElementById('minutes').textContent = minutes;
-        document.getElementById('seconds').textContent = seconds;
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+
+        if (daysEl) daysEl.textContent = days;
+        if (hoursEl) hoursEl.textContent = hours;
+        if (minutesEl) minutesEl.textContent = minutes;
+        if (secondsEl) secondsEl.textContent = seconds;
       } else {
-        document.getElementById('days').textContent = '0';
-        document.getElementById('hours').textContent = '0';
-        document.getElementById('minutes').textContent = '0';
-        document.getElementById('seconds').textContent = '0';
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+
+        if (daysEl) daysEl.textContent = '0';
+        if (hoursEl) hoursEl.textContent = '0';
+        if (minutesEl) minutesEl.textContent = '0';
+        if (secondsEl) secondsEl.textContent = '0';
       }
     }
 
