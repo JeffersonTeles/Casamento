@@ -896,10 +896,10 @@
     window.showToast = showToast;
 
     function updateGuestStats() {
-      const total = dashboardState.guests.length;
-      const confirmed = dashboardState.guests.filter(g => g.rsvp_status === 'confirmado').length;
-      const pending = dashboardState.guests.filter(g => g.rsvp_status === 'aguardando').length;
-      const declined = dashboardState.guests.filter(g => g.rsvp_status === 'recusado').length;
+      const total = allGuests.length;
+      const confirmed = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
+      const pending = allGuests.filter(g => g.rsvp_status === 'aguardando').length;
+      const declined = allGuests.filter(g => g.rsvp_status === 'recusado').length;
       const responseRate = total > 0 ? Math.round(((confirmed + declined) / total) * 100) : 0;
 
       if (document.getElementById('stat-total')) document.getElementById('stat-total').textContent = total;
