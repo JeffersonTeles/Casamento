@@ -11,6 +11,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -145,6 +147,11 @@
       padding: 0.35rem 0.7rem;
       font-size: 0.75rem;
       color: #6f6a60;
+      transition: all 0.2s ease;
+    }
+
+    .mini-pill:hover {
+      transform: scale(1.05);
     }
 
     .item-card {
@@ -214,6 +221,50 @@
     .skeleton-card {
       height: 4rem;
       margin-bottom: 1rem;
+    }
+    
+    /* Animações de loading melhoradas */
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+    
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(102, 50, 68, 0.4);
+      }
+      50% {
+        opacity: 0.7;
+        box-shadow: 0 0 0 10px rgba(102, 50, 68, 0);
+      }
+    }
+    
+    .loading-pulse {
+      animation: pulse-glow 2s infinite;
+    }
+    
+    @keyframes spin-slow {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .spin-slow {
+      animation: spin-slow 3s linear infinite;
     }
     
     /* Animações mais elaboradas */
@@ -424,6 +475,7 @@
           <span id="audit-badge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full">0</span>
         </button>
         <button onclick="switchTab('analytics')" id="btn-analytics" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Analytics</button>
+        <button onclick="switchTab('suppliers')" id="btn-suppliers" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Fornecedores</button>
       </div>
     </nav>
 
@@ -459,7 +511,8 @@
               <p class="text-sm text-slate-600 mt-1">Gerencie quem foi convidado e acompanhe as confirmações.</p>
             </div>
             <div class="flex gap-2">
-              <button onclick="exportGuestsCSV()" class="mini-pill hover:bg-vinho/10 transition">📥 Exportar CSV</button>
+              <button onclick="exportGuestsCSV()" class="mini-pill hover:bg-vinho/10 transition">📥 CSV</button>
+              <button onclick="exportGuestsPDF()" class="mini-pill hover:bg-vinho/10 transition">📄 PDF</button>
               <div class="mini-pill">Total: <span id="guest-count-badge">0</span></div>
             </div>
           </div>
@@ -709,6 +762,47 @@
               <canvas id="inviterChart" height="200"></canvas>
             </div>
           </div>
+
+          <div class="mt-6 bg-white/90 rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-semibold text-vinho mb-4">Evolução de RSVP ao Longo do Tempo</h3>
+            <canvas id="rsvpChart" height="200"></canvas>
+          </div>
+        </section>
+
+        <section id="suppliers" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+          <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between mb-4">
+            <div>
+              <h2 class="text-2xl font-titulo text-vinho section-title">Fornecedores</h2>
+              <p class="text-sm text-slate-600 mt-1">Gerencie fornecedores e status de pagamento.</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="addSupplier()" class="mini-pill hover:bg-vinho/10 transition">+ Adicionar</button>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
+            <input type="text" id="supplierName" placeholder="Nome do fornecedor" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa text-sm" />
+            <input type="text" id="supplierCategory" placeholder="Categoria (ex: Buffet)" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa text-sm" />
+            <input type="text" id="supplierValue" placeholder="Valor (R$)" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa text-sm" />
+            <select id="supplierStatus" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa bg-white text-sm">
+              <option value="pendente">Pendente</option>
+              <option value="pago">Pago</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+
+          <div id="supplierList" class="space-y-3">
+            <div id="supplier-skeleton" class="hidden space-y-3">
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+            </div>
+            <div id="supplier-empty" class="hidden text-center py-12">
+              <div class="text-6xl mb-4">🏪</div>
+              <p class="text-slate-600 font-medium">Nenhum fornecedor cadastrado</p>
+              <p class="text-sm text-slate-500 mt-2">Adicione fornecedores para acompanhar pagamentos</p>
+            </div>
+          </div>
         </section>
 
         <section class="glass-card p-5 rounded-[1.6rem]">
@@ -861,7 +955,7 @@
     window.addSuggestedTask = addSuggestedTask;
 
     function switchTab(tabId) {
-      const tabs = ['tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics'];
+      const tabs = ['tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers'];
       tabs.forEach(tab => {
         const btn = document.getElementById(`btn-${tab}`);
         const content = document.getElementById(tab);
@@ -883,6 +977,11 @@
       // Update analytics when switching to analytics tab
       if (tabId === 'analytics') {
         updateAnalytics();
+      }
+      
+      // Load suppliers when switching to suppliers tab
+      if (tabId === 'suppliers') {
+        fetchSuppliers();
       }
     }
 
@@ -1536,7 +1635,109 @@
       showToast('Despesa atualizada com sucesso!', 'success');
     }
 
-    window.editGuest = editGuest;
+    async function addSupplier() {
+      const name = String(document.getElementById('supplierName').value || '').trim();
+      const category = String(document.getElementById('supplierCategory').value || '').trim();
+      const value = String(document.getElementById('supplierValue').value || '').trim();
+      const status = String(document.getElementById('supplierStatus').value || '').trim();
+
+      if (!name) {
+        showToast('Nome do fornecedor é obrigatório', 'error');
+        return;
+      }
+
+      const { error } = await supabaseClient.from('suppliers').insert({
+        name,
+        category,
+        value: value ? parseFloat(value) : null,
+        status
+      });
+
+      if (error) {
+        showToast('Erro ao adicionar fornecedor: ' + error.message, 'error');
+        return;
+      }
+
+      await logAction('suppliers', null, 'INSERT', { name, category, value, status });
+      
+      document.getElementById('supplierName').value = '';
+      document.getElementById('supplierCategory').value = '';
+      document.getElementById('supplierValue').value = '';
+      document.getElementById('supplierStatus').value = 'pendente';
+      
+      fetchSuppliers();
+      showToast('Fornecedor adicionado com sucesso!', 'success');
+    }
+
+    async function fetchSuppliers() {
+      const supplierSkeleton = document.getElementById('supplier-skeleton');
+      const emptyState = document.getElementById('supplier-empty');
+      const supplierList = document.getElementById('supplierList');
+
+      if (supplierSkeleton) supplierSkeleton.classList.remove('hidden');
+      if (emptyState) emptyState.classList.add('hidden');
+
+      const { data, error } = await supabaseClient.from('suppliers').select('*').order('created_at', { ascending: false });
+
+      if (supplierSkeleton) supplierSkeleton.classList.add('hidden');
+
+      if (error) {
+        showToast('Erro ao carregar fornecedores: ' + error.message, 'error');
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+      }
+
+      renderSupplierList(data);
+    }
+
+    function renderSupplierList(suppliers) {
+      const supplierList = document.getElementById('supplierList');
+      if (!supplierList) return;
+
+      const statusColors = {
+        pendente: 'bg-yellow-100 text-yellow-800',
+        pago: 'bg-green-100 text-green-800',
+        cancelado: 'bg-red-100 text-red-800'
+      };
+
+      supplierList.innerHTML = suppliers.map(s => `
+        <div class="bg-white/90 rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition animate-slide-left">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div class="flex-1">
+              <h4 class="font-semibold text-vinho">${s.name}</h4>
+              <p class="text-sm text-slate-600">${s.category || 'Sem categoria'}</p>
+              <p class="text-sm text-slate-700 font-medium">R$ ${s.value ? Number(s.value).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 rounded-full text-xs font-medium ${statusColors[s.status] || 'bg-gray-100 text-gray-800'}">${s.status}</span>
+              <button onclick="deleteSupplier('${s.id}')" class="text-red-500 hover:text-red-700 transition" title="Remover">🗑️</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function deleteSupplier(id) {
+      if (!confirm('Tem certeza que deseja remover este fornecedor?')) return;
+      
+      const { error } = await supabaseClient.from('suppliers').delete().eq('id', id);
+      
+      if (error) {
+        showToast('Erro ao remover fornecedor: ' + error.message, 'error');
+        return;
+      }
+      
+      await logAction('suppliers', id, 'DELETE', {});
+      fetchSuppliers();
+      showToast('Fornecedor removido com sucesso!', 'success');
+    }
+
+    window.addSupplier = addSupplier;
+    window.deleteSupplier = deleteSupplier;
 
     async function fetchExpenses() {
       const expenseSkeleton = document.getElementById('expense-skeleton');
@@ -1607,6 +1808,7 @@
     let expenseChart = null;
     let accessChart = null;
     let inviterChart = null;
+    let rsvpChart = null;
 
     function updateExpenseChart() {
       const canvas = document.getElementById('expenseChart');
@@ -1703,6 +1905,98 @@
       
       // Update inviter chart
       updateInviterChart();
+      
+      // Update RSVP chart
+      updateRSVPChart();
+    }
+
+    function updateRSVPChart() {
+      const canvas = document.getElementById('rsvpChart');
+      if (!canvas) return;
+
+      // Group RSVP changes by date
+      const rsvpTimeline = {};
+      allGuests.forEach(guest => {
+        const date = new Date(guest.created_at);
+        const dateKey = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        
+        if (!rsvpTimeline[dateKey]) {
+          rsvpTimeline[dateKey] = { confirmed: 0, pending: 0, declined: 0 };
+        }
+        
+        if (guest.rsvp_status === 'confirmado') {
+          rsvpTimeline[dateKey].confirmed++;
+        } else if (guest.rsvp_status === 'aguardando') {
+          rsvpTimeline[dateKey].pending++;
+        } else if (guest.rsvp_status === 'recusado') {
+          rsvpTimeline[dateKey].declined++;
+        }
+      });
+
+      // Sort dates
+      const sortedDates = Object.keys(rsvpTimeline).sort((a, b) => {
+        const [dayA, monthA] = a.split('/').map(Number);
+        const [dayB, monthB] = b.split('/').map(Number);
+        return new Date(2027, monthA - 1, dayA) - new Date(2027, monthB - 1, dayB);
+      });
+
+      const confirmedData = sortedDates.map(date => rsvpTimeline[date].confirmed);
+      const pendingData = sortedDates.map(date => rsvpTimeline[date].pending);
+      const declinedData = sortedDates.map(date => rsvpTimeline[date].declined);
+
+      if (rsvpChart) {
+        rsvpChart.destroy();
+      }
+
+      rsvpChart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: sortedDates,
+          datasets: [
+            {
+              label: 'Confirmados',
+              data: confirmedData,
+              borderColor: 'rgba(34, 197, 94, 1)',
+              backgroundColor: 'rgba(34, 197, 94, 0.1)',
+              fill: true,
+              tension: 0.4
+            },
+            {
+              label: 'Pendentes',
+              data: pendingData,
+              borderColor: 'rgba(234, 179, 8, 1)',
+              backgroundColor: 'rgba(234, 179, 8, 0.1)',
+              fill: true,
+              tension: 0.4
+            },
+            {
+              label: 'Recusados',
+              data: declinedData,
+              borderColor: 'rgba(239, 68, 68, 1)',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              fill: true,
+              tension: 0.4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
     }
 
     function updateAccessChart(accessLogs) {
@@ -1836,15 +2130,73 @@
         new Date(g.created_at).toLocaleDateString('pt-BR')
       ]);
       
-      const csvContent = [headers, ...rows]
-        .map(row => row.map(cell => `"${cell}"`).join(','))
-        .join('\n');
-      
-      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = `convidados_${new Date().toISOString().split('T')[0]}.csv`;
+      link.download = 'convidados_casamento.csv';
       link.click();
+      showToast('Lista de convidados exportada em CSV!', 'success');
+    }
+
+    function exportGuestsPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      // Título
+      doc.setFontSize(20);
+      doc.setTextColor(102, 50, 68);
+      doc.text('Lista de Convidados', 14, 22);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(100);
+      doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, 14, 30);
+      
+      // Estatísticas
+      const total = allGuests.length;
+      const confirmed = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
+      const pending = allGuests.filter(g => g.rsvp_status === 'aguardando').length;
+      const declined = allGuests.filter(g => g.rsvp_status === 'recusado').length;
+      
+      doc.setFontSize(12);
+      doc.setTextColor(102, 50, 68);
+      doc.text('Resumo:', 14, 42);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(80);
+      doc.text(`Total: ${total} | Confirmados: ${confirmed} | Pendentes: ${pending} | Recusados: ${declined}`, 14, 50);
+      
+      // Tabela
+      const tableData = allGuests.map(g => [
+        g.name,
+        g.phone || '-',
+        g.group || '-',
+        g.invited_by || '-',
+        g.rsvp_status,
+        new Date(g.created_at).toLocaleDateString('pt-BR')
+      ]);
+      
+      doc.autoTable({
+        startY: 58,
+        head: [['Nome', 'Telefone', 'Grupo', 'Convidado por', 'Status', 'Data']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: {
+          fillColor: [102, 50, 68],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+          fillColor: [245, 230, 211]
+        },
+        styles: {
+          fontSize: 9,
+          cellPadding: 3
+        }
+      });
+      
+      doc.save('convidados_casamento.pdf');
+      showToast('Lista de convidados exportada em PDF!', 'success');
     }
 
     function exportExpensesCSV() {
