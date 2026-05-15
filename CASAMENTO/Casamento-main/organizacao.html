@@ -6,6 +6,7 @@
   <title>Organização do Casamento — Jefferson & Bia</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -364,10 +365,13 @@
         <section id="guests" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between mb-4">
             <div>
-              <h2 class="text-2xl font-titulo text-vinho section-title">Convidados</h2>
-              <p class="text-sm text-slate-600 mt-1">Adicione nomes e grupos para acompanhar a lista com mais clareza.</p>
+              <h2 class="text-2xl font-titulo text-vinho section-title">Lista de convidados</h2>
+              <p class="text-sm text-slate-600 mt-1">Gerencie quem foi convidado e acompanhe as confirmações.</p>
             </div>
-            <div class="mini-pill">Família, amigos e próximos</div>
+            <div class="flex gap-2">
+              <button onclick="exportGuestsCSV()" class="mini-pill hover:bg-vinho/10 transition">📥 Exportar CSV</button>
+              <div class="mini-pill">Total: <span id="guest-count-badge">0</span></div>
+            </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-6 gap-2 mb-4">
             <input type="text" id="guestName" placeholder="Nome" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa text-sm" />
@@ -464,7 +468,10 @@
               <h2 class="text-2xl font-titulo text-vinho section-title">Controle financeiro</h2>
               <p class="text-sm text-slate-600 mt-1">Registre despesas por item e categoria para acompanhar o orçamento.</p>
             </div>
-            <div class="mini-pill">Orçamento do casamento</div>
+            <div class="flex gap-2">
+              <button onclick="exportExpensesCSV()" class="mini-pill hover:bg-vinho/10 transition">📥 Exportar CSV</button>
+              <div class="mini-pill">Orçamento do casamento</div>
+            </div>
           </div>
           
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
@@ -474,7 +481,10 @@
             </div>
             <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-4 shadow-lg text-white">
               <p class="text-[0.65rem] uppercase tracking-wide text-white/80">Orçamento</p>
-              <p class="text-2xl font-bold" id="stat-budget">R$ 50.000</p>
+              <div class="flex items-center gap-2">
+                <p class="text-2xl font-bold" id="stat-budget">R$ 50.000</p>
+                <button onclick="editBudget()" class="text-white/80 hover:text-white text-sm">✏️</button>
+              </div>
             </div>
             <div class="bg-gradient-to-br from-vinho to-vinho/80 rounded-xl p-4 shadow-lg text-white">
               <p class="text-[0.65rem] uppercase tracking-wide text-white/80">Saldo Restante</p>
@@ -509,6 +519,11 @@
               <p class="text-slate-600 font-medium">Nenhum gasto lançado ainda</p>
               <p class="text-sm text-slate-500 mt-2">Registre suas despesas para acompanhar o orçamento</p>
             </div>
+          </div>
+          
+          <div class="mt-6 bg-white/90 rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-semibold text-vinho mb-4">Gastos por mês</h3>
+            <canvas id="expenseChart" height="200"></canvas>
           </div>
         </section>
 
@@ -1259,12 +1274,21 @@
 
     async function toggleGuest(id, currentStatus) {
       const nextStatus = currentStatus === 'aguardando' ? 'confirmado' : 'aguardando';
+      const guest = allGuests.find(g => g.id === id);
+      
       await supabaseClient.from('guests').update({ rsvp_status: nextStatus }).eq('id', id);
       await logAction('guests', id, 'UPDATE', { rsvp_status: nextStatus });
+      
+      // Sync with partner if exists
+      if (guest && guest.partner_id) {
+        await supabaseClient.from('guests').update({ rsvp_status: nextStatus }).eq('id', guest.partner_id);
+        await logAction('guests', guest.partner_id, 'UPDATE', { rsvp_status: nextStatus, synced_from: guest.name });
+      }
+      
       fetchGuests();
       
       if (nextStatus === 'confirmado') {
-        showToast('🎉 Convidado confirmou presença!', 'success');
+        showToast('🎉 Convidado confirmou presença!' + (guest && guest.partner_id ? ' (cônjuge também sincronizado)' : ''), 'success');
       }
     }
 
@@ -1353,7 +1377,7 @@
     }
 
     function updateExpenseStats() {
-      const BUDGET = 50000; // Orçamento fixo de R$ 50.000
+      const BUDGET = parseFloat(localStorage.getItem('weddingBudget')) || 50000;
       const totalSpent = dashboardState.expenses.reduce((sum, exp) => sum + (Number(exp.amount) || 0), 0);
       const remaining = BUDGET - totalSpent;
       const progress = BUDGET > 0 ? Math.round((totalSpent / BUDGET) * 100) : 0;
@@ -1373,6 +1397,117 @@
       if (document.getElementById('budget-progress-text')) {
         document.getElementById('budget-progress-text').textContent = `${progress}%`;
       }
+      
+      updateExpenseChart();
+    }
+
+    let expenseChart = null;
+
+    function updateExpenseChart() {
+      const canvas = document.getElementById('expenseChart');
+      if (!canvas) return;
+
+      // Group expenses by month
+      const monthlyExpenses = {};
+      dashboardState.expenses.forEach(exp => {
+        const date = new Date(exp.created_at);
+        const monthKey = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+        monthlyExpenses[monthKey] = (monthlyExpenses[monthKey] || 0) + Number(exp.amount);
+      });
+
+      const labels = Object.keys(monthlyExpenses);
+      const data = Object.values(monthlyExpenses);
+
+      if (expenseChart) {
+        expenseChart.destroy();
+      }
+
+      expenseChart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Gastos (R$)',
+            data: data,
+            backgroundColor: 'rgba(102, 50, 68, 0.7)',
+            borderColor: 'rgba(102, 50, 68, 1)',
+            borderWidth: 1,
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return 'R$ ' + value.toLocaleString('pt-BR');
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function editBudget() {
+      const currentBudget = parseFloat(localStorage.getItem('weddingBudget')) || 50000;
+      const newBudget = prompt('Digite o novo valor do orçamento:', currentBudget);
+      
+      if (newBudget && !isNaN(parseFloat(newBudget))) {
+        localStorage.setItem('weddingBudget', parseFloat(newBudget));
+        updateExpenseStats();
+        showToast('Orçamento atualizado com sucesso!', 'success');
+      }
+    }
+
+    function exportGuestsCSV() {
+      const headers = ['Nome', 'Telefone', 'Grupo', 'Convidado por', 'Status RSVP', 'Data de Criação'];
+      const rows = allGuests.map(g => [
+        g.name,
+        g.phone || '',
+        g.group || '',
+        g.invited_by || '',
+        g.rsvp_status,
+        new Date(g.created_at).toLocaleDateString('pt-BR')
+      ]);
+      
+      const csvContent = [headers, ...rows]
+        .map(row => row.map(cell => `"${cell}"`).join(','))
+        .join('\n');
+      
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `convidados_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+    }
+
+    function exportExpensesCSV() {
+      const headers = ['Item', 'Valor', 'Categoria', 'Data de Criação'];
+      const rows = dashboardState.expenses.map(e => [
+        e.item,
+        Number(e.amount).toFixed(2),
+        e.category || '',
+        new Date(e.created_at).toLocaleDateString('pt-BR')
+      ]);
+      
+      const csvContent = [headers, ...rows]
+        .map(row => row.map(cell => `"${cell}"`).join(','))
+        .join('\n');
+      
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `despesas_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
     }
 
     async function addExpense() {

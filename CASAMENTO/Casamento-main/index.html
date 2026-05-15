@@ -221,6 +221,10 @@
             class="inline-flex items-center justify-center rounded-full border border-vinho/60 px-6 py-3 text-xs md:text-sm font-semibold text-vinho hover:bg-vinho/5 transition">
             Lista de presentes
           </a>
+          <button onclick="addToGoogleCalendar()"
+            class="inline-flex items-center justify-center rounded-full border border-vinho/60 px-6 py-3 text-xs md:text-sm font-semibold text-vinho hover:bg-vinho/5 transition">
+            📅 Adicionar ao calendário
+          </button>
         </div>
       </div>
 
@@ -372,6 +376,19 @@
     </div>
   </footer>
   <script src="./js/countdown.js"></script>
+  <script>
+    function addToGoogleCalendar() {
+      const title = 'Casamento de Jefferson & Bia';
+      const startDate = '20270206T080000Z'; // 06/02/2027 às 08:00
+      const endDate = '20270206T120000Z'; // 06/02/2027 às 12:00
+      const location = 'Cascavel - PR';
+      const description = 'Casamento de Jefferson & Bia. Sua presença é muito importante para nós!';
+      
+      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&location=${encodeURIComponent(location)}&details=${encodeURIComponent(description)}`;
+      
+      window.open(url, '_blank');
+    }
+  </script>
 </body>
 
 </html>
