@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Organização do Casamento — Jefferson & Bia</title>
+  <meta name="description" content="Painel de organização do casamento de Jefferson & Bia" />
+  <meta name="theme-color" content="#663244" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -211,6 +215,91 @@
       height: 4rem;
       margin-bottom: 1rem;
     }
+    
+    /* Animações mais elaboradas */
+    @keyframes slideInFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes slideInFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      70% {
+        transform: scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    @keyframes confetti {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+    
+    .animate-slide-left {
+      animation: slideInFromLeft 0.5s ease-out;
+    }
+    
+    .animate-slide-right {
+      animation: slideInFromRight 0.5s ease-out;
+    }
+    
+    .animate-scale {
+      animation: scaleIn 0.4s ease-out;
+    }
+    
+    .animate-bounce {
+      animation: bounceIn 0.6s ease-out;
+    }
+    
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      animation: confetti 3s ease-out forwards;
+    }
 
     .audit-item {
       border-left: 2px solid rgba(233, 30, 99, 0.45);
@@ -334,6 +423,7 @@
           Auditoria
           <span id="audit-badge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full">0</span>
         </button>
+        <button onclick="switchTab('analytics')" id="btn-analytics" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Analytics</button>
       </div>
     </nav>
 
@@ -581,6 +671,46 @@
           </div>
         </section>
 
+        <section id="analytics" class="tab-content glass-card p-5 rounded-[1.6rem]">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 class="text-xl font-titulo text-vinho section-title">Dashboard de Analytics</h2>
+              <p class="text-sm text-slate-600 mt-1">Estatísticas e métricas do casamento.</p>
+            </div>
+            <div class="mini-pill">Tempo real</div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 shadow-lg text-white">
+              <p class="text-[0.65rem] uppercase tracking-wide text-white/80">Total de Acessos RSVP</p>
+              <p class="text-2xl font-bold" id="analytics-total-access">0</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 shadow-lg text-white">
+              <p class="text-[0.65rem] uppercase tracking-wide text-white/80">Convidados Únicos</p>
+              <p class="text-2xl font-bold" id="analytics-unique-guests">0</p>
+            </div>
+            <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-4 shadow-lg text-white">
+              <p class="text-[0.65rem] uppercase tracking-wide text-white/80">Taxa de Conversão</p>
+              <p class="text-2xl font-bold" id="analytics-conversion-rate">0%</p>
+            </div>
+            <div class="bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl p-4 shadow-lg text-white">
+              <p class="text-[0.65rem] uppercase tracking-wide text-white/80">Acessos Hoje</p>
+              <p class="text-2xl font-bold" id="analytics-today-access">0</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white/90 rounded-xl p-4 border border-slate-200 shadow-sm">
+              <h3 class="text-sm font-semibold text-vinho mb-4">Acessos por Dia (Últimos 7 dias)</h3>
+              <canvas id="accessChart" height="200"></canvas>
+            </div>
+            <div class="bg-white/90 rounded-xl p-4 border border-slate-200 shadow-sm">
+              <h3 class="text-sm font-semibold text-vinho mb-4">Distribuição por Convidante</h3>
+              <canvas id="inviterChart" height="200"></canvas>
+            </div>
+          </div>
+        </section>
+
         <section class="glass-card p-5 rounded-[1.6rem]">
           <h3 class="text-lg font-titulo text-vinho section-title">Próximos passos</h3>
           <ul class="mt-3 space-y-2 text-sm text-slate-700 list-disc pl-5">
@@ -731,17 +861,28 @@
     window.addSuggestedTask = addSuggestedTask;
 
     function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach((el) => el.classList.remove('active'));
-      document.querySelectorAll('.dock-btn').forEach((el) => {
-        el.classList.remove('active', 'bg-vinho', 'text-white');
-        el.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+      const tabs = ['tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics'];
+      tabs.forEach(tab => {
+        const btn = document.getElementById(`btn-${tab}`);
+        const content = document.getElementById(tab);
+        if (btn) {
+          btn.classList.remove('bg-vinho', 'text-white');
+          btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+        }
+        if (content) content.classList.remove('active');
       });
-
-      document.getElementById(tabId).classList.add('active');
-      const activeBtn = document.getElementById('btn-' + tabId);
+      
+      const activeBtn = document.getElementById(`btn-${tabId}`);
+      const activeContent = document.getElementById(tabId);
       if (activeBtn) {
-        activeBtn.classList.add('active');
-        activeBtn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+        activeBtn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+        activeBtn.classList.add('bg-vinho', 'text-white');
+      }
+      if (activeContent) activeContent.classList.add('active');
+      
+      // Update analytics when switching to analytics tab
+      if (tabId === 'analytics') {
+        updateAnalytics();
       }
     }
 
@@ -1032,27 +1173,36 @@
     window.sortGuests = sortGuests;
 
     function showToast(message, type = 'success') {
-      const container = document.getElementById('toast-container');
-      if (!container) return;
-
       const toast = document.createElement('div');
-      const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-      
-      toast.className = `${bgColor} text-white px-4 py-3 rounded-xl shadow-lg transform transition-all duration-300 translate-x-full opacity-0`;
+      toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-xl shadow-lg text-white font-medium animate-bounce ${
+        type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+      }`;
       toast.textContent = message;
+      document.body.appendChild(toast);
       
-      container.appendChild(toast);
+      // Confetti animation for success
+      if (type === 'success') {
+        createConfetti();
+      }
       
       setTimeout(() => {
-        toast.classList.remove('translate-x-full', 'opacity-0');
-      }, 100);
-      
-      setTimeout(() => {
-        toast.classList.add('translate-x-full', 'opacity-0');
-        setTimeout(() => {
-          container.removeChild(toast);
-        }, 300);
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s';
+        setTimeout(() => toast.remove(), 300);
       }, 3000);
+    }
+
+    function createConfetti() {
+      const colors = ['#e91e63', '#663244', '#f5e6d3', '#ffd700', '#4caf50'];
+      for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti-piece';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3500);
+      }
     }
 
     window.showToast = showToast;
@@ -1455,6 +1605,8 @@
     }
 
     let expenseChart = null;
+    let accessChart = null;
+    let inviterChart = null;
 
     function updateExpenseChart() {
       const canvas = document.getElementById('expenseChart');
@@ -1504,6 +1656,153 @@
                   return 'R$ ' + value.toLocaleString('pt-BR');
                 }
               }
+            }
+          }
+        }
+      });
+    }
+
+    async function updateAnalytics() {
+      // Fetch access logs from Supabase
+      const { data: accessLogs, error } = await supabaseClient
+        .from('rsvp_access_logs')
+        .select('*')
+        .order('access_time', { ascending: false })
+        .limit(100);
+
+      if (error || !accessLogs) {
+        console.error('Error fetching access logs:', error);
+        return;
+      }
+
+      // Calculate analytics
+      const totalAccess = accessLogs.length;
+      const uniqueGuests = [...new Set(accessLogs.map(log => log.guest_id))].length;
+      const confirmedGuests = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
+      const conversionRate = uniqueGuests > 0 ? Math.round((confirmedGuests / uniqueGuests) * 100) : 0;
+      
+      const today = new Date().toDateString();
+      const todayAccess = accessLogs.filter(log => new Date(log.access_time).toDateString() === today).length;
+
+      // Update KPIs
+      if (document.getElementById('analytics-total-access')) {
+        document.getElementById('analytics-total-access').textContent = totalAccess;
+      }
+      if (document.getElementById('analytics-unique-guests')) {
+        document.getElementById('analytics-unique-guests').textContent = uniqueGuests;
+      }
+      if (document.getElementById('analytics-conversion-rate')) {
+        document.getElementById('analytics-conversion-rate').textContent = conversionRate + '%';
+      }
+      if (document.getElementById('analytics-today-access')) {
+        document.getElementById('analytics-today-access').textContent = todayAccess;
+      }
+
+      // Update access chart (last 7 days)
+      updateAccessChart(accessLogs);
+      
+      // Update inviter chart
+      updateInviterChart();
+    }
+
+    function updateAccessChart(accessLogs) {
+      const canvas = document.getElementById('accessChart');
+      if (!canvas) return;
+
+      // Group by last 7 days
+      const last7Days = {};
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateKey = date.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric' });
+        last7Days[dateKey] = 0;
+      }
+
+      accessLogs.forEach(log => {
+        const logDate = new Date(log.access_time);
+        const dateKey = logDate.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric' });
+        if (last7Days.hasOwnProperty(dateKey)) {
+          last7Days[dateKey]++;
+        }
+      });
+
+      const labels = Object.keys(last7Days);
+      const data = Object.values(last7Days);
+
+      if (accessChart) {
+        accessChart.destroy();
+      }
+
+      accessChart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Acessos',
+            data: data,
+            borderColor: 'rgba(102, 50, 68, 1)',
+            backgroundColor: 'rgba(102, 50, 68, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateInviterChart() {
+      const canvas = document.getElementById('inviterChart');
+      if (!canvas) return;
+
+      const jeffersonCount = allGuests.filter(g => g.invited_by === 'Jefferson').length;
+      const biaCount = allGuests.filter(g => g.invited_by === 'Bia').length;
+      const ambosCount = allGuests.filter(g => g.invited_by === 'Ambos').length;
+
+      if (inviterChart) {
+        inviterChart.destroy();
+      }
+
+      inviterChart = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+          labels: ['Jefferson', 'Bia', 'Ambos'],
+          datasets: [{
+            data: [jeffersonCount, biaCount, ambosCount],
+            backgroundColor: [
+              'rgba(102, 50, 68, 0.8)',
+              'rgba(233, 30, 99, 0.8)',
+              'rgba(245, 230, 211, 0.8)'
+            ],
+            borderColor: [
+              'rgba(102, 50, 68, 1)',
+              'rgba(233, 30, 99, 1)',
+              'rgba(245, 230, 211, 1)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
             }
           }
         }
