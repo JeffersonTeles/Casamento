@@ -40,6 +40,17 @@
       display: block;
     }
 
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .dock-btn.active {
       background: #663244;
       color: #fff;
@@ -136,6 +147,12 @@
       border-radius: 1rem;
       background: rgba(255, 253, 249, 0.95);
       padding: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .item-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .item-card.done {
@@ -146,6 +163,52 @@
     .item-card.confirmed {
       background: rgba(239, 246, 255, 0.95);
       border-color: rgba(59, 130, 246, 0.18);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 0.5rem;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .skeleton-text {
+      height: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .skeleton-card {
+      height: 4rem;
+      margin-bottom: 1rem;
     }
 
     .audit-item {
@@ -266,7 +329,10 @@
         <button onclick="switchTab('guests')" id="btn-guests" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Convidados</button>
         <button onclick="switchTab('expenses')" id="btn-expenses" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Financeiro</button>
         <button onclick="switchTab('notes')" id="btn-notes" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Notas</button>
-        <button onclick="switchTab('audit')" id="btn-audit" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Auditoria</button>
+        <button onclick="switchTab('audit')" id="btn-audit" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200 relative">
+          Auditoria
+          <span id="audit-badge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full">0</span>
+        </button>
       </div>
     </nav>
 
@@ -378,7 +444,18 @@
             </div>
           </div>
           
-          <div id="guestList" class="space-y-3"></div>
+          <div id="guestList" class="space-y-3">
+            <div id="guest-skeleton" class="hidden space-y-3">
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+            </div>
+            <div id="guest-empty" class="hidden text-center py-12">
+              <div class="text-6xl mb-4">👥</div>
+              <p class="text-slate-600 font-medium">Nenhum convidado adicionado ainda</p>
+              <p class="text-sm text-slate-500 mt-2">Comece adicionando convidados para acompanhar a lista</p>
+            </div>
+          </div>
         </section>
 
         <section id="expenses" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
@@ -421,7 +498,18 @@
             <input type="text" id="expCat" placeholder="Categoria" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa text-sm" />
             <button onclick="addExpense()" class="bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition md:col-span-3 text-sm">Adicionar gasto</button>
           </div>
-          <div id="expenseList" class="space-y-3"></div>
+          <div id="expenseList" class="space-y-3">
+            <div id="expense-skeleton" class="hidden space-y-3">
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+              <div class="skeleton skeleton-card"></div>
+            </div>
+            <div id="expense-empty" class="hidden text-center py-12">
+              <div class="text-6xl mb-4">💰</div>
+              <p class="text-slate-600 font-medium">Nenhum gasto lançado ainda</p>
+              <p class="text-sm text-slate-500 mt-2">Registre suas despesas para acompanhar o orçamento</p>
+            </div>
+          </div>
         </section>
 
         <section id="notes" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
@@ -814,15 +902,23 @@
     window.editTask = editTask;
 
     async function fetchGuests() {
+      const guestSkeleton = document.getElementById('guest-skeleton');
+      const guestList = document.getElementById('guestList');
+      
+      if (guestSkeleton) guestSkeleton.classList.remove('hidden');
+      
       const { data, error } = await supabaseClient.from('guests').select('*').order('created_at', { ascending: false });
       if (error) {
         console.error('Erro ao buscar convidados:', error);
+        if (guestSkeleton) guestSkeleton.classList.add('hidden');
         return;
       }
       allGuests = data || [];
       renderGuestList(allGuests);
       updateGuestStats();
       updatePartnerDropdown();
+      
+      if (guestSkeleton) guestSkeleton.classList.add('hidden');
     }
 
     function updatePartnerDropdown() {
@@ -841,6 +937,7 @@
 
     function renderGuestList(guests) {
       const list = document.getElementById('guestList');
+      const emptyState = document.getElementById('guest-empty');
       if (!list) return;
 
       let filteredGuests = guests.filter((guest) => {
@@ -877,8 +974,16 @@
         }
       });
 
-      list.innerHTML = filteredGuests.length
-        ? filteredGuests.map((guest) => `
+      if (filteredGuests.length === 0) {
+        if (emptyState) emptyState.classList.remove('hidden');
+        list.innerHTML = '';
+        updateGuestStats();
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add('hidden');
+
+      list.innerHTML = filteredGuests.map((guest) => `
             <div class="item-card ${guest.rsvp_status === 'confirmado' ? 'confirmed' : ''} flex items-center justify-between gap-3">
               <div>
                 <p class="font-medium text-slate-800">${guest.name}</p>
@@ -893,8 +998,7 @@
                 <button onclick="deleteGuest('${guest.id}')" class="px-3 py-2 rounded-full text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition">Remover</button>
               </div>
             </div>
-          `).join('')
-        : '<p class="text-sm text-slate-500 italic">Nenhum convidado adicionado ainda.</p>';
+          `).join('');
       
       updateGuestStats();
     }
@@ -1158,6 +1262,10 @@
       await supabaseClient.from('guests').update({ rsvp_status: nextStatus }).eq('id', id);
       await logAction('guests', id, 'UPDATE', { rsvp_status: nextStatus });
       fetchGuests();
+      
+      if (nextStatus === 'confirmado') {
+        showToast('🎉 Convidado confirmou presença!', 'success');
+      }
     }
 
     async function deleteGuest(id) {
@@ -1204,12 +1312,28 @@
     window.editGuest = editGuest;
 
     async function fetchExpenses() {
+      const expenseSkeleton = document.getElementById('expense-skeleton');
+      const emptyState = document.getElementById('expense-empty');
+      
+      if (expenseSkeleton) expenseSkeleton.classList.remove('hidden');
+      
       const { data } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false });
       dashboardState.expenses = Array.isArray(data) ? data : [];
       const list = document.getElementById('expenseList');
       if (!list) return;
-      list.innerHTML = dashboardState.expenses.length
-        ? dashboardState.expenses.map((expense) => `
+      
+      if (dashboardState.expenses.length === 0) {
+        if (emptyState) emptyState.classList.remove('hidden');
+        list.innerHTML = '';
+        updateExpenseStats();
+        updateOverviewStats();
+        if (expenseSkeleton) expenseSkeleton.classList.add('hidden');
+        return;
+      }
+      
+      if (emptyState) emptyState.classList.add('hidden');
+      
+      list.innerHTML = dashboardState.expenses.map((expense) => `
             <div class="item-card flex items-center justify-between gap-3">
               <div>
                 <p class="font-medium text-slate-800">${expense.item}</p>
@@ -1221,10 +1345,11 @@
                 <button onclick="deleteExpense('${expense.id}')" class="px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition">Deletar</button>
               </div>
             </div>
-          `).join('')
-        : '<p class="text-sm text-slate-500 italic">Nenhum gasto lançado ainda.</p>';
+          `).join('');
       updateExpenseStats();
       updateOverviewStats();
+      
+      if (expenseSkeleton) expenseSkeleton.classList.add('hidden');
     }
 
     function updateExpenseStats() {
