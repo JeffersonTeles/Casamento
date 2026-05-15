@@ -1304,33 +1304,86 @@
       fetchGuests();
     }
 
-    async function editGuest(id, currentName, currentPhone, currentGroup, currentInvitedBy) {
-      const newName = prompt('Nome do convidado:', currentName);
-      if (!newName) return;
-      
-      const newPhone = prompt('Telefone:', currentPhone || '');
-      
-      const newGroup = prompt('Grupo (ex: Família):', currentGroup || '');
-      
-      const newInvitedBy = prompt('De quem é o convidado? (Jefferson, Bia ou Ambos):', currentInvitedBy || 'Jefferson');
+    let editingGuestId = null;
+
+    function openEditGuestModal(id, currentName, currentPhone, currentGroup, currentInvitedBy) {
+      editingGuestId = id;
+      document.getElementById('editGuestName').value = currentName || '';
+      document.getElementById('editGuestPhone').value = currentPhone || '';
+      document.getElementById('editGuestGroup').value = currentGroup || '';
+      document.getElementById('editGuestInvitedBy').value = currentInvitedBy || 'Jefferson';
+      document.getElementById('editGuestModal').classList.remove('hidden');
+    }
+
+    function closeEditGuestModal() {
+      document.getElementById('editGuestModal').classList.add('hidden');
+      editingGuestId = null;
+    }
+
+    async function saveGuestEdit() {
+      const newName = String(document.getElementById('editGuestName').value || '').trim();
+      const newPhone = String(document.getElementById('editGuestPhone').value || '').trim();
+      const newGroup = String(document.getElementById('editGuestGroup').value || '').trim();
+      const newInvitedBy = String(document.getElementById('editGuestInvitedBy').value || '').trim();
+
+      if (!newName) {
+        showToast('Nome é obrigatório', 'error');
+        return;
+      }
+
       if (newInvitedBy && !['Jefferson', 'Bia', 'Ambos'].includes(newInvitedBy)) {
-        alert('Valor inválido. Use: Jefferson, Bia ou Ambos');
+        showToast('Valor inválido. Use: Jefferson, Bia ou Ambos', 'error');
+        return;
+      }
+
+      const { error } = await supabaseClient.from('guests').update({
+        name: newName,
+        phone: newPhone,
+        group: newGroup,
+        invited_by: newInvitedBy
+      }).eq('id', editingGuestId);
+
+      if (error) {
+        showToast('Erro ao atualizar convidado: ' + error.message, 'error');
+        return;
+      }
+
+      await logAction('guests', editingGuestId, 'UPDATE', { name: newName, phone: newPhone, group: newGroup, invited_by: newInvitedBy });
+      closeEditGuestModal();
+      fetchGuests();
+      showToast('Convidado atualizado com sucesso!', 'success');
+    }
+
+    async function editGuest(id, currentName, currentPhone, currentGroup, currentInvitedBy) {
+      openEditGuestModal(id, currentName, currentPhone, currentGroup, currentInvitedBy);
+    }
+
+    async function editExpense(id, currentItem, currentAmount, currentCategory) {
+      const newItem = prompt('Item:', currentItem);
+      if (!newItem) return;
+      
+      const newAmount = prompt('Valor:', currentAmount);
+      if (!newAmount || isNaN(parseFloat(newAmount))) {
+        showToast('Valor inválido', 'error');
         return;
       }
       
-      const { error } = await supabaseClient.from('guests').update({ 
-        name: newName, 
-        phone: newPhone || null,
-        group: newGroup || null, 
-        invited_by: newInvitedBy || 'Jefferson' 
+      const newCategory = prompt('Categoria:', currentCategory || '');
+      
+      const { error } = await supabaseClient.from('expenses').update({
+        item: newItem,
+        amount: parseFloat(newAmount),
+        category: newCategory || null
       }).eq('id', id);
       
       if (error) {
-        alert('Erro ao editar convidado: ' + error.message);
+        showToast('Erro ao editar despesa: ' + error.message, 'error');
         return;
       }
-      await logAction('guests', id, 'UPDATE', { name: newName, phone: newPhone, group: newGroup, invited_by: newInvitedBy });
-      fetchGuests();
+      
+      await logAction('expenses', id, 'UPDATE', { item: newItem, amount: parseFloat(newAmount), category: newCategory });
+      fetchExpenses();
+      showToast('Despesa atualizada com sucesso!', 'success');
     }
 
     window.editGuest = editGuest;
@@ -1466,6 +1519,11 @@
         updateExpenseStats();
         showToast('Orçamento atualizado com sucesso!', 'success');
       }
+    }
+
+    // Initialize budget from localStorage on page load
+    if (!localStorage.getItem('weddingBudget')) {
+      localStorage.setItem('weddingBudget', 50000);
     }
 
     function exportGuestsCSV() {
@@ -1647,5 +1705,40 @@
       }
     };
   </script>
+
+  <!-- Modal de Edição de Convidado -->
+  <div id="editGuestModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
+      <div class="p-6">
+        <h3 class="text-xl font-titulo text-vinho mb-4">Editar convidado</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Nome</label>
+            <input type="text" id="editGuestName" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Telefone</label>
+            <input type="text" id="editGuestPhone" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Grupo</label>
+            <input type="text" id="editGuestGroup" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Convidado por</label>
+            <select id="editGuestInvitedBy" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa bg-white">
+              <option value="Jefferson">Jefferson</option>
+              <option value="Bia">Bia</option>
+              <option value="Ambos">Ambos</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-3 mt-6">
+          <button onclick="closeEditGuestModal()" class="flex-1 px-4 py-3 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 transition">Cancelar</button>
+          <button onclick="saveGuestEdit()" class="flex-1 px-4 py-3 rounded-xl bg-vinho text-white hover:bg-vinho/90 transition">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
