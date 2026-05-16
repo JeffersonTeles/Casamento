@@ -85,21 +85,8 @@ const Home = () => {
             <div>
               <p className="font-semibold text-[#120a74]">Cerimônia</p>
               <p className="mt-1">08:00 DA MANHÃ (PONTUALMENTE) • Paróquia Nossa Senhora de Fátima Cancellia<br />Cascavel - PR</p>
-              <div className="mt-4 rounded-2xl overflow-hidden border border-[#120a74]/20 shadow-md">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.0!2d-53.4558!3d-24.9578!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCapela+S%C3%A3o+Maximiliano+Cascavel+PR!5e0!3m2!1spt!2sbr!4v1"
-                  width="100%"
-                  height="260"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Localização da Capela São Maximiliano — Cascavel PR"
-                  className="w-full"
-                ></iframe>
-              </div>
               <p className="mt-2 text-[0.7rem] text-zinc-600">
-                <a href="https://maps.app.goo.gl/TBtd7eAjcBzWDuGq7" target="_blank" rel="noreferrer" className="text-[#120a74] underline">Abrir no Google Maps →</a>
+                <a href="https://maps.app.goo.gl/TBtd7eAjcBzWDuGq7" target="_blank" rel="noreferrer" className="text-[#120a74] underline">Ver mapa de como chegar →</a>
               </p>
             </div>
             <div>
