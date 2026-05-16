@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
 import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 
 const DEFAULT_EVENT_INFO = {
@@ -43,7 +44,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [newGuest, setNewGuest] = useState({ name: '', phone: '' });
   const [editingGuestId, setEditingGuestId] = useState(null);
-  const [editingGuest, setEditingGuest] = useState({ name: '', phone: '' });
+  const [editingGuest, setEditingGuest] = useState({ name: '', phone: '', rsvp_status: '' });
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
   const [sortBy, setSortBy] = useState('recentes');
@@ -173,6 +174,7 @@ const AdminDashboard = () => {
         Telefone: guest.phone || '',
         Status: guest.rsvp_status || '',
         Link: getInviteLink(guest.invite_token),
+        'Convidado por': guest.invited_by || '',
         'Data Cadastro': formatDateTime(guest.created_at),
       }));
 
@@ -183,6 +185,40 @@ const AdminDashboard = () => {
       showSuccess('Excel exportado com sucesso.');
     } catch (err) {
       setError('Erro ao exportar Excel.');
+    }
+  }
+
+  function exportGuestsPdfSummary() {
+    clearMessages();
+    try {
+      const doc = new jsPDF();
+      doc.setTextColor('#120a74');
+      doc.setFontSize(18);
+      doc.text('Lista de Convidados - Jefferson & Beatriz', 14, 15);
+      doc.setFontSize(10);
+      doc.setTextColor('#666666');
+      doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 22);
+
+      const tableData = filteredGuests.map((g) => [
+        g.name || '-',
+        g.phone || '-',
+        g.rsvp_status || 'aguardando',
+        g.invited_by || 'admin'
+      ]);
+
+      autoTable(doc, {
+        startY: 30,
+        head: [['Nome', 'Telefone', 'Status', 'Convidado por']],
+        body: tableData,
+        headStyles: { fillColor: [18, 10, 116] },
+        alternateRowStyles: { fillColor: [245, 230, 211, 0.2] },
+      });
+
+      doc.save('lista-convidados-casamento.pdf');
+      showSuccess('PDF da lista exportado com sucesso.');
+    } catch (err) {
+      console.error(err);
+      setError('Erro ao exportar PDF da lista.');
     }
   }
 
@@ -348,12 +384,13 @@ const AdminDashboard = () => {
     setEditingGuest({
       name: guest.name || '',
       phone: guest.phone || '',
+      rsvp_status: guest.rsvp_status || 'aguardando',
     });
   }
 
   function cancelEditGuest() {
     setEditingGuestId(null);
-    setEditingGuest({ name: '', phone: '' });
+    setEditingGuest({ name: '', phone: '', rsvp_status: '' });
   }
 
   async function saveGuestEdit(id) {
@@ -369,6 +406,7 @@ const AdminDashboard = () => {
       .update({
         name: editingGuest.name.trim(),
         phone: editingGuest.phone.trim(),
+        rsvp_status: editingGuest.rsvp_status,
       })
       .eq('id', id);
 
@@ -574,6 +612,18 @@ const AdminDashboard = () => {
                     Montar convite digital
                   </button>
                   <button
+                    onClick={exportGuestsXlsx}
+                    className="rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                  >
+                    Exportar Excel
+                  </button>
+                  <button
+                    onClick={exportGuestsPdfSummary}
+                    className="rounded-full bg-rose-600 px-4 py-2 text-xs font-semibold text-white hover:bg-rose-700"
+                  >
+                    Exportar PDF
+                  </button>
+                  <button
                     onClick={exportGuestsCsv}
                     className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs font-semibold text-[#120a74] hover:bg-[#120a74]/5"
                   >
@@ -598,6 +648,12 @@ const AdminDashboard = () => {
                   className="rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
                 >
                   Exportar Excel
+                </button>
+                <button
+                  onClick={exportGuestsPdfSummary}
+                  className="rounded-full bg-rose-600 px-4 py-2 text-xs font-semibold text-white hover:bg-rose-700"
+                >
+                  Exportar PDF (Lista)
                 </button>
                 <button
                   onClick={exportGuestsCsv}
@@ -674,7 +730,7 @@ const AdminDashboard = () => {
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                       <div className="flex-1">
                         {editingGuestId === guest.id ? (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                             <input
                               type="text"
                               value={editingGuest.name}
@@ -689,6 +745,15 @@ const AdminDashboard = () => {
                               className="rounded-xl border border-rose-200 px-3 py-2 text-sm"
                               placeholder="Telefone"
                             />
+                            <select
+                              value={editingGuest.rsvp_status}
+                              onChange={(e) => setEditingGuest((prev) => ({ ...prev, rsvp_status: e.target.value }))}
+                              className="rounded-xl border border-rose-200 px-3 py-2 text-sm"
+                            >
+                              <option value="aguardando">Aguardando</option>
+                              <option value="confirmado">Confirmado</option>
+                              <option value="recusado">Recusado</option>
+                            </select>
                           </div>
                         ) : (
                           <>
