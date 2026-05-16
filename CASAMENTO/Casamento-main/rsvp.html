@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Confirme sua presença — Jefferson & Bia</title>
+  <title>Confirme sua presença — Jefferson & Beatriz</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -12,7 +12,7 @@
         extend: {
           colors: {
             rosa: '#e91e63',
-            vinho: '#663244',
+            vinho: '#120a74',
             champagne: '#f5e6d3',
           },
           fontFamily: {
@@ -91,7 +91,7 @@
     
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 50, 68, 0.2);
+      box-shadow: 0 4px 12px rgba(18, 10, 116, 0.2);
     }
     
     button:focus {
@@ -139,6 +139,7 @@
       }
     }
   </style>
+  <meta name="description" content="Participe do nosso grande dia! Site oficial do casamento de Jefferson & Beatriz com RSVP, presentes e informações.">
 </head>
 <body class="font-corpo text-slate-800 min-h-screen">
   <div class="min-h-screen flex items-center justify-center p-4 py-8">
@@ -147,7 +148,7 @@
         <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-br from-vinho to-rosa mb-4 shadow-lg">
           <span class="text-4xl">💍</span>
         </div>
-        <h1 class="font-titulo text-4xl text-vinho mb-2">Jefferson & Bia</h1>
+        <h1 class="font-titulo text-4xl text-vinho mb-2">Jefferson & Beatriz</h1>
         <p class="text-sm text-slate-600">Convite Especial</p>
         <button onclick="window.print()" class="mt-2 text-xs text-vinho hover:underline" aria-label="Imprimir convite">
           🖨️ Imprimir convite
@@ -162,8 +163,8 @@
               <span class="text-2xl">⏰</span>
               <div>
                 <p class="font-medium text-slate-800">Horário</p>
-                <p class="text-slate-600">Cerimônia: 16h00</p>
-                <p class="text-slate-600">Recepção: 18h00</p>
+                <p class="text-slate-600">Cerimônia: 08h00 DA MANHÃ (PONTUALMENTE)</p>
+                <p class="text-slate-600">Não teremos recepção após a cerimônia.</p>
               </div>
             </div>
           </div>
@@ -219,7 +220,7 @@
             Olá, <strong id="guest-name" class="text-vinho"></strong><span id="partner-name-display"></span>!
           </p>
           <p class="text-xs text-slate-600 mt-1">
-            Por favor, confirme sua presença no nosso casamento até <strong>15 de Fevereiro de 2026</strong>.
+            Por favor, confirme sua presença no nosso casamento até <strong>20 de Dezembro de 2026</strong>.
           </p>
         </div>
 
@@ -275,7 +276,7 @@
           <ul class="text-xs text-slate-600 space-y-1">
             <li>• Chegue com 15 minutos de antecedência</li>
             <li>• Estacionamento gratuito disponível</li>
-            <li>• Dress code: Esporte Fino</li>
+            <li>• Traje: Livre (proibido cores claras semelhantes ao branco)</li>
           </ul>
         </div>
 
@@ -291,8 +292,45 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // CONFIGURAÇÕES DO TELEGRAM (Preencha aqui para ativar)
+    const TELEGRAM_BOT_TOKEN = ''; // Ex: '123456:ABC-DEF...'
+    const TELEGRAM_CHAT_ID = '';   // Ex: '987654321'
+
     let guestData = null;
     let selectedRsvp = null;
+
+    async function sendTelegramNotification(name, status, plusOnes, message) {
+      if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+
+      const emoji = status === 'confirmado' ? '✅' : '❌';
+      const statusText = status === 'confirmado' ? 'CONFIRMOU presença!' : 'não poderá comparecer.';
+      
+      let text = `${emoji} *Novo RSVP Recebido!*\n\n`;
+      text += `👤 *Convidado:* ${name}\n`;
+      text += `📢 *Resposta:* ${statusText}\n`;
+      
+      if (status === 'confirmado') {
+        text += `👨‍👩‍👧‍👦 *Acompanhantes:* ${plusOnes}\n`;
+      }
+      
+      if (message && message.trim()) {
+        text += `\n💌 *Mensagem:* ${message.trim()}\n`;
+      }
+
+      try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: text,
+            parse_mode: 'Markdown'
+          })
+        });
+      } catch (err) {
+        console.error('Erro ao enviar notificação para o Telegram:', err);
+      }
+    }
 
     // Log access to RSVP
     async function logAccess(guestId, guestName) {
@@ -312,7 +350,7 @@
 
     // Countdown Timer
     function updateCountdown() {
-      const weddingDate = new Date('2026-03-15T16:00:00');
+      const weddingDate = new Date('2027-02-06T08:00:00');
       const now = new Date();
       const diff = weddingDate - now;
 
@@ -424,6 +462,28 @@
       submitBtn.disabled = false;
     }
 
+    // CONFIGURAÇÃO DE NOTIFICAÇÃO (ntfy.sh - Gratuito)
+    const NTFY_TOPIC = 'casamento-jefferson-bia-notificacoes';
+
+    async function sendPushNotification(name, status, plusOnes, message) {
+      const emoji = status === 'confirmado' ? '✅' : '❌';
+      const body = `Convidado: ${name}\nResposta: ${status === 'confirmado' ? 'Confirmado!' : 'Não vai'}\nAcompanhantes: ${plusOnes}\nRecado: ${message}`;
+      
+      try {
+        await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
+          method: 'POST',
+          body: body,
+          headers: {
+            'Title': `💍 Novo RSVP: ${name}`,
+            'Priority': 'high',
+            'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive'
+          }
+        });
+      } catch (err) {
+        console.error('Erro na notificação:', err);
+      }
+    }
+
     async function submitRsvp() {
       if (!selectedRsvp) {
         alert('Por favor, selecione se você vai ou não.');
@@ -449,6 +509,13 @@
           submitBtn.textContent = 'Enviar confirmação';
           return;
         }
+
+        // Enviar notificação Push (ntfy.sh)
+        const plusOnes = document.getElementById('plus-ones').value;
+        const message = document.getElementById('message').value;
+        const fullName = guestData.partner_name ? `${guestData.name} & ${guestData.partner_name}` : guestData.name;
+        
+        sendPushNotification(fullName, selectedRsvp, plusOnes, message);
 
         document.getElementById('rsvp-form').classList.add('hidden');
         document.getElementById('success').classList.remove('hidden');

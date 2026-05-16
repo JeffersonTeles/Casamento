@@ -155,7 +155,8 @@ const AdminDashboard = () => {
   );
 
   function getInviteLink(token) {
-    return `${window.location.origin}/confirmar/${token}`;
+    // Aponta para o rsvp.html na raiz do site
+    return `${window.location.origin}/rsvp.html?token=${token}`;
   }
 
   function getInviteQrCode(token) {
@@ -356,15 +357,15 @@ const AdminDashboard = () => {
           <div className="absolute -top-16 -right-16 h-44 w-44 rounded-full bg-rose-100/70 blur-xl" />
           <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="uppercase tracking-[0.25em] text-[0.65rem] text-vinho/70">Area privada</p>
-              <h1 className="mt-1 font-titulo text-3xl text-vinho md:text-4xl">Central de Organizacao</h1>
+              <p className="uppercase tracking-[0.25em] text-[0.65rem] text-[#120a74]/70">Area privada</p>
+              <h1 className="mt-1 font-titulo text-3xl text-[#120a74] md:text-4xl">Central de Organizacao</h1>
               <p className="mt-2 text-sm text-zinc-600">Painel do casal para convidados, RSVP e convites digitais.</p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="rounded-full bg-rose-50 px-3 py-1 text-xs text-vinho/80 border border-rose-100">{user?.email}</span>
+              <span className="rounded-full bg-rose-50 px-3 py-1 text-xs text-[#120a74]/80 border border-rose-100">{user?.email}</span>
               <button
                 onClick={logout}
-                className="rounded-full border border-vinho/25 px-4 py-2 text-sm text-vinho hover:bg-vinho/5"
+                className="rounded-full border border-[#120a74]/25 px-4 py-2 text-sm text-[#120a74] hover:bg-[#120a74]/5"
               >
                 Sair
               </button>
@@ -375,19 +376,19 @@ const AdminDashboard = () => {
         <nav className="rounded-2xl border border-rose-100 bg-white/90 p-2 flex flex-wrap gap-2 shadow-sm">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'overview' ? 'bg-vinho text-white' : 'bg-rose-50 text-vinho hover:bg-rose-100'}`}
+            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'overview' ? 'bg-[#120a74] text-white' : 'bg-rose-50 text-[#120a74] hover:bg-rose-100'}`}
           >
             Visao Geral
           </button>
           <button
             onClick={() => setActiveTab('guests')}
-            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'guests' ? 'bg-vinho text-white' : 'bg-rose-50 text-vinho hover:bg-rose-100'}`}
+            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'guests' ? 'bg-[#120a74] text-white' : 'bg-rose-50 text-[#120a74] hover:bg-rose-100'}`}
           >
             Gestao de Convidados
           </button>
           <button
             onClick={() => setActiveTab('invites')}
-            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'invites' ? 'bg-vinho text-white' : 'bg-rose-50 text-vinho hover:bg-rose-100'}`}
+            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'invites' ? 'bg-[#120a74] text-white' : 'bg-rose-50 text-[#120a74] hover:bg-rose-100'}`}
           >
             Criar Convites
           </button>
@@ -410,7 +411,7 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               <div className="rounded-2xl border border-rose-100 bg-white/90 p-4">
                 <p className="text-xs text-zinc-500">Total de convidados</p>
-                <p className="text-2xl font-semibold text-vinho">{summary.total}</p>
+                <p className="text-2xl font-semibold text-[#120a74]">{summary.total}</p>
               </div>
               <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
                 <p className="text-xs text-emerald-600">Confirmados</p>
@@ -424,15 +425,15 @@ const AdminDashboard = () => {
                 <p className="text-xs text-amber-600">Aguardando</p>
                 <p className="text-2xl font-semibold text-amber-700">{summary.pending}</p>
               </div>
-              <div className="rounded-2xl border border-vinho/15 bg-white/90 p-4">
+              <div className="rounded-2xl border border-[#120a74]/15 bg-white/90 p-4">
                 <p className="text-xs text-zinc-500">Taxa de confirmacao</p>
-                <p className="text-2xl font-semibold text-vinho">{summary.attendanceRate}%</p>
+                <p className="text-2xl font-semibold text-[#120a74]">{summary.attendanceRate}%</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <article className="rounded-2xl border border-rose-100 bg-white/90 p-5">
-                <h3 className="font-titulo text-2xl text-vinho">Checklist rapido</h3>
+                <h3 className="font-titulo text-2xl text-[#120a74]">Checklist rapido</h3>
                 <ul className="mt-3 space-y-2 text-sm text-zinc-700">
                   <li>Enviar convites para os convidados aguardando resposta.</li>
                   <li>Conferir convidados sem telefone cadastrado.</li>
@@ -441,23 +442,23 @@ const AdminDashboard = () => {
                 </ul>
               </article>
               <article className="rounded-2xl border border-rose-100 bg-white/90 p-5">
-                <h3 className="font-titulo text-2xl text-vinho">Atalhos uteis</h3>
+                <h3 className="font-titulo text-2xl text-[#120a74]">Atalhos uteis</h3>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     onClick={() => setActiveTab('guests')}
-                    className="rounded-full bg-vinho px-4 py-2 text-xs font-semibold text-white hover:bg-vinho/90"
+                    className="rounded-full bg-[#120a74] px-4 py-2 text-xs font-semibold text-white hover:bg-[#120a74]/90"
                   >
                     Gerenciar convidados
                   </button>
                   <button
                     onClick={() => setActiveTab('invites')}
-                    className="rounded-full border border-vinho/25 px-4 py-2 text-xs font-semibold text-vinho hover:bg-vinho/5"
+                    className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs font-semibold text-[#120a74] hover:bg-[#120a74]/5"
                   >
                     Montar convite digital
                   </button>
                   <button
                     onClick={exportGuestsCsv}
-                    className="rounded-full border border-vinho/25 px-4 py-2 text-xs font-semibold text-vinho hover:bg-vinho/5"
+                    className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs font-semibold text-[#120a74] hover:bg-[#120a74]/5"
                   >
                     Exportar CSV
                   </button>
@@ -473,10 +474,10 @@ const AdminDashboard = () => {
         {activeTab === 'guests' && (
           <section className="rounded-3xl border border-rose-100 bg-white/90 p-5 md:p-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-              <h2 className="font-titulo text-2xl text-vinho">Gestao de Convidados</h2>
+              <h2 className="font-titulo text-2xl text-[#120a74]">Gestao de Convidados</h2>
               <button
                 onClick={exportGuestsCsv}
-                className="rounded-full border border-vinho/25 px-4 py-2 text-xs font-semibold text-vinho hover:bg-vinho/5"
+                className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs font-semibold text-[#120a74] hover:bg-[#120a74]/5"
               >
                 Exportar CSV
               </button>
@@ -499,7 +500,7 @@ const AdminDashboard = () => {
               />
               <button
                 type="submit"
-                className="rounded-xl bg-vinho px-4 py-2 text-white font-medium hover:bg-vinho/90"
+                className="rounded-xl bg-[#120a74] px-4 py-2 text-white font-medium hover:bg-[#120a74]/90"
               >
                 Adicionar
               </button>
@@ -603,13 +604,13 @@ const AdminDashboard = () => {
                         <>
                           <button
                             onClick={() => saveGuestEdit(guest.id)}
-                            className="rounded-full bg-vinho px-4 py-2 text-xs text-white"
+                            className="rounded-full bg-[#120a74] px-4 py-2 text-xs text-white"
                           >
                             Salvar
                           </button>
                           <button
                             onClick={cancelEditGuest}
-                            className="rounded-full border border-vinho/25 px-4 py-2 text-xs text-vinho"
+                            className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs text-[#120a74]"
                           >
                             Cancelar
                           </button>
@@ -617,7 +618,7 @@ const AdminDashboard = () => {
                       ) : (
                         <button
                           onClick={() => startEditGuest(guest)}
-                          className="rounded-full border border-vinho/25 px-4 py-2 text-xs text-vinho hover:bg-vinho/5"
+                          className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs text-[#120a74] hover:bg-[#120a74]/5"
                         >
                           Editar dados
                         </button>
@@ -625,28 +626,28 @@ const AdminDashboard = () => {
 
                       <button
                         onClick={() => copyToClipboard(inviteLink, 'Link copiado.', 'Nao foi possivel copiar o link.')}
-                        className="rounded-full border border-vinho/25 px-4 py-2 text-xs text-vinho hover:bg-vinho/5"
+                        className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs text-[#120a74] hover:bg-[#120a74]/5"
                       >
                         Copiar link
                       </button>
 
                       <button
                         onClick={() => copyToClipboard(buildInviteText(guest), 'Convite copiado.', 'Nao foi possivel copiar convite.')}
-                        className="rounded-full border border-vinho/25 px-4 py-2 text-xs text-vinho hover:bg-vinho/5"
+                        className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs text-[#120a74] hover:bg-[#120a74]/5"
                       >
                         Copiar convite
                       </button>
 
                       <button
                         onClick={() => openWhatsAppInvite(guest)}
-                        className="rounded-full border border-vinho/25 px-4 py-2 text-xs text-vinho hover:bg-vinho/5"
+                        className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs text-[#120a74] hover:bg-[#120a74]/5"
                       >
                         WhatsApp
                       </button>
 
                       <button
                         onClick={() => openRsvpPage(guest)}
-                        className="rounded-full border border-vinho/25 px-4 py-2 text-xs text-vinho hover:bg-vinho/5"
+                        className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs text-[#120a74] hover:bg-[#120a74]/5"
                       >
                         Abrir RSVP
                       </button>
@@ -681,7 +682,7 @@ const AdminDashboard = () => {
         {activeTab === 'invites' && (
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <article className="rounded-3xl border border-rose-100 bg-white/90 p-5 md:p-6 space-y-3">
-              <h2 className="font-titulo text-2xl text-vinho">Criador de Convites Digitais</h2>
+              <h2 className="font-titulo text-2xl text-[#120a74]">Criador de Convites Digitais</h2>
               <p className="text-sm text-zinc-600">Monte mensagem, gere QR Code e envie por WhatsApp com link individual.</p>
 
               <select
@@ -741,21 +742,21 @@ const AdminDashboard = () => {
                 <button
                   onClick={() => selectedGuest && copyToClipboard(buildInviteText(selectedGuest), 'Convite copiado.', 'Nao foi possivel copiar convite.')}
                   disabled={!selectedGuest}
-                  className="rounded-full bg-vinho px-4 py-2 text-sm text-white disabled:opacity-40"
+                  className="rounded-full bg-[#120a74] px-4 py-2 text-sm text-white disabled:opacity-40"
                 >
                   Copiar convite
                 </button>
                 <button
                   onClick={() => selectedGuest && openWhatsAppInvite(selectedGuest)}
                   disabled={!selectedGuest}
-                  className="rounded-full border border-vinho/25 px-4 py-2 text-sm text-vinho disabled:opacity-40"
+                  className="rounded-full border border-[#120a74]/25 px-4 py-2 text-sm text-[#120a74] disabled:opacity-40"
                 >
                   Enviar no WhatsApp
                 </button>
                 <button
                   onClick={() => selectedGuest && openRsvpPage(selectedGuest)}
                   disabled={!selectedGuest}
-                  className="rounded-full border border-vinho/25 px-4 py-2 text-sm text-vinho disabled:opacity-40"
+                  className="rounded-full border border-[#120a74]/25 px-4 py-2 text-sm text-[#120a74] disabled:opacity-40"
                 >
                   Abrir pagina RSVP
                 </button>
@@ -763,14 +764,14 @@ const AdminDashboard = () => {
             </article>
 
             <article className="rounded-3xl border border-rose-100 bg-white/90 p-5 md:p-6">
-              <h3 className="font-titulo text-2xl text-vinho">Pre-visualizacao</h3>
+              <h3 className="font-titulo text-2xl text-[#120a74]">Pre-visualizacao</h3>
               {!selectedGuest && <p className="mt-3 text-sm text-zinc-500">Selecione um convidado para gerar o convite.</p>}
 
               {selectedGuest && (
                 <div className="mt-3 space-y-3">
                   <div className="rounded-2xl border border-rose-100 bg-rose-50/40 p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-vinho/70">Convite digital</p>
-                    <p className="mt-1 font-titulo text-2xl text-vinho">Jefferson & Bia</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-[#120a74]/70">Convite digital</p>
+                    <p className="mt-1 font-titulo text-2xl text-[#120a74]">Jefferson & Beatriz</p>
                     <p className="mt-2 text-sm text-zinc-700">Convidado: <strong>{selectedGuest.name}</strong></p>
                     <p className="text-sm text-zinc-700">{inviteBuilder.date} as {inviteBuilder.time}</p>
                     <p className="text-sm text-zinc-700">{inviteBuilder.place}</p>
@@ -791,7 +792,7 @@ const AdminDashboard = () => {
                       <p className="mt-1 text-xs text-zinc-500">Gerado via QuickChart API para facilitar confirmacao.</p>
                       <button
                         onClick={() => copyToClipboard(getInviteLink(selectedGuest.invite_token), 'Link copiado.', 'Nao foi possivel copiar o link.')}
-                        className="mt-3 rounded-full border border-vinho/25 px-4 py-2 text-xs text-vinho hover:bg-vinho/5"
+                        className="mt-3 rounded-full border border-[#120a74]/25 px-4 py-2 text-xs text-[#120a74] hover:bg-[#120a74]/5"
                       >
                         Copiar link do convite
                       </button>

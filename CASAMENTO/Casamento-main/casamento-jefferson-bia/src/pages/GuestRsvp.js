@@ -65,7 +65,7 @@ const GuestRsvp = () => {
   return (
     <div className="min-h-screen bg-rose-50 flex items-center justify-center px-4">
       <div className="w-full max-w-xl rounded-2xl bg-white border border-rose-100 p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-vinho">Confirmação de presença</h1>
+        <h1 className="text-2xl font-semibold text-[#120a74]">Confirmação de presença</h1>
 
         {loading && <p className="mt-4 text-sm text-slate-500">Carregando seu convite...</p>}
         {!loading && !guest && <p className="mt-4 text-sm text-red-600">{message || 'Convite inválido.'}</p>}

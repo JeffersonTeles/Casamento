@@ -66,19 +66,19 @@ function updateCountdownMessage(distance) {
   let message = "";
   
   if (days > 365) {
-    message = "Falta mais de um ano para o grande dia! 🎉";
+    message = "Falta mais de um ano para o grande dia!";
   } else if (days > 180) {
-    message = "Menos de 6 meses! A ansiedade está crescendo! 💕";
+    message = "Menos de 6 meses! A ansiedade está crescendo!";
   } else if (days > 90) {
-    message = "Menos de 3 meses! É hora de começar os preparativos finais! ✨";
+    message = "Menos de 3 meses! É hora de começar os preparativos finais!";
   } else if (days > 30) {
-    message = "Menos de 1 mês! O grande dia está chegando! 🎊";
+    message = "Menos de 1 mês! O grande dia está chegando!";
   } else if (days > 7) {
-    message = "Menos de uma semana! Estamos quase lá! 💍";
+    message = "Menos de uma semana! Estamos quase lá!";
   } else if (days > 0) {
-    message = "Dias finais! Tudo pronto para o sim! 💖";
+    message = "Dias finais! Tudo pronto para o sim!";
   } else {
-    message = "É hoje! O momento mais especial chegou! 💒";
+    message = "É hoje! O momento mais especial chegou!";
   }
 
   noteElement.textContent = message;

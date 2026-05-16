@@ -107,7 +107,7 @@ const AdminLogin = () => {
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-slate-800">Área administrativa</h1>
+        <h1 className="text-2xl font-semibold text-[#120a74]">Área administrativa</h1>
         <p className="text-sm text-slate-500 mt-1">Acesso restrito aos noivos.</p>
         <p className="mt-2 text-xs text-slate-500">Somente usuários autorizados conseguem entrar.</p>
 
@@ -140,7 +140,7 @@ const AdminLogin = () => {
           <button
             type="submit"
             disabled={loading || isLocked}
-            className="w-full rounded-lg bg-slate-900 text-white py-2 font-medium hover:bg-slate-800 disabled:opacity-60"
+            className="w-full rounded-lg bg-[#120a74] text-white py-2 font-medium hover:opacity-90 disabled:opacity-60"
           >
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
