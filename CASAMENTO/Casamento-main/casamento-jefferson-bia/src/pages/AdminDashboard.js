@@ -19,7 +19,7 @@ const INVITE_TEMPLATES = {
 
 function getStatusClasses(status) {
   if (status === 'confirmado') return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-  if (status === 'recusado') return 'bg-rose-100 text-rose-700 border-rose-200';
+  if (status === 'recusado') return 'bg-slate-100 text-rose-700 border-rose-200';
   return 'bg-amber-100 text-amber-700 border-amber-200';
 }
 
@@ -343,7 +343,8 @@ const AdminDashboard = () => {
     }
 
     try {
-      const token = crypto.randomUUID();
+      // Fallback para crypto.randomUUID()
+      const token = window.crypto?.randomUUID ? window.crypto.randomUUID() : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
       const { error: insertError } = await supabase.from('guests').insert({
         name: newGuest.name.trim(),
@@ -353,12 +354,16 @@ const AdminDashboard = () => {
         invited_by: user?.email || 'admin',
       });
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error('Erro ao inserir convidado:', insertError);
+        throw insertError;
+      }
 
       setNewGuest({ name: '', phone: '' });
       showSuccess('Convidado adicionado com sucesso.');
-    } catch {
-      setError('Nao foi possivel adicionar convidado.');
+    } catch (err) {
+      console.error(err);
+      setError(`Nao foi possivel adicionar convidado: ${err.message || 'Erro desconhecido'}`);
     }
   }
 
@@ -506,10 +511,10 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-champagne/70 via-rose-50 to-white p-4 md:p-8 font-corpo text-zinc-800">
+    <div className="min-h-screen bg-gradient-to-b from-champagne/70 via-slate-50 to-white p-4 md:p-8 font-corpo text-zinc-800">
       <div className="max-w-6xl mx-auto space-y-6">
-        <header className="relative overflow-hidden rounded-3xl border border-rose-100 bg-white/90 p-5 md:p-7 shadow-sm">
-          <div className="absolute -top-16 -right-16 h-44 w-44 rounded-full bg-rose-100/70 blur-xl" />
+        <header className="relative overflow-hidden rounded-3xl border border-slate-100 bg-white/90 p-5 md:p-7 shadow-sm">
+          <div className="absolute -top-16 -right-16 h-44 w-44 rounded-full bg-slate-100/70 blur-xl" />
           <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="uppercase tracking-[0.25em] text-[0.65rem] text-[#120a74]/70">Area privada</p>
@@ -517,7 +522,7 @@ const AdminDashboard = () => {
               <p className="mt-2 text-sm text-zinc-600">Painel do casal para convidados, RSVP e convites digitais.</p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="rounded-full bg-rose-50 px-3 py-1 text-xs text-[#120a74]/80 border border-rose-100">{user?.email}</span>
+              <span className="rounded-full bg-slate-50 px-3 py-1 text-xs text-[#120a74]/80 border border-slate-100">{user?.email}</span>
               <button
                 onClick={logout}
                 className="rounded-full border border-[#120a74]/25 px-4 py-2 text-sm text-[#120a74] hover:bg-[#120a74]/5"
@@ -528,29 +533,29 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        <nav className="rounded-2xl border border-rose-100 bg-white/90 p-2 flex flex-wrap gap-2 shadow-sm">
+        <nav className="rounded-2xl border border-slate-100 bg-white/90 p-2 flex flex-wrap gap-2 shadow-sm">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'overview' ? 'bg-[#120a74] text-white' : 'bg-rose-50 text-[#120a74] hover:bg-rose-100'}`}
+            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'overview' ? 'bg-[#120a74] text-white' : 'bg-slate-50 text-[#120a74] hover:bg-slate-100'}`}
           >
             Visao Geral
           </button>
           <button
             onClick={() => setActiveTab('guests')}
-            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'guests' ? 'bg-[#120a74] text-white' : 'bg-rose-50 text-[#120a74] hover:bg-rose-100'}`}
+            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'guests' ? 'bg-[#120a74] text-white' : 'bg-slate-50 text-[#120a74] hover:bg-slate-100'}`}
           >
             Gestao de Convidados
           </button>
           <button
             onClick={() => setActiveTab('invites')}
-            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'invites' ? 'bg-[#120a74] text-white' : 'bg-rose-50 text-[#120a74] hover:bg-rose-100'}`}
+            className={`rounded-full px-4 py-2 text-sm transition ${activeTab === 'invites' ? 'bg-[#120a74] text-white' : 'bg-slate-50 text-[#120a74] hover:bg-slate-100'}`}
           >
             Criar Convites
           </button>
         </nav>
 
         {error && (
-          <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          <div className="rounded-2xl border border-rose-200 bg-slate-50 px-4 py-3 text-sm text-rose-700">
             {error}
           </div>
         )}
@@ -564,7 +569,7 @@ const AdminDashboard = () => {
         {activeTab === 'overview' && (
           <section className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-              <div className="rounded-2xl border border-rose-100 bg-white/90 p-4">
+              <div className="rounded-2xl border border-slate-100 bg-white/90 p-4">
                 <p className="text-xs text-zinc-500">Total de convidados</p>
                 <p className="text-2xl font-semibold text-[#120a74]">{summary.total}</p>
               </div>
@@ -572,7 +577,7 @@ const AdminDashboard = () => {
                 <p className="text-xs text-emerald-600">Confirmados</p>
                 <p className="text-2xl font-semibold text-emerald-700">{summary.confirmed}</p>
               </div>
-              <div className="rounded-2xl border border-rose-100 bg-rose-50/70 p-4">
+              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
                 <p className="text-xs text-rose-600">Recusados</p>
                 <p className="text-2xl font-semibold text-rose-700">{summary.declined}</p>
               </div>
@@ -587,7 +592,7 @@ const AdminDashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <article className="rounded-2xl border border-rose-100 bg-white/90 p-5">
+              <article className="rounded-2xl border border-slate-100 bg-white/90 p-5">
                 <h3 className="font-titulo text-2xl text-[#120a74]">Checklist rapido</h3>
                 <ul className="mt-3 space-y-2 text-sm text-zinc-700">
                   <li>Enviar convites para os convidados aguardando resposta.</li>
@@ -596,7 +601,7 @@ const AdminDashboard = () => {
                   <li>Revisar RSVP na semana do evento.</li>
                 </ul>
               </article>
-              <article className="rounded-2xl border border-rose-100 bg-white/90 p-5">
+              <article className="rounded-2xl border border-slate-100 bg-white/90 p-5">
                 <h3 className="font-titulo text-2xl text-[#120a74]">Atalhos uteis</h3>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
@@ -639,7 +644,7 @@ const AdminDashboard = () => {
         )}
 
         {activeTab === 'guests' && (
-          <section className="rounded-3xl border border-rose-100 bg-white/90 p-5 md:p-6">
+          <section className="rounded-3xl border border-slate-100 bg-white/90 p-5 md:p-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <h2 className="font-titulo text-2xl text-[#120a74]">Gestao de Convidados</h2>
               <div className="flex flex-wrap gap-2">
@@ -726,7 +731,7 @@ const AdminDashboard = () => {
                 const inviteLink = getInviteLink(guest.invite_token);
 
                 return (
-                  <article key={guest.id} className="rounded-2xl border border-rose-100 bg-rose-50/40 p-3 md:p-4">
+                  <article key={guest.id} className="rounded-2xl border border-slate-100 bg-slate-50/40 p-3 md:p-4">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                       <div className="flex-1">
                         {editingGuestId === guest.id ? (
@@ -776,7 +781,7 @@ const AdminDashboard = () => {
                         </button>
                         <button
                           onClick={() => updateGuestStatus(guest.id, 'recusado')}
-                          className="rounded-full border border-rose-200 bg-white px-3 py-1 text-[11px] text-rose-700 hover:bg-rose-50"
+                          className="rounded-full border border-rose-200 bg-white px-3 py-1 text-[11px] text-rose-700 hover:bg-slate-50"
                         >
                           Recusar
                         </button>
@@ -851,7 +856,7 @@ const AdminDashboard = () => {
 
                       <button
                         onClick={() => deleteGuest(guest.id)}
-                        className="rounded-full border border-rose-200 px-4 py-2 text-xs text-rose-700 hover:bg-rose-50"
+                        className="rounded-full border border-rose-200 px-4 py-2 text-xs text-rose-700 hover:bg-slate-50"
                       >
                         Excluir
                       </button>
@@ -871,7 +876,7 @@ const AdminDashboard = () => {
 
         {activeTab === 'invites' && (
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <article className="rounded-3xl border border-rose-100 bg-white/90 p-5 md:p-6 space-y-3">
+            <article className="rounded-3xl border border-slate-100 bg-white/90 p-5 md:p-6 space-y-3">
               <h2 className="font-titulo text-2xl text-[#120a74]">Criador de Convites Digitais</h2>
               <p className="text-sm text-zinc-600">Monte mensagem, gere QR Code e envie por WhatsApp com link individual.</p>
 
@@ -959,13 +964,13 @@ const AdminDashboard = () => {
               </div>
             </article>
 
-            <article className="rounded-3xl border border-rose-100 bg-white/90 p-5 md:p-6">
+            <article className="rounded-3xl border border-slate-100 bg-white/90 p-5 md:p-6">
               <h3 className="font-titulo text-2xl text-[#120a74]">Pre-visualizacao</h3>
               {!selectedGuest && <p className="mt-3 text-sm text-zinc-500">Selecione um convidado para gerar o convite.</p>}
 
               {selectedGuest && (
                 <div className="mt-3 space-y-3">
-                  <div className="rounded-2xl border border-rose-100 bg-rose-50/40 p-4">
+                  <div className="rounded-2xl border border-slate-100 bg-slate-50/40 p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-[#120a74]/70">Convite digital</p>
                     <p className="mt-1 font-titulo text-2xl text-[#120a74]">Jefferson & Beatriz</p>
                     <p className="mt-2 text-sm text-zinc-700">Convidado: <strong>{selectedGuest.name}</strong></p>
@@ -973,15 +978,15 @@ const AdminDashboard = () => {
                     <p className="text-sm text-zinc-700">{inviteBuilder.place}</p>
                   </div>
 
-                  <div className="rounded-2xl border border-rose-100 bg-white p-4">
+                  <div className="rounded-2xl border border-slate-100 bg-white p-4">
                     <pre className="whitespace-pre-wrap text-sm text-zinc-700 font-sans">{buildInviteText(selectedGuest)}</pre>
                   </div>
 
-                  <div className="rounded-2xl border border-rose-100 bg-white p-4 flex flex-col sm:flex-row items-center gap-4">
+                  <div className="rounded-2xl border border-slate-100 bg-white p-4 flex flex-col sm:flex-row items-center gap-4">
                     <img
                       src={getInviteQrCode(selectedGuest.invite_token)}
                       alt={`QR code do convite para ${selectedGuest.name}`}
-                      className="h-36 w-36 rounded-xl border border-rose-100"
+                      className="h-36 w-36 rounded-xl border border-slate-100"
                     />
                     <div>
                       <p className="text-sm font-medium text-zinc-800">QR Code do link individual</p>
