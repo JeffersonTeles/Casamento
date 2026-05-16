@@ -439,6 +439,12 @@
       if (title) { await supabaseClient.from('tasks').insert([{ title, status: 'pendente', due_date, owner }]); fetchTasks(); }
     }
 
+    async function fetchGuests() { 
+      const { data } = await supabaseClient.from('guests').select('*').order('name', { ascending: true }); 
+      allGuests = data || []; 
+      renderGuestList(); 
+    }
+
     function renderGuestList() {
       const list = document.getElementById('guestList');
       list.innerHTML = allGuests.map(g => {
