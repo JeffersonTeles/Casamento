@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
+import { jsPDF } from 'jspdf';
 
 const DEFAULT_EVENT_INFO = {
   date: '06 de fevereiro de 2027',
@@ -161,6 +162,64 @@ const AdminDashboard = () => {
 
   function getInviteQrCode(token) {
     return `https://quickchart.io/qr?size=250&text=${encodeURIComponent(getInviteLink(token))}`;
+  }
+
+  async function generatePdfInvite(guest) {
+    if (!guest) return;
+    clearMessages();
+    showSuccess('Gerando PDF... Aguarde.');
+
+    try {
+      const doc = new jsPDF();
+      const primaryColor = '#120a74';
+      
+      // Fundo e bordas (simulado)
+      doc.setDrawColor(primaryColor);
+      doc.rect(10, 10, 190, 277);
+      
+      // Título
+      doc.setTextColor(primaryColor);
+      doc.setFontSize(26);
+      doc.text('Jefferson & Beatriz', 105, 40, { align: 'center' });
+      
+      doc.setFontSize(14);
+      doc.text('Convite Especial', 105, 50, { align: 'center' });
+      
+      // Mensagem
+      doc.setTextColor('#333333');
+      doc.setFontSize(12);
+      const messageLines = doc.splitTextToSize(`Ola, ${guest.name}!\n\nVoce esta convidado(a) para o nosso casamento.\n\n${inviteBuilder.date} as ${inviteBuilder.time}\n${inviteBuilder.place}\n\n${inviteBuilder.customMessage}`, 160);
+      doc.text(messageLines, 105, 70, { align: 'center' });
+      
+      // Link
+      doc.setTextColor(primaryColor);
+      doc.setFontSize(11);
+      doc.text('Confirme sua presenca no link abaixo:', 105, 130, { align: 'center' });
+      doc.setTextColor('#0000EE');
+      doc.text(getInviteLink(guest.invite_token), 105, 138, { align: 'center' });
+      
+      // QR Code
+      const qrUrl = getInviteQrCode(guest.invite_token);
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.src = qrUrl;
+      
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+      
+      doc.addImage(img, 'PNG', 75, 150, 60, 60);
+      doc.setTextColor(primaryColor);
+      doc.setFontSize(10);
+      doc.text('Aponte a camera para o QR Code para confirmar', 105, 215, { align: 'center' });
+
+      doc.save(`Convite_${guest.name.replace(/\s+/g, '_')}.pdf`);
+      showSuccess('PDF gerado com sucesso!');
+    } catch (err) {
+      console.error(err);
+      setError('Erro ao gerar o PDF. Verifique sua conexao.');
+    }
   }
 
   function buildInviteText(guest) {
@@ -632,10 +691,10 @@ const AdminDashboard = () => {
                       </button>
 
                       <button
-                        onClick={() => copyToClipboard(buildInviteText(guest), 'Convite copiado.', 'Nao foi possivel copiar convite.')}
+                        onClick={() => generatePdfInvite(guest)}
                         className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs text-[#120a74] hover:bg-[#120a74]/5"
                       >
-                        Copiar convite
+                        Gerar PDF
                       </button>
 
                       <button
@@ -740,11 +799,11 @@ const AdminDashboard = () => {
 
               <div className="flex flex-wrap gap-2">
                 <button
-                  onClick={() => selectedGuest && copyToClipboard(buildInviteText(selectedGuest), 'Convite copiado.', 'Nao foi possivel copiar convite.')}
+                  onClick={() => selectedGuest && generatePdfInvite(selectedGuest)}
                   disabled={!selectedGuest}
                   className="rounded-full bg-[#120a74] px-4 py-2 text-sm text-white disabled:opacity-40"
                 >
-                  Copiar convite
+                  Gerar Convite PDF
                 </button>
                 <button
                   onClick={() => selectedGuest && openWhatsAppInvite(selectedGuest)}
