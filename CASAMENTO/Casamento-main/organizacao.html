@@ -12,6 +12,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
     tailwind.config = {
@@ -145,7 +146,7 @@
         <div class="summary-card rounded-2xl p-4 border-l-4 border-green-500"><p class="stat-label">Confirmados</p><div class="mt-2 stat-value" id="stat-confirmed">0</div></div>
         <div class="summary-card rounded-2xl p-4 border-l-4 border-rosa"><p class="stat-label">Mesas estimadas</p><div class="mt-2 stat-value" id="stat-tables">0</div><p class="text-[10px] text-slate-400">baseado em 10 por mesa</p></div>
         <div class="summary-card rounded-2xl p-4 border-l-4 border-blue-400"><p class="stat-label">Jefferson</p><div class="mt-2 stat-value" id="stat-jefferson">0</div></div>
-        <div class="summary-card rounded-2xl p-4 border-l-4 border-purple-400"><p class="stat-label">Beatriz</p><div class="mt-2 stat-value" id="stat-bia">0</div></div>
+        <div class="summary-card rounded-2xl p-4 border-l-4 border-purple-400"><p class="stat-label">Beatriz</p><div class="mt-2 stat-value" id="stat-beatriz">0</div></div>
       </div>
     </header>
 
@@ -178,15 +179,20 @@
           <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-100 pb-4">
             <button onclick="filterTasks('all')" id="task-filter-all" class="mini-pill bg-vinho text-white">Todas</button>
             <button onclick="filterTasks('Jefferson')" id="task-filter-Jefferson" class="mini-pill">Jefferson</button>
-            <button onclick="filterTasks('Beatriz')" id="task-filter-Bia" class="mini-pill">Beatriz</button>
+            <button onclick="filterTasks('Beatriz')" id="task-filter-Beatriz" class="mini-pill">Beatriz</button>
             <button onclick="filterTasks('Ambos')" id="task-filter-Ambos" class="mini-pill">Ambos</button>
           </div>
           <div id="taskList" class="space-y-3"></div>
         </section>
 
-        <!-- SEÇÃO CONVIDADOS -->
         <section id="guests" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
-          <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="users"></i> Convidados</h2>
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+            <h2 class="text-2xl font-titulo text-vinho flex items-center gap-2"><i data-lucide="users"></i> Convidados</h2>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="exportToExcel()" class="bg-emerald-600 text-white text-[10px] md:text-xs px-4 py-2 rounded-full font-bold">Excel</button>
+              <button onclick="exportToPDF()" class="bg-rose-600 text-white text-[10px] md:text-xs px-4 py-2 rounded-full font-bold">PDF (Lista)</button>
+            </div>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-6">
             <input type="text" id="guestName" placeholder="Nome" class="p-3 rounded-xl border border-slate-300" />
             <input type="text" id="guestPhone" placeholder="Telefone" class="p-3 rounded-xl border border-slate-300" />
@@ -319,6 +325,11 @@
         <input type="text" id="editGuestName" placeholder="Nome" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-rosa" />
         <input type="text" id="editGuestPhone" placeholder="Telefone" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-rosa" />
         <input type="text" id="editGuestDietary" placeholder="Restrição Alimentar" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-rosa" />
+        <select id="editGuestStatus" class="w-full p-3 rounded-xl border border-slate-200 bg-white">
+          <option value="aguardando">Aguardando</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="recusado">Recusado</option>
+        </select>
         <select id="editGuestOwner" class="w-full p-3 rounded-xl border border-slate-200 bg-white"><option value="Jefferson">Jefferson</option><option value="Beatriz">Beatriz</option><option value="Ambos">Ambos</option></select>
       </div>
       <div class="mt-8 flex gap-3"><button onclick="toggleEditModal(false)" class="flex-1 py-3 rounded-xl border">Cancelar</button><button onclick="saveGuestEdit()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold">Salvar</button></div>
@@ -408,7 +419,17 @@
       }).join('');
     }
 
-    function filterTasks(f) { dashboardState.taskFilter = f; renderTasks(); }
+    function filterTasks(f) { 
+      dashboardState.taskFilter = f; 
+      ['all', 'Jefferson', 'Beatriz', 'Ambos'].forEach(id => {
+        const btn = document.getElementById(`task-filter-${id}`);
+        if (btn) {
+          btn.classList.toggle('bg-vinho', id === f);
+          btn.classList.toggle('text-white', id === f);
+        }
+      });
+      renderTasks(); 
+    }
     async function toggleTask(id, status) { const next = status === 'concluido' ? 'pendente' : 'concluido'; await supabaseClient.from('tasks').update({ status: next }).eq('id', id); fetchTasks(); }
     async function deleteTask(id) { if (confirm('Deletar?')) { await supabaseClient.from('tasks').delete().eq('id', id); fetchTasks(); } }
     async function addTask() {
@@ -418,29 +439,126 @@
       if (title) { await supabaseClient.from('tasks').insert([{ title, status: 'pendente', due_date, owner }]); fetchTasks(); }
     }
 
-    async function fetchGuests() { const { data } = await supabaseClient.from('guests').select('*').order('name', { ascending: true }); allGuests = data || []; renderGuestList(); }
     function renderGuestList() {
       const list = document.getElementById('guestList');
       list.innerHTML = allGuests.map(g => {
         const dietaryTag = g.dietary ? `<span class="bg-orange-100 text-orange-600 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ml-2">🍽️ ${g.dietary}</span>` : '';
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''}"><div class="flex-1"><p class="font-bold">${g.name} ${dietaryTag}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1"><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Convite</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.dietary||''}', '${g.invited_by}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''}"><div class="flex-1"><p class="font-bold">${g.name} ${dietaryTag}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1"><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="generateIndividualPDF('${g.name}', '${g.invite_token}')" class="bg-[#120a74] text-white text-[10px] px-3 py-1 rounded-full">PDF</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.dietary||''}', '${g.invited_by}', '${g.rsvp_status}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
     }
     function toggleEditModal(s) { document.getElementById('editGuestModal').classList.toggle('hidden', !s); }
-    function editGuest(id, name, phone, dietary, owner) { document.getElementById('editGuestId').value = id; document.getElementById('editGuestName').value = name; document.getElementById('editGuestPhone').value = phone; document.getElementById('editGuestDietary').value = dietary; document.getElementById('editGuestOwner').value = owner; toggleEditModal(true); }
+    function editGuest(id, name, phone, dietary, owner, status) { 
+      document.getElementById('editGuestId').value = id; 
+      document.getElementById('editGuestName').value = name; 
+      document.getElementById('editGuestPhone').value = phone; 
+      document.getElementById('editGuestDietary').value = dietary; 
+      document.getElementById('editGuestOwner').value = owner; 
+      document.getElementById('editGuestStatus').value = status || 'aguardando';
+      toggleEditModal(true); 
+    }
     async function saveGuestEdit() {
       const id = document.getElementById('editGuestId').value;
-      const payload = { name: document.getElementById('editGuestName').value, phone: document.getElementById('editGuestPhone').value, dietary: document.getElementById('editGuestDietary').value, invited_by: document.getElementById('editGuestOwner').value };
+      const payload = { 
+        name: document.getElementById('editGuestName').value, 
+        phone: document.getElementById('editGuestPhone').value, 
+        dietary: document.getElementById('editGuestDietary').value, 
+        invited_by: document.getElementById('editGuestOwner').value,
+        rsvp_status: document.getElementById('editGuestStatus').value
+      };
       await supabaseClient.from('guests').update(payload).eq('id', id); toggleEditModal(false); fetchGuests();
     }
     async function deleteGuest(id) { if (confirm('Remover?')) { await supabaseClient.from('guests').delete().eq('id', id); fetchGuests(); } }
     async function addGuest() {
-      const name = document.getElementById('guestName').value;
-      const phone = document.getElementById('guestPhone').value;
-      const dietary = document.getElementById('guestDietary').value;
-      const invited_by = document.getElementById('guestOwner').value;
-      if (name) { await supabaseClient.from('guests').insert([{ name, phone, dietary, invited_by, invite_token: crypto.randomUUID(), rsvp_status: 'aguardando' }]); fetchGuests(); }
+      const nameEl = document.getElementById('guestName');
+      const phoneEl = document.getElementById('guestPhone');
+      const dietaryEl = document.getElementById('guestDietary');
+      const ownerEl = document.getElementById('guestOwner');
+      
+      const name = nameEl.value.trim();
+      const phone = phoneEl.value.trim();
+      const dietary = dietaryEl.value.trim();
+      const invited_by = ownerEl.value;
+
+      if (!name) { alert('Informe o nome do convidado!'); return; }
+
+      try {
+        const token = window.crypto?.randomUUID ? window.crypto.randomUUID() : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const { error } = await supabaseClient.from('guests').insert([{ name, phone, dietary, invited_by, invite_token: token, rsvp_status: 'aguardando' }]);
+        if (error) throw error;
+        nameEl.value = ''; phoneEl.value = ''; dietaryEl.value = '';
+        fetchGuests();
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao cadastrar: ' + (err.message || 'Verifique o console'));
+      }
+    }
+
+    function exportToExcel() {
+      if (!window.XLSX) { alert('Biblioteca de Excel não carregada.'); return; }
+      const data = allGuests.map(g => ({
+        Nome: g.name,
+        Telefone: g.phone || '-',
+        Status: g.rsvp_status,
+        'Convidado por': g.invited_by,
+        'Restrição': g.dietary || '-',
+        Link: `${window.location.origin}/rsvp.html?token=${g.invite_token}`
+      }));
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Convidados");
+      XLSX.writeFile(wb, "convidados_casamento.xlsx");
+    }
+
+    function exportToPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Lista de Convidados - Jefferson & Beatriz", 14, 15);
+      const rows = allGuests.map(g => [g.name, g.phone || '-', g.rsvp_status, g.invited_by]);
+      doc.autoTable({
+        startY: 25,
+        head: [['Nome', 'Telefone', 'Status', 'Dono']],
+        body: rows,
+        headStyles: { fillColor: [18, 10, 116] }
+      });
+      doc.save("lista_convidados.pdf");
+    }
+
+    async function generateIndividualPDF(name, token) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const link = `${window.location.origin}/rsvp.html?token=${token}`;
+      const qrUrl = `https://quickchart.io/qr?size=250&text=${encodeURIComponent(link)}`;
+
+      doc.setTextColor(18, 10, 116);
+      doc.setFontSize(26);
+      doc.text("Jefferson & Beatriz", 105, 40, { align: 'center' });
+      doc.setFontSize(14);
+      doc.text("Convite Especial", 105, 50, { align: 'center' });
+      
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(12);
+      doc.text(`Olá, ${name}!`, 105, 75, { align: 'center' });
+      doc.text("Preparamos tudo com muito amor e ficaremos felizes em viver", 105, 85, { align: 'center' });
+      doc.text("esse momento ao seu lado.", 105, 92, { align: 'center' });
+      
+      doc.text("Aponte a câmera para confirmar e ver o mapa:", 105, 115, { align: 'center' });
+      
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = qrUrl;
+      img.onload = () => {
+        doc.addImage(img, 'PNG', 75, 125, 60, 60);
+        doc.setTextColor(18, 10, 116);
+        doc.setFontSize(10);
+        doc.text(link, 105, 195, { align: 'center' });
+        doc.save(`Convite_${name.replace(/\s+/g, '_')}.pdf`);
+      };
+      img.onerror = () => {
+        doc.setTextColor(255, 0, 0);
+        doc.text("Erro ao gerar QR Code. Tente novamente.", 105, 150, { align: 'center' });
+        doc.save(`Convite_${name.replace(/\s+/g, '_')}.pdf`);
+      };
     }
     async function shareInviteWhatsApp(name, token) {
       const link = `${window.location.origin}${window.location.pathname.replace('organizacao.html', '')}rsvp.html?token=${token}`;
@@ -457,7 +575,7 @@
       document.getElementById('stat-confirmed').textContent = confirmed;
       document.getElementById('stat-tables').textContent = tables;
       document.getElementById('stat-jefferson').textContent = allGuests.filter(g => g.invited_by === 'Jefferson').length;
-      document.getElementById('stat-bia').textContent = allGuests.filter(g => g.invited_by === 'Beatriz').length;
+      document.getElementById('stat-beatriz').textContent = allGuests.filter(g => g.invited_by === 'Beatriz').length;
       document.getElementById('dueSoonStat').textContent = dueSoonCount;
       document.getElementById('pendingTasksStat').textContent = dashboardState.tasks.filter(t => t.status !== 'concluido').length;
     }
