@@ -85,8 +85,21 @@ const Home = () => {
             <div>
               <p className="font-semibold text-[#120a74]">Cerimônia</p>
               <p className="mt-1">08:00 DA MANHÃ (PONTUALMENTE) • Paróquia Nossa Senhora de Fátima Cancellia<br />Cascavel - PR</p>
+              <div className="mt-4 rounded-2xl overflow-hidden border border-[#120a74]/20 shadow-md">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.0!2d-53.4558!3d-24.9578!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCapela+S%C3%A3o+Maximiliano+Cascavel+PR!5e0!3m2!1spt!2sbr!4v1"
+                  width="100%"
+                  height="260"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Localização da Capela São Maximiliano — Cascavel PR"
+                  className="w-full"
+                ></iframe>
+              </div>
               <p className="mt-2 text-[0.7rem] text-zinc-600">
-                <a href="https://maps.app.goo.gl/TBtd7eAjcBzWDuGq7" target="_blank" rel="noreferrer" className="text-[#120a74] underline">Ver mapa de como chegar à igreja</a>
+                <a href="https://maps.app.goo.gl/TBtd7eAjcBzWDuGq7" target="_blank" rel="noreferrer" className="text-[#120a74] underline">Abrir no Google Maps →</a>
               </p>
             </div>
             <div>
@@ -96,20 +109,6 @@ const Home = () => {
             <div>
               <p className="font-semibold text-[#120a74]">Traje sugerido</p>
               <p className="mt-1">Traje livre • Proibido cores claras semelhantes ao branco</p>
-            </div>
-          </div>
-        </section>
-
-        <section id="sobre" className="bg-white/70 border-y border-white/80">
-          <div className="max-w-5xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-8 items-start">
-            <div>
-              <h2 className="font-titulo text-2xl text-[#120a74] mb-3">Nossa história</h2>
-              <p className="text-sm leading-relaxed text-zinc-700">
-                Tivemos certeza um do outro desde o primeiro momento em que nos vimos. Desde então, decidimos trilhar esse caminho juntos com muito amor e cumplicidade.
-              </p>
-            </div>
-            <div className="space-y-3 text-xs text-zinc-700 bg-slate-50/80 rounded-3xl p-4 border border-slate-100">
-              <p className="font-semibold text-[#120a74]">“O amor é a força que transforma e melhora o mundo.”</p>
             </div>
           </div>
         </section>
