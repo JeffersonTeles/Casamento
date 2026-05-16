@@ -66,9 +66,9 @@
   <style>
     /* Cores personalizadas */
     .bg-vinho { background-color: #120a74 !important; }
-    .bg-rosa { background-color: #e91e63 !important; }
+    .bg-rosa { background-color: #120a74 !important; }
     .text-vinho { color: #120a74 !important; }
-    .text-rosa { color: #e91e63 !important; }
+    .text-rosa { color: #120a74 !important; }
     .border-vinho { border-color: #120a74 !important; }
     
     .bg-vinho\/90 { background-color: rgba(18, 10, 116, 0.9) !important; }
@@ -78,10 +78,10 @@
     .text-vinho\/80 { color: rgba(18, 10, 116, 0.8) !important; }
     .border-vinho\/60 { border-color: rgba(18, 10, 116, 0.6) !important; }
     
-    .bg-champagne\/60 { background-color: rgba(245, 230, 211, 0.6) !important; }
-    .bg-rose-50 { background-color: #fff1f2 !important; }
-    .bg-rose-100 { background-color: #ffe4e6 !important; }
-    .shadow-rose-200\/70 { box-shadow: 0 20px 25px -5px rgba(251, 113, 133, 0.7) !important; }
+    .bg-champagne\/60 { background-color: rgba(249, 250, 251, 0.6) !important; }
+    .bg-slate-50 { background-color: #f9fafb !important; }
+    .bg-slate-100 { background-color: #f3f4f6 !important; }
+    .shadow-rose-200\/70 { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05) !important; }
     
     /* Botões */
     .rounded-full { border-radius: 9999px !important; }
@@ -141,8 +141,8 @@
     body.dark-mode .bg-white\/70,
     body.dark-mode .bg-white\/80,
     body.dark-mode .bg-white\/90,
-    body.dark-mode .bg-rose-50\/80,
-    body.dark-mode .bg-rose-50\/40 {
+    body.dark-mode .bg-slate-50\/80,
+    body.dark-mode .bg-slate-50\/40 {
       background-color: #0b1120 !important;
     }
 
@@ -185,9 +185,9 @@
   
     :root {
       --primary: #120a74;
-      --secondary: #e91e63;
-      --glass: rgba(255, 255, 255, 0.75);
-      --glass-border: rgba(255, 255, 255, 0.4);
+      --secondary: #120a74;
+      --glass: rgba(255, 255, 255, 0.85);
+      --glass-border: rgba(18, 10, 116, 0.1);
     }
     
     .premium-glass {
@@ -266,7 +266,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-<body class="bg-gradient-to-b from-champagne/60 via-rose-50 to-white font-corpo text-zinc-800">
+<body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800">
   <header class="w-full bg-white/70 backdrop-blur border-b border-white/60 sticky top-0 z-20">
     <nav class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 py-4 md:py-3 gap-4 md:gap-3">
       <a href="#topo" class="flex items-center gap-2">
@@ -307,10 +307,10 @@
           <a href="#rsvp" class="flex items-center justify-center gap-2 rounded-2xl bg-vinho px-6 py-4 text-sm font-bold text-white shadow-xl shadow-vinho/30 hover:scale-[1.02] transition-all">
             💍 Confirmar Presença
           </a>
-          <a href="gifts.html" class="flex items-center justify-center gap-2 rounded-2xl bg-white border-2 border-vinho/10 px-6 py-4 text-sm font-bold text-vinho shadow-lg shadow-rose-100 hover:scale-[1.02] transition-all">
+          <a href="gifts.html" class="flex items-center justify-center gap-2 rounded-2xl bg-white border-2 border-slate-100 px-6 py-4 text-sm font-bold text-vinho shadow-lg shadow-slate-100 hover:scale-[1.02] transition-all">
             🎁 Lista de Presentes
           </a>
-          <button onclick="addToGoogleCalendar()" class="flex items-center justify-center gap-2 rounded-2xl bg-rose-50 border-2 border-rose-100 px-6 py-4 text-sm font-bold text-vinho hover:scale-[1.02] transition-all col-span-1 sm:col-span-2">
+          <button onclick="addToGoogleCalendar()" class="flex items-center justify-center gap-2 rounded-2xl bg-slate-50 border-2 border-slate-100 px-6 py-4 text-sm font-bold text-vinho hover:scale-[1.02] transition-all col-span-1 sm:col-span-2">
             📅 Adicionar ao Calendário
           </button>
         </div>
@@ -318,7 +318,7 @@
 
       <div class="relative flex items-center justify-center md:justify-end order-1 md:order-2">
         <div
-          class="h-56 w-56 md:h-72 md:w-72 overflow-hidden rounded-[2.5rem] bg-rose-100 shadow-xl shadow-rose-200/70 border border-white/80">
+          class="h-56 w-56 md:h-72 md:w-72 overflow-hidden rounded-[2.5rem] bg-slate-50 shadow-xl shadow-slate-200/50 border border-white/80">
           <img src="./img/foto1.jpg" alt="Jefferson e Beatriz sorrindo juntos" class="h-full w-full object-cover" loading="lazy" width="288" height="288" />
         </div>
         <div
@@ -359,7 +359,7 @@
       </div>
     </section>
 
-    <section id="sobre" class="reveal" class="bg-white/70 border-y border-white/80">
+    <section id="sobre" class="reveal" class="bg-white/70 border-y border-slate-100">
       <div class="max-w-5xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-8 items-start">
         <div>
           <h2 class="font-titulo text-2xl text-vinho mb-3">Nossa história</h2>
@@ -367,7 +367,7 @@
             Tivemos certeza um do outro desde o primeiro momento em que nos vimos. Desde então, decidimos trilhar esse caminho juntos com muito amor e cumplicidade.
           </p>
         </div>
-        <div class="space-y-3 text-xs text-zinc-700 bg-rose-50/80 rounded-3xl p-4 border border-rose-100">
+        <div class="space-y-3 text-xs text-zinc-700 bg-slate-50/50 rounded-3xl p-4 border border-slate-100">
           <p class="font-semibold text-vinho">
             “Assim, eles já não são dois, mas sim uma só carne.”
           </p>
@@ -384,27 +384,27 @@
         Acompanhe a contagem regressiva até o momento do “sim”.
       </p>
 
-      <div class="mt-6 bg-white/90 border border-rose-100 rounded-3xl p-5 shadow-sm">
+      <div class="mt-6 bg-white/90 border border-slate-100 rounded-3xl p-5 shadow-sm">
         <div id="countdown" class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 text-center text-vinho">
-          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-rose-100">
+          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-slate-100">
             <div class="text-xl md:text-2xl font-semibold" id="days">0</div>
             <div class="mt-0.5 text-[0.6rem] md:text-[0.65rem] uppercase tracking-wide text-zinc-500">
               Dias
             </div>
           </div>
-          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-rose-100">
+          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-slate-100">
             <div class="text-xl md:text-2xl font-semibold" id="hours">0</div>
             <div class="mt-0.5 text-[0.6rem] md:text-[0.65rem] uppercase tracking-wide text-zinc-500">
               Horas
             </div>
           </div>
-          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-rose-100">
+          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-slate-100">
             <div class="text-xl md:text-2xl font-semibold" id="minutes">0</div>
             <div class="mt-0.5 text-[0.6rem] md:text-[0.65rem] uppercase tracking-wide text-zinc-500">
               Minutos
             </div>
           </div>
-          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-rose-100">
+          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-slate-100">
             <div class="text-xl md:text-2xl font-semibold" id="seconds">0</div>
             <div class="mt-0.5 text-[0.6rem] md:text-[0.65rem] uppercase tracking-wide text-zinc-500">
               Segundos
@@ -452,7 +452,7 @@
     </section>
 
     <section id="rsvp" class="reveal" class="max-w-5xl mx-auto px-4 pb-14 flex flex-col items-center">
-      <div class="w-full bg-white/90 border border-rose-100 rounded-3xl shadow-sm p-5 md:p-6">
+      <div class="w-full bg-white/90 border border-slate-100 rounded-3xl shadow-sm p-5 md:p-6">
         <h2 class="font-titulo text-2xl text-vinho text-center">
           Confirme sua presença
         </h2>
@@ -476,7 +476,7 @@
     </section>
   </main>
 
-  <footer class="mt-6 border-t border-rose-100 bg-white/60">
+  <footer class="mt-6 border-t border-slate-100 bg-white/60">
     <div
       class="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[0.7rem] text-zinc-500">
       <span>Com carinho, Jefferson &amp; Beatriz</span>

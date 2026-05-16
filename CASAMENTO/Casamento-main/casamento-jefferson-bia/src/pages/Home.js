@@ -29,7 +29,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="bg-gradient-to-b from-champagne/60 via-rose-50 to-white font-corpo text-zinc-800 min-h-screen">
+    <div className="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 min-h-screen">
       <header className="w-full bg-white/70 backdrop-blur border-b border-white/60 sticky top-0 z-20">
         <nav className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
           <a href="#topo" className="flex items-center gap-2">
@@ -71,7 +71,7 @@ const Home = () => {
           </div>
 
           <div className="relative flex items-center justify-center md:justify-end">
-            <div className="h-64 w-64 md:h-72 md:w-72 overflow-hidden rounded-[2.5rem] bg-rose-100 shadow-xl shadow-rose-200/70 border border-white/80">
+            <div className="h-64 w-64 md:h-72 md:w-72 overflow-hidden rounded-[2.5rem] bg-slate-100 shadow-xl shadow-slate-200/50 border border-white/80">
               <img src="./img/foto1.jpeg" alt="Jefferson e Beatriz" className="h-full w-full object-cover" />
             </div>
             <div className="hidden md:block absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white/90 rounded-2xl px-4 py-2 shadow-md text-[0.7rem] text-[#120a74]">
@@ -108,7 +108,7 @@ const Home = () => {
                 Tivemos certeza um do outro desde o primeiro momento em que nos vimos. Desde então, decidimos trilhar esse caminho juntos com muito amor e cumplicidade.
               </p>
             </div>
-            <div className="space-y-3 text-xs text-zinc-700 bg-rose-50/80 rounded-3xl p-4 border border-rose-100">
+            <div className="space-y-3 text-xs text-zinc-700 bg-slate-50/80 rounded-3xl p-4 border border-slate-100">
               <p className="font-semibold text-[#120a74]">“O amor é a força que transforma e melhora o mundo.”</p>
             </div>
           </div>
@@ -123,21 +123,21 @@ const Home = () => {
               ? 'Uma contagem de carinho desde o nosso "sim".'
               : 'Acompanhe a contagem regressiva até o momento do "sim".'}
           </p>
-          <div className="mt-6 bg-white/90 border border-rose-100 rounded-3xl p-5 shadow-sm">
+          <div className="mt-6 bg-white/90 border border-slate-100 rounded-3xl p-5 shadow-sm">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-[#120a74]">
-              <div className="bg-white/90 rounded-2xl py-4 shadow-sm border border-rose-100">
+              <div className="bg-white/90 rounded-2xl py-4 shadow-sm border border-slate-100">
                 <div className="text-2xl font-semibold">{timeLeft.days}</div>
                 <div className="mt-1 text-[0.65rem] uppercase tracking-wide text-zinc-500">Dias</div>
               </div>
-              <div className="bg-white/90 rounded-2xl py-4 shadow-sm border border-rose-100">
+              <div className="bg-white/90 rounded-2xl py-4 shadow-sm border border-slate-100">
                 <div className="text-2xl font-semibold">{timeLeft.hours}</div>
                 <div className="mt-1 text-[0.65rem] uppercase tracking-wide text-zinc-500">Horas</div>
               </div>
-              <div className="bg-white/90 rounded-2xl py-4 shadow-sm border border-rose-100">
+              <div className="bg-white/90 rounded-2xl py-4 shadow-sm border border-slate-100">
                 <div className="text-2xl font-semibold">{timeLeft.minutes}</div>
                 <div className="mt-1 text-[0.65rem] uppercase tracking-wide text-zinc-500">Minutos</div>
               </div>
-              <div className="bg-white/90 rounded-2xl py-4 shadow-sm border border-rose-100">
+              <div className="bg-white/90 rounded-2xl py-4 shadow-sm border border-slate-100">
                 <div className="text-2xl font-semibold">{timeLeft.seconds}</div>
                 <div className="mt-1 text-[0.65rem] uppercase tracking-wide text-zinc-500">Segundos</div>
               </div>
@@ -146,7 +146,7 @@ const Home = () => {
         </section>
 
         <section id="rsvp" className="max-w-5xl mx-auto px-4 pb-14 flex flex-col items-center">
-          <div className="w-full bg-white/90 border border-rose-100 rounded-3xl shadow-sm p-5 md:p-6">
+          <div className="w-full bg-white/90 border border-slate-100 rounded-3xl shadow-sm p-5 md:p-6">
             <h2 className="font-titulo text-2xl text-[#120a74] text-center">Confirme sua presença</h2>
             <div className="mt-5 flex flex-col sm:flex-row gap-3 items-center justify-center">
               <a href="https://wa.me/5544999277915?text=Oi%2C%20aqui%20%C3%A9%20SEU%20NOME%2C%20confirmando%20minha%20presen%C3%A7a%20no%20casamento%20do%20Jefferson%20e%20da%20Beatriz.%20%F0%9F%92%8D"
@@ -159,7 +159,7 @@ const Home = () => {
         </section>
       </main>
 
-      <footer className="mt-6 border-t border-rose-100 bg-white/60">
+      <footer className="mt-6 border-t border-slate-100 bg-white/60">
         <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[0.7rem] text-zinc-500">
           <span>Com carinho, Jefferson & Beatriz</span>
           <span>Que esse seja apenas o começo de muitas comemorações.</span>
