@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
 import { jsPDF } from 'jspdf';
+import * as XLSX from 'xlsx';
 
 const DEFAULT_EVENT_INFO = {
   date: '06 de fevereiro de 2027',
@@ -164,39 +165,77 @@ const AdminDashboard = () => {
     return `https://quickchart.io/qr?size=250&text=${encodeURIComponent(getInviteLink(token))}`;
   }
 
+  function exportGuestsXlsx() {
+    clearMessages();
+    try {
+      const data = guests.map((guest) => ({
+        Nome: guest.name || '',
+        Telefone: guest.phone || '',
+        Status: guest.rsvp_status || '',
+        Link: getInviteLink(guest.invite_token),
+        'Data Cadastro': formatDateTime(guest.created_at),
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Convidados');
+      XLSX.writeFile(wb, 'convidados-casamento.xlsx');
+      showSuccess('Excel exportado com sucesso.');
+    } catch (err) {
+      setError('Erro ao exportar Excel.');
+    }
+  }
+
   async function generatePdfInvite(guest) {
     if (!guest) return;
     clearMessages();
     showSuccess('Gerando PDF... Aguarde.');
 
     try {
-      const doc = new jsPDF();
+      const doc = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4'
+      });
       const primaryColor = '#120a74';
+      const accentColor = '#f9fafb';
       
-      // Fundo e bordas (simulado)
+      // Fundo e bordas elegantes
+      doc.setFillColor(accentColor);
+      doc.rect(0, 0, 210, 297, 'F');
+      
       doc.setDrawColor(primaryColor);
+      doc.setLineWidth(0.5);
       doc.rect(10, 10, 190, 277);
+      doc.setLineWidth(0.2);
+      doc.rect(12, 12, 186, 273);
       
       // Título
       doc.setTextColor(primaryColor);
-      doc.setFontSize(26);
-      doc.text('Jefferson & Beatriz', 105, 40, { align: 'center' });
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(32);
+      doc.text('Jefferson & Beatriz', 105, 45, { align: 'center' });
       
-      doc.setFontSize(14);
-      doc.text('Convite Especial', 105, 50, { align: 'center' });
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(16);
+      doc.text('Convite Especial', 105, 55, { align: 'center' });
+      
+      // Divisor
+      doc.setDrawColor(primaryColor);
+      doc.line(70, 65, 140, 65);
       
       // Mensagem
       doc.setTextColor('#333333');
-      doc.setFontSize(12);
-      const messageLines = doc.splitTextToSize(`Ola, ${guest.name}!\n\nVoce esta convidado(a) para o nosso casamento.\n\n${inviteBuilder.date} as ${inviteBuilder.time}\n${inviteBuilder.place}\n\n${inviteBuilder.customMessage}`, 160);
-      doc.text(messageLines, 105, 70, { align: 'center' });
+      doc.setFontSize(14);
+      const messageLines = doc.splitTextToSize(`Olá, ${guest.name}!\n\nPreparamos este dia com muito carinho e sua presença é fundamental para tornar nossa celebração completa.\n\n${inviteBuilder.date} às ${inviteBuilder.time}\n${inviteBuilder.place}\n\n${inviteBuilder.customMessage}`, 150);
+      doc.text(messageLines, 105, 85, { align: 'center', lineHeightFactor: 1.5 });
       
-      // Link
+      // Link Chamada
+      const nextY = 160;
       doc.setTextColor(primaryColor);
-      doc.setFontSize(11);
-      doc.text('Confirme sua presenca no link abaixo:', 105, 130, { align: 'center' });
-      doc.setTextColor('#0000EE');
-      doc.text(getInviteLink(guest.invite_token), 105, 138, { align: 'center' });
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('PARA CONFIRMAR SUA PRESENÇA E VER O MAPA:', 105, nextY, { align: 'center' });
       
       // QR Code
       const qrUrl = getInviteQrCode(guest.invite_token);
@@ -209,17 +248,36 @@ const AdminDashboard = () => {
         img.onerror = reject;
       });
       
-      doc.addImage(img, 'PNG', 75, 150, 60, 60);
-      doc.setTextColor(primaryColor);
+      doc.addImage(img, 'PNG', 70, nextY + 10, 70, 70);
+      
+      // Link Texto
+      doc.setTextColor('#0000EE');
+      doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
-      doc.text('Aponte a camera para o QR Code para confirmar', 105, 215, { align: 'center' });
+      doc.text(getInviteLink(guest.invite_token), 105, nextY + 85, { align: 'center' });
+      
+      doc.setTextColor('#666666');
+      doc.setFontSize(9);
+      doc.text('Aponte a câmera do celular para o código acima', 105, nextY + 92, { align: 'center' });
 
       doc.save(`Convite_${guest.name.replace(/\s+/g, '_')}.pdf`);
       showSuccess('PDF gerado com sucesso!');
     } catch (err) {
       console.error(err);
-      setError('Erro ao gerar o PDF. Verifique sua conexao.');
+      setError('Erro ao gerar o PDF. Verifique sua conexão.');
     }
+  }
+
+  async function generateAllPdfs() {
+    const confirm = window.confirm(`Deseja gerar os PDFs de todos os ${filteredGuests.length} convidados filtrados? Isso pode levar algum tempo.`);
+    if (!confirm) return;
+    
+    for (const guest of filteredGuests) {
+      await generatePdfInvite(guest);
+      // Pequeno delay para não sobrecarregar o browser
+      await new Promise(r => setTimeout(r, 500));
+    }
+    showSuccess('Todos os PDFs foram processados.');
   }
 
   function buildInviteText(guest) {
@@ -534,12 +592,20 @@ const AdminDashboard = () => {
           <section className="rounded-3xl border border-rose-100 bg-white/90 p-5 md:p-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <h2 className="font-titulo text-2xl text-[#120a74]">Gestao de Convidados</h2>
-              <button
-                onClick={exportGuestsCsv}
-                className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs font-semibold text-[#120a74] hover:bg-[#120a74]/5"
-              >
-                Exportar CSV
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={exportGuestsXlsx}
+                  className="rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                >
+                  Exportar Excel
+                </button>
+                <button
+                  onClick={exportGuestsCsv}
+                  className="rounded-full border border-[#120a74]/25 px-4 py-2 text-xs font-semibold text-[#120a74] hover:bg-[#120a74]/5"
+                >
+                  Exportar CSV
+                </button>
+              </div>
             </div>
 
             <form onSubmit={addGuest} className="mt-4 grid grid-cols-1 md:grid-cols-[1.3fr_1fr_auto] gap-2">
@@ -804,6 +870,12 @@ const AdminDashboard = () => {
                   className="rounded-full bg-[#120a74] px-4 py-2 text-sm text-white disabled:opacity-40"
                 >
                   Gerar Convite PDF
+                </button>
+                <button
+                  onClick={generateAllPdfs}
+                  className="rounded-full border border-[#120a74]/25 px-4 py-2 text-sm text-[#120a74]"
+                >
+                  Gerar todos os PDFs
                 </button>
                 <button
                   onClick={() => selectedGuest && openWhatsAppInvite(selectedGuest)}
