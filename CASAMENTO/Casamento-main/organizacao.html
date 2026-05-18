@@ -158,6 +158,8 @@
         <button onclick="switchTab('notes')" id="btn-notes" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Notas</button>
         <button onclick="switchTab('analytics')" id="btn-analytics" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Analytics</button>
         <button onclick="switchTab('suppliers')" id="btn-suppliers" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Fornecedores</button>
+        <button onclick="switchTab('timeline')" id="btn-timeline" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Cronograma</button>
+        <button onclick="switchTab('seating')" id="btn-seating" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Mesas</button>
         <button onclick="switchTab('audit')" id="btn-audit" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Log</button>
       </div>
     </nav>
@@ -282,6 +284,42 @@
           <div id="supplierList" class="space-y-3"></div>
         </section>
 
+        <!-- SEÇÃO CRONOGRAMA -->
+        <section id="timeline" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
+            <h2 class="text-2xl font-titulo text-vinho flex items-center gap-2"><i data-lucide="clock"></i> Cronograma do Dia</h2>
+            <button onclick="alert('Funcionalidade de impressão em breve!')" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-full font-bold">Imprimir Roteiro</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-6">
+            <input type="time" id="tlTime" class="p-3 border rounded-xl bg-white text-sm" />
+            <input type="text" id="tlEvent" placeholder="O que vai acontecer?" class="p-3 border rounded-xl md:col-span-2" />
+            <button onclick="addTimelineEvent()" class="bg-vinho text-white rounded-xl font-bold">Adicionar</button>
+          </div>
+          <div class="relative border-l-2 border-vinho/20 ml-3 pl-4 space-y-4" id="timelineList">
+            <!-- Timeline items will go here -->
+            <div class="relative"><div class="absolute -left-[1.35rem] top-1 w-3 h-3 bg-vinho rounded-full"></div><p class="font-bold text-vinho text-sm">08:00</p><p class="text-slate-700">Cerimônia na Capela</p></div>
+            <div class="relative"><div class="absolute -left-[1.35rem] top-1 w-3 h-3 bg-vinho rounded-full"></div><p class="font-bold text-vinho text-sm">09:30</p><p class="text-slate-700">Sessão de fotos dos noivos</p></div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO MAPEAMENTO DE MESAS -->
+        <section id="seating" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
+            <h2 class="text-2xl font-titulo text-vinho flex items-center gap-2"><i data-lucide="layout-grid"></i> Mapeamento de Mesas</h2>
+            <button onclick="alert('Salvo com sucesso!')" class="bg-emerald-600 text-white text-xs px-4 py-2 rounded-full font-bold">Salvar Layout</button>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center text-slate-500 mb-6 min-h-[300px] flex flex-col items-center justify-center">
+            <i data-lucide="layout-template" class="w-12 h-12 mb-3 text-slate-300"></i>
+            <p>Arraste e solte os convidados para organizar as mesas.</p>
+            <p class="text-xs mt-2 text-slate-400">(A integração visual completa drag-and-drop será ativada via sistema web central.)</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+             <div class="bg-white p-4 rounded-xl border border-slate-200"><h3 class="font-bold text-vinho mb-2 border-b pb-2">Mesa Família Noivo (08)</h3><ul class="text-sm space-y-1 text-slate-600"><li>João (Pai)</li><li>Maria (Mãe)</li><li>Vazio...</li></ul></div>
+             <div class="bg-white p-4 rounded-xl border border-slate-200"><h3 class="font-bold text-vinho mb-2 border-b pb-2">Mesa Família Noiva (08)</h3><ul class="text-sm space-y-1 text-slate-600"><li>José (Pai)</li><li>Ana (Mãe)</li><li>Vazio...</li></ul></div>
+             <div class="bg-white p-4 rounded-xl border border-slate-200"><h3 class="font-bold text-vinho mb-2 border-b pb-2">Padrinhos 1 (06)</h3><ul class="text-sm space-y-1 text-slate-600"><li>Carlos</li><li>Fernanda</li><li>Vazio...</li></ul></div>
+          </div>
+        </section>
+
         <!-- SEÇÃO AUDITORIA (LOG) -->
         <section id="audit" class="tab-content glass-card p-5 rounded-[1.6rem]">
            <h2 class="text-2xl font-titulo text-vinho mb-4"><i data-lucide="history"></i> Log de Atividades</h2>
@@ -381,7 +419,7 @@
     };
 
     function switchTab(tabId) {
-      const tabs = ['tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers'];
+      const tabs = ['tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline', 'seating'];
       tabs.forEach(t => {
         const content = document.getElementById(t);
         const btn = document.getElementById(`btn-${t}`);

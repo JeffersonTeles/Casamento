@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR" class="scroll-smooth overflow-x-hidden">
 
 <head>
   <meta charset="UTF-8" />
@@ -53,15 +53,15 @@
             champagne: '#f5e6d3',
           },
           fontFamily: {
-            titulo: ['"Playfair Display"', 'serif'],
-            corpo: ['system-ui', 'sans-serif'],
+            titulo: ['"Cormorant Garamond"', 'serif'],
+            corpo: ['"Montserrat"', 'sans-serif'],
           },
         },
       },
     };
   </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
   <style>
     /* Cores personalizadas */
@@ -261,12 +261,28 @@
     .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
     .reveal.active { opacity: 1; transform: translateY(0); }
 
+    /* New Luxury Animations */
+    .reveal-up { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-up.active { opacity: 1; transform: translateY(0); }
+    
+    .reveal-fade { opacity: 0; transition: opacity 1.5s ease-out; }
+    .reveal-fade.active { opacity: 1; }
+    
+    .delay-100 { transition-delay: 100ms; }
+    .delay-200 { transition-delay: 200ms; }
+    .delay-300 { transition-delay: 300ms; }
+    
+    @keyframes fadeInExpand {
+      0% { opacity: 0; letter-spacing: 0.1em; transform: translateY(-10px); }
+      100% { opacity: 1; letter-spacing: 0.5em; transform: translateY(0); }
+    }
+
   </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-<body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800">
+<body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 overflow-x-hidden">
   <header class="w-full bg-white/70 backdrop-blur border-b border-white/60 sticky top-0 z-20">
     <nav class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 py-4 md:py-3 gap-4 md:gap-3">
       <a href="#topo" class="flex items-center gap-2">
@@ -286,7 +302,7 @@
 
   <main id="topo">
 
-    <section class="max-w-5xl mx-auto px-4 pt-8 pb-12 grid md:grid-cols-2 gap-8">
+    <section class="max-w-5xl mx-auto px-4 pt-8 pb-12 grid md:grid-cols-2 gap-8 reveal-up">
       <div class="flex flex-col justify-center order-2 md:order-1">
         <p class="uppercase tracking-[0.35em] text-[0.65rem] text-vinho/70 mb-2">
           Save the date
@@ -489,7 +505,7 @@
 
     // Reveal animations on scroll
     function reveal() {
-      var reveals = document.querySelectorAll(".reveal");
+      var reveals = document.querySelectorAll(".reveal, .reveal-up, .reveal-fade");
       for (var i = 0; i < reveals.length; i++) {
         var windowHeight = window.innerHeight;
         var elementTop = reveals[i].getBoundingClientRect().top;
