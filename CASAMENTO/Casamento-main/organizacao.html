@@ -131,7 +131,7 @@
               <p class="text-[0.65rem] uppercase tracking-[0.28em] text-slate-500">Logado como</p>
               <select id="userSelect" class="mt-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none">
                 <option value="Jefferson">Jefferson</option>
-                <option value="Beatriz">Beatriz</option>
+                <option value="Bia">Bia</option>
               </select>
             </div>
             <button onclick="logout()" class="p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
@@ -173,14 +173,14 @@
             <input type="text" id="newTask" placeholder="O que precisa ser feito?" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
             <input type="date" id="taskDue" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa bg-white text-sm" />
             <select id="taskOwner" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa bg-white text-sm">
-              <option value="">Responsável</option><option value="Jefferson">Jefferson</option><option value="Beatriz">Beatriz</option><option value="Ambos">Ambos</option>
+              <option value="">Responsável</option><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
             </select>
             <button onclick="addTask()" class="bg-vinho text-white px-6 py-3 rounded-xl hover:bg-vinho/90 transition font-bold">Adicionar</button>
           </div>
           <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-100 pb-4">
             <button onclick="filterTasks('all')" id="task-filter-all" class="mini-pill bg-vinho text-white">Todas</button>
             <button onclick="filterTasks('Jefferson')" id="task-filter-Jefferson" class="mini-pill">Jefferson</button>
-            <button onclick="filterTasks('Beatriz')" id="task-filter-Beatriz" class="mini-pill">Beatriz</button>
+            <button onclick="filterTasks('Bia')" id="task-filter-Bia" class="mini-pill">Bia</button>
             <button onclick="filterTasks('Ambos')" id="task-filter-Ambos" class="mini-pill">Ambos</button>
           </div>
           <div id="taskList" class="space-y-3"></div>
@@ -199,7 +199,7 @@
             <input type="text" id="guestPhone" placeholder="Telefone" class="p-3 rounded-xl border border-slate-300" />
             <input type="text" id="guestDietary" placeholder="Restrição alimentar" class="p-3 rounded-xl border border-slate-300" />
             <select id="guestOwner" class="p-3 rounded-xl border border-slate-300 bg-white">
-              <option value="Jefferson">Jefferson</option><option value="Beatriz">Beatriz</option><option value="Ambos">Ambos</option>
+              <option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
             </select>
             <button onclick="addGuest()" class="md:col-span-2 lg:col-span-4 bg-vinho text-white p-3 rounded-xl font-bold">Cadastrar</button>
           </div>
@@ -349,7 +349,7 @@
           <option value="confirmado">Confirmado</option>
           <option value="recusado">Recusado</option>
         </select>
-        <select id="editGuestOwner" class="w-full p-3 rounded-xl border border-slate-200 bg-white"><option value="Jefferson">Jefferson</option><option value="Beatriz">Beatriz</option><option value="Ambos">Ambos</option></select>
+        <select id="editGuestOwner" class="w-full p-3 rounded-xl border border-slate-200 bg-white"><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option></select>
       </div>
       <div class="mt-8 flex gap-3"><button onclick="toggleEditModal(false)" class="flex-1 py-3 rounded-xl border">Cancelar</button><button onclick="saveGuestEdit()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold">Salvar</button></div>
     </div>
@@ -438,11 +438,10 @@
       }).join('');
     }
 
-    function filterTasks(f) { 
-      dashboardState.taskFilter = f; 
-      ['all', 'Jefferson', 'Beatriz', 'Ambos'].forEach(id => {
-        const btn = document.getElementById(`task-filter-${id}`);
-        if (btn) {
+    function filterTasks(f) {
+      dashboardState.taskFilter = f;
+      ['all', 'Jefferson', 'Bia', 'Ambos'].forEach(id => {
+        const btn = document.getElementById(`task-filter-${id}`);        if (btn) {
           btn.classList.toggle('bg-vinho', id === f);
           btn.classList.toggle('text-white', id === f);
         }
@@ -654,11 +653,6 @@
     function initRealtime() { supabaseClient.channel('db-changes').on('postgres_changes', { event: '*', schema: 'public' }, () => { fetchTasks(); fetchGuests(); fetchExpenses(); }).subscribe(); }
     async function fetchSuppliers() { const { data } = await supabaseClient.from('suppliers').select('*'); document.getElementById('supplierList').innerHTML = (data || []).map(s => `<div class="bg-white p-4 rounded-xl flex justify-between"><span>${s.name}</span><span class="font-bold">R$ ${Number(s.value).toLocaleString('pt-BR')}</span></div>`).join(''); }
     async function addSupplier() { const name = document.getElementById('supplierName').value, cat = document.getElementById('supplierCategory').value, val = document.getElementById('supplierValue').value; if (name) { await supabaseClient.from('suppliers').insert([{ name, category: cat, value: parseFloat(val) || 0 }]); fetchSuppliers(); } }
-    function showToast(m, t) { alert(m); }
-    </script>
-    </body>
-    </html>
-lient.from('suppliers').insert([{ name, category: cat, value: parseFloat(val) || 0 }]); fetchSuppliers(); } }
     function showToast(m, t) { alert(m); }
     </script>
     </body>
