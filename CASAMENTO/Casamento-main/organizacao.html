@@ -629,7 +629,108 @@
     }
 
     async function updateAnalytics() {
-      try { const { data } = await supabaseClient.from('rsvp_access_logs').select('*'); if (!data) return; document.getElementById('analytics-total-access').textContent = data.length; } catch(err) {}
+      try {
+        const { data: logs } = await supabaseClient.from('rsvp_access_logs').select('*');
+        if (!logs) return;
+        
+        // KPIs
+        const totalAccess = logs.length;
+        const uniqueGuests = new Set(logs.map(l => l.guest_id)).size;
+        
+        const totalConvidados = allGuests.length;
+        const confirmados = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
+        const conversionRate = totalConvidados > 0 ? Math.round((confirmados / totalConvidados) * 100) : 0;
+        
+        const today = new Date().toISOString().split('T')[0];
+        const todayAccess = logs.filter(l => l.accessed_at && l.accessed_at.startsWith(today)).length;
+        
+        document.getElementById('analytics-total-access').textContent = totalAccess;
+        document.getElementById('analytics-unique-guests').textContent = uniqueGuests;
+        document.getElementById('analytics-conversion-rate').textContent = `${conversionRate}%`;
+        document.getElementById('analytics-today-access').textContent = todayAccess;
+
+        // Gráfico de Acessos (Últimos 7 dias)
+        const ctxAccess = document.getElementById('accessChart').getContext('2d');
+        if (accessChart) accessChart.destroy();
+        
+        const last7Days = [...Array(7)].map((_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          return d.toISOString().split('T')[0];
+        }).reverse();
+        
+        const accessByDay = last7Days.map(day => logs.filter(l => l.accessed_at && l.accessed_at.startsWith(day)).length);
+        const dayLabels = last7Days.map(day => {
+          const [y, m, d] = day.split('-');
+          return `${d}/${m}`;
+        });
+
+        accessChart = new Chart(ctxAccess, {
+          type: 'line',
+          data: {
+            labels: dayLabels,
+            datasets: [{
+              label: 'Acessos',
+              data: accessByDay,
+              borderColor: '#120a74',
+              backgroundColor: 'rgba(18, 10, 116, 0.1)',
+              tension: 0.3,
+              fill: true
+            }]
+          },
+          options: { maintainAspectRatio: false }
+        });
+
+        // Gráfico de Convidados por Dono
+        const ctxInviter = document.getElementById('inviterChart').getContext('2d');
+        if (inviterChart) inviterChart.destroy();
+        
+        const inviterCounts = { 'Jefferson': 0, 'Bia': 0, 'Ambos': 0 };
+        allGuests.forEach(g => {
+          let owner = g.invited_by;
+          if (owner === 'Beatriz') owner = 'Bia';
+          if (inviterCounts[owner] !== undefined) inviterCounts[owner]++;
+        });
+
+        inviterChart = new Chart(ctxInviter, {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(inviterCounts),
+            datasets: [{
+              data: Object.values(inviterCounts),
+              backgroundColor: ['#120a74', '#e91e63', '#94a3b8']
+            }]
+          },
+          options: { maintainAspectRatio: false }
+        });
+
+        // Gráfico de Status RSVP
+        const ctxRsvp = document.getElementById('rsvpChart').getContext('2d');
+        if (rsvpChart) rsvpChart.destroy();
+        
+        const rsvpCounts = { 'Confirmado': 0, 'Aguardando': 0, 'Recusado': 0 };
+        allGuests.forEach(g => {
+          if (g.rsvp_status === 'confirmado') rsvpCounts['Confirmado']++;
+          else if (g.rsvp_status === 'recusado') rsvpCounts['Recusado']++;
+          else rsvpCounts['Aguardando']++;
+        });
+
+        rsvpChart = new Chart(ctxRsvp, {
+          type: 'bar',
+          data: {
+            labels: Object.keys(rsvpCounts),
+            datasets: [{
+              label: 'Convidados',
+              data: Object.values(rsvpCounts),
+              backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
+            }]
+          },
+          options: { maintainAspectRatio: false }
+        });
+
+      } catch(err) {
+        console.error('Erro no Analytics:', err);
+      }
     }
     async function loadNotesFromSupabase() { 
       const meetingNotes = document.getElementById('meetingNotes');
