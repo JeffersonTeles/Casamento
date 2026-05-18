@@ -598,8 +598,9 @@
 
     async function fetchExpenses() { const { data } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false }); dashboardState.expenses = data || []; renderExpenses(); updateExpenseStats(); }
     function renderExpenses() {
-      document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => `<div class="flex justify-between p-3 bg-white rounded-xl"><span>${e.item}</span><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span></div>`).join('');
+      document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${e.item}</p><p class="text-[10px] text-slate-500 uppercase">${e.category || 'Sem categoria'}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button onclick="deleteExpense('${e.id}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join('');
     }
+    async function deleteExpense(id) { if (confirm('Remover este gasto?')) { await supabaseClient.from('expenses').delete().eq('id', id); fetchExpenses(); } }
     async function addExpense() {
       const item = document.getElementById('expItem').value, cat = document.getElementById('expCategory').value, amount = document.getElementById('expAmount').value;
       if (item && amount) { await supabaseClient.from('expenses').insert([{ item, category: cat, amount: parseFloat(amount) }]); fetchExpenses(); }
@@ -650,7 +651,8 @@
 
     async function fetchLogs() { const { data } = await supabaseClient.from('audit_logs').select('*').limit(10); }
     function initRealtime() { supabaseClient.channel('db-changes').on('postgres_changes', { event: '*', schema: 'public' }, () => { fetchTasks(); fetchGuests(); fetchExpenses(); }).subscribe(); }
-    async function fetchSuppliers() { const { data } = await supabaseClient.from('suppliers').select('*'); document.getElementById('supplierList').innerHTML = (data || []).map(s => `<div class="bg-white p-4 rounded-xl flex justify-between"><span>${s.name}</span><span class="font-bold">R$ ${Number(s.value).toLocaleString('pt-BR')}</span></div>`).join(''); }
+    async function fetchSuppliers() { const { data } = await supabaseClient.from('suppliers').select('*'); document.getElementById('supplierList').innerHTML = (data || []).map(s => `<div class="bg-white p-4 rounded-xl flex justify-between items-center"><div><p class="font-bold">${s.name}</p><p class="text-[10px] text-slate-500 uppercase">${s.category || 'Fornecedor'}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(s.value).toLocaleString('pt-BR')}</span><button onclick="deleteSupplier('${s.id}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join(''); }
+    async function deleteSupplier(id) { if (confirm('Remover este fornecedor?')) { await supabaseClient.from('suppliers').delete().eq('id', id); fetchSuppliers(); } }
     async function addSupplier() { const name = document.getElementById('supplierName').value, cat = document.getElementById('supplierCategory').value, val = document.getElementById('supplierValue').value; if (name) { await supabaseClient.from('suppliers').insert([{ name, category: cat, value: parseFloat(val) || 0 }]); fetchSuppliers(); } }
     function showToast(m, t) { alert(m); }
     </script>
