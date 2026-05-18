@@ -159,7 +159,6 @@
         <button onclick="switchTab('analytics')" id="btn-analytics" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Analytics</button>
         <button onclick="switchTab('suppliers')" id="btn-suppliers" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Fornecedores</button>
         <button onclick="switchTab('timeline')" id="btn-timeline" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Cronograma</button>
-        <button onclick="switchTab('seating')" id="btn-seating" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Mesas</button>
         <button onclick="switchTab('audit')" id="btn-audit" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Log</button>
       </div>
     </nav>
@@ -302,24 +301,6 @@
           </div>
         </section>
 
-        <!-- SEÇÃO MAPEAMENTO DE MESAS -->
-        <section id="seating" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
-            <h2 class="text-2xl font-titulo text-vinho flex items-center gap-2"><i data-lucide="layout-grid"></i> Mapeamento de Mesas</h2>
-            <button onclick="alert('Salvo com sucesso!')" class="bg-emerald-600 text-white text-xs px-4 py-2 rounded-full font-bold">Salvar Layout</button>
-          </div>
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center text-slate-500 mb-6 min-h-[300px] flex flex-col items-center justify-center">
-            <i data-lucide="layout-template" class="w-12 h-12 mb-3 text-slate-300"></i>
-            <p>Arraste e solte os convidados para organizar as mesas.</p>
-            <p class="text-xs mt-2 text-slate-400">(A integração visual completa drag-and-drop será ativada via sistema web central.)</p>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-             <div class="bg-white p-4 rounded-xl border border-slate-200"><h3 class="font-bold text-vinho mb-2 border-b pb-2">Mesa Família Noivo (08)</h3><ul class="text-sm space-y-1 text-slate-600"><li>João (Pai)</li><li>Maria (Mãe)</li><li>Vazio...</li></ul></div>
-             <div class="bg-white p-4 rounded-xl border border-slate-200"><h3 class="font-bold text-vinho mb-2 border-b pb-2">Mesa Família Noiva (08)</h3><ul class="text-sm space-y-1 text-slate-600"><li>José (Pai)</li><li>Ana (Mãe)</li><li>Vazio...</li></ul></div>
-             <div class="bg-white p-4 rounded-xl border border-slate-200"><h3 class="font-bold text-vinho mb-2 border-b pb-2">Padrinhos 1 (06)</h3><ul class="text-sm space-y-1 text-slate-600"><li>Carlos</li><li>Fernanda</li><li>Vazio...</li></ul></div>
-          </div>
-        </section>
-
         <!-- SEÇÃO AUDITORIA (LOG) -->
         <section id="audit" class="tab-content glass-card p-5 rounded-[1.6rem]">
            <h2 class="text-2xl font-titulo text-vinho mb-4"><i data-lucide="history"></i> Log de Atividades</h2>
@@ -351,7 +332,7 @@
   </nav>
 
   <datalist id="categories">
-    <option value="Buffet"><option value="Decoração"><option value="Fotografia"><option value="Filmagem"><option value="Vestido"><option value="Traje do noivo"><option value="Convites"><option value="Flores"><option value="Música/DJ"><option value="Bolo"><option value="Transporte"><option value="Lua de mel"><option value="Brindes"><option value="Outros">
+    <option value="Taxa Igreja"><option value="Decoração Cerimônia"><option value="Fotografia"><option value="Filmagem"><option value="Vestido da Noiva"><option value="Traje do Noivo"><option value="Alianças"><option value="Papelaria e Convites"><option value="Lembrancinhas"><option value="Transporte"><option value="Lua de mel"><option value="Outros">
   </datalist>
 
   <!-- Modal de Edição de Convidado -->
@@ -486,17 +467,15 @@
     function renderGuestList() {
       const list = document.getElementById('guestList');
       list.innerHTML = allGuests.map(g => {
-        const dietaryTag = g.dietary ? `<span class="bg-orange-100 text-orange-600 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ml-2">🍽️ ${g.dietary}</span>` : '';
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''}"><div class="flex-1"><p class="font-bold">${g.name} ${dietaryTag}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1"><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="generateIndividualPDF('${g.name}', '${g.invite_token}')" class="bg-[#120a74] text-white text-[10px] px-3 py-1 rounded-full">PDF</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.dietary||''}', '${g.invited_by}', '${g.rsvp_status}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''}"><div class="flex-1"><p class="font-bold">${g.name}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1"><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="generateIndividualPDF('${g.name}', '${g.invite_token}')" class="bg-[#120a74] text-white text-[10px] px-3 py-1 rounded-full">PDF</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.invited_by}', '${g.rsvp_status}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
     }
     function toggleEditModal(s) { document.getElementById('editGuestModal').classList.toggle('hidden', !s); }
-    function editGuest(id, name, phone, dietary, owner, status) { 
+    function editGuest(id, name, phone, owner, status) { 
       document.getElementById('editGuestId').value = id; 
       document.getElementById('editGuestName').value = name; 
       document.getElementById('editGuestPhone').value = phone; 
-      document.getElementById('editGuestDietary').value = dietary; 
       document.getElementById('editGuestOwner').value = owner; 
       document.getElementById('editGuestStatus').value = status || 'aguardando';
       toggleEditModal(true); 
@@ -506,7 +485,6 @@
       const payload = { 
         name: document.getElementById('editGuestName').value, 
         phone: document.getElementById('editGuestPhone').value, 
-        dietary: document.getElementById('editGuestDietary').value, 
         invited_by: document.getElementById('editGuestOwner').value,
         rsvp_status: document.getElementById('editGuestStatus').value
       };
@@ -516,21 +494,19 @@
     async function addGuest() {
       const nameEl = document.getElementById('guestName');
       const phoneEl = document.getElementById('guestPhone');
-      const dietaryEl = document.getElementById('guestDietary');
       const ownerEl = document.getElementById('guestOwner');
       
       const name = nameEl.value.trim();
       const phone = phoneEl.value.trim();
-      const dietary = dietaryEl.value.trim();
       const invited_by = ownerEl.value;
 
       if (!name) { alert('Informe o nome do convidado!'); return; }
 
       try {
         const token = window.crypto?.randomUUID ? window.crypto.randomUUID() : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        const { error } = await supabaseClient.from('guests').insert([{ name, phone, dietary, invited_by, invite_token: token, rsvp_status: 'aguardando' }]);
+        const { error } = await supabaseClient.from('guests').insert([{ name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando' }]);
         if (error) throw error;
-        nameEl.value = ''; phoneEl.value = ''; dietaryEl.value = '';
+        nameEl.value = ''; phoneEl.value = '';
         fetchGuests();
       } catch (err) {
         console.error(err);
@@ -612,12 +588,10 @@
 
     function updateOverviewStats() {
       const total = allGuests.length, confirmed = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
-      const tables = Math.ceil(confirmed / 10);
       const now = new Date(), nextWeek = new Date(); nextWeek.setDate(now.getDate() + 7);
       const dueSoonCount = dashboardState.tasks.filter(t => t.due_date && t.status !== 'concluido' && new Date(t.due_date + 'T12:00:00') <= nextWeek).length;
       document.getElementById('stat-total').textContent = total;
       document.getElementById('stat-confirmed').textContent = confirmed;
-      document.getElementById('stat-tables').textContent = tables;
       document.getElementById('stat-jefferson').textContent = allGuests.filter(g => g.invited_by === 'Jefferson').length;
       document.getElementById('stat-beatriz').textContent = allGuests.filter(g => g.invited_by === 'Beatriz').length;
       document.getElementById('dueSoonStat').textContent = dueSoonCount;
@@ -680,6 +654,11 @@
     function initRealtime() { supabaseClient.channel('db-changes').on('postgres_changes', { event: '*', schema: 'public' }, () => { fetchTasks(); fetchGuests(); fetchExpenses(); }).subscribe(); }
     async function fetchSuppliers() { const { data } = await supabaseClient.from('suppliers').select('*'); document.getElementById('supplierList').innerHTML = (data || []).map(s => `<div class="bg-white p-4 rounded-xl flex justify-between"><span>${s.name}</span><span class="font-bold">R$ ${Number(s.value).toLocaleString('pt-BR')}</span></div>`).join(''); }
     async function addSupplier() { const name = document.getElementById('supplierName').value, cat = document.getElementById('supplierCategory').value, val = document.getElementById('supplierValue').value; if (name) { await supabaseClient.from('suppliers').insert([{ name, category: cat, value: parseFloat(val) || 0 }]); fetchSuppliers(); } }
+    function showToast(m, t) { alert(m); }
+    </script>
+    </body>
+    </html>
+lient.from('suppliers').insert([{ name, category: cat, value: parseFloat(val) || 0 }]); fetchSuppliers(); } }
     function showToast(m, t) { alert(m); }
     </script>
     </body>
