@@ -209,17 +209,22 @@
             <div class="space-y-4">
               <div class="glass-card p-6 rounded-[1.6rem]">
                 <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="wallet" class="text-blue-500"></i> Resumo Financeiro</h3>
-                <div class="space-y-3">
-                  <div class="flex justify-between text-sm">
-                    <span class="text-slate-500">Gasto Atual</span>
-                    <span class="font-bold text-vinho" id="dash-spent">R$ 0,00</span>
+                <div class="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-4">
+                  <div class="space-y-3">
+                    <div class="flex justify-between text-sm">
+                      <span class="text-slate-500">Gasto Atual</span>
+                      <span class="font-bold text-vinho" id="dash-spent">R$ 0,00</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div id="dash-budget-progress" class="bg-vinho h-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest">
+                      <span class="text-slate-400">Total Pago</span>
+                      <span id="dash-budget-percent" class="text-vinho">0%</span>
+                    </div>
                   </div>
-                  <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div id="dash-budget-progress" class="bg-vinho h-full transition-all duration-1000" style="width: 0%"></div>
-                  </div>
-                  <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest">
-                    <span class="text-slate-400">Total Pago</span>
-                    <span id="dash-budget-percent" class="text-vinho">0%</span>
+                  <div class="h-32">
+                    <canvas id="dashDonutChart"></canvas>
                   </div>
                 </div>
               </div>
@@ -411,13 +416,24 @@
     </div>
   </div>
 
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-50 px-2 py-3 shadow-2xl">
+  <!-- Bottom Bar (Mobile App Style) -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 px-2 py-3 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
     <div class="flex items-center justify-around">
-      <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-1 text-slate-500"><i data-lucide="check-square" class="w-5 h-5"></i><span class="text-[10px]">Tarefas</span></button>
-      <button onclick="switchTab('guests')" class="flex flex-col items-center gap-1 text-slate-500"><i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px]">Convidados</span></button>
-      <button onclick="switchTab('expenses')" class="flex flex-col items-center gap-1 text-slate-500"><i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[10px]">Dinheiro</span></button>
-      <button onclick="switchTab('notes')" class="flex flex-col items-center gap-1 text-slate-500"><i data-lucide="sticky-note" class="w-5 h-5"></i><span class="text-[10px]">Mural</span></button>
-      <button onclick="switchTab('analytics')" class="flex flex-col items-center gap-1 text-slate-500"><i data-lucide="bar-chart-3" class="w-5 h-5"></i><span class="text-[10px]">Dados</span></button>
+      <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Início</span>
+      </button>
+      <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+        <i data-lucide="check-square" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Tarefas</span>
+      </button>
+      <button onclick="switchTab('guests')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+        <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Convidados</span>
+      </button>
+      <button onclick="switchTab('expenses')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+        <i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Finanças</span>
+      </button>
+      <button onclick="switchTab('notes')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+        <i data-lucide="sticky-note" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Mural</span>
+      </button>
     </div>
   </nav>
 
@@ -496,7 +512,7 @@
       renderGuestList();
     }
     let allGuests = [], allSuppliers = [];
-    let expenseChart, categoryChart, accessChart, inviterChart, rsvpChart;
+    let expenseChart, categoryChart, accessChart, inviterChart, rsvpChart, dashDonutChart;
     let isAnalyticsLoading = false, isExpenseChartLoading = false;
 
     async function initApp() {
@@ -622,6 +638,29 @@
       document.getElementById('dash-spent').textContent = `R$ ${spent.toLocaleString('pt-BR')}`;
       document.getElementById('dash-budget-progress').style.width = `${percent}%`;
       document.getElementById('dash-budget-percent').textContent = `${percent}%`;
+
+      // Donut Chart Financeiro
+      const ctxDonut = document.getElementById('dashDonutChart').getContext('2d');
+      if (dashDonutChart) dashDonutChart.destroy();
+      
+      const cats = {}; dashboardState.expenses.forEach(e => { const c = e.category || 'Outros'; cats[c] = (cats[c] || 0) + parseFloat(e.amount); });
+      
+      dashDonutChart = new Chart(ctxDonut, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(cats),
+          datasets: [{
+            data: Object.values(cats),
+            backgroundColor: ['#120a74', '#e91e63', '#C5A059', '#10b981', '#f59e0b'],
+            borderWidth: 0
+          }]
+        },
+        options: { 
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          cutout: '70%'
+        }
+      });
 
       // Evento
       const { data: timeline } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });

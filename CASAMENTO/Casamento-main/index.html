@@ -404,19 +404,19 @@
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8";
     const supabaseClientGuest = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    // Reveal animations on scroll
-    function reveal() {
-      var reveals = document.querySelectorAll(".reveal, .reveal-up, .reveal-fade");
-      for (var i = 0; i < reveals.length; i++) {
-        var windowHeight = window.innerHeight;
-        var elementTop = reveals[i].getBoundingClientRect().top;
-        var elementVisible = 100;
-        if (elementTop < windowHeight - elementVisible) {
-          reveals[i].classList.add("active");
+    // Reveal animations on scroll (Cinematic)
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("active");
         }
-      }
+      });
+    }, { threshold: 0.1 });
+
+    function initAnimations() {
+      const elements = document.querySelectorAll(".reveal, .reveal-up, .reveal-fade");
+      elements.forEach(el => revealObserver.observe(el));
     }
-    window.addEventListener("scroll", reveal);
 
     // Guestbook Logic
     async function fetchMessages() {
@@ -495,7 +495,7 @@
     window.addEventListener("DOMContentLoaded", () => {
       if (window.lucide) lucide.createIcons();
       fetchMessages();
-      reveal();
+      initAnimations();
       checkWelcome();
     });
 
