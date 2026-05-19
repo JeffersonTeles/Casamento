@@ -13,6 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
     tailwind.config = {
@@ -151,7 +152,8 @@
 
     <nav class="glass-card rounded-[1.2rem] p-2 mb-6 sticky top-4 z-20 overflow-hidden shadow-sm" style="min-height: 60px;">
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth w-full">
-        <button onclick="switchTab('tasks')" id="btn-tasks" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-vinho text-white">Tarefas</button>
+        <button onclick="switchTab('dashboard')" id="btn-dashboard" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-vinho text-white">Início</button>
+        <button onclick="switchTab('tasks')" id="btn-tasks" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Tarefas</button>
         <button onclick="switchTab('guests')" id="btn-guests" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Convidados</button>
         <button onclick="switchTab('expenses')" id="btn-expenses" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Financeiro</button>
         <button onclick="switchTab('notes')" id="btn-notes" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Notas</button>
@@ -165,8 +167,30 @@
     <div id="main-layout-grid" class="grid grid-cols-1 xl:grid-cols-[1.6fr_0.9fr] gap-6 items-start pb-24">
       <div id="primary-column" class="space-y-6">
         
+        <!-- SEÇÃO DASHBOARD (INÍCIO) -->
+        <section id="dashboard" class="tab-content active space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-card p-6 rounded-[1.6rem]">
+              <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="bell" class="text-amber-500"></i> Próximas Tarefas</h3>
+              <div id="dash-next-tasks" class="space-y-3"></div>
+            </div>
+            <div class="glass-card p-6 rounded-[1.6rem]">
+              <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="calendar-days" class="text-rosa"></i> Próximo Evento</h3>
+              <div id="dash-next-event" class="p-4 bg-vinho/5 rounded-2xl border border-vinho/10"></div>
+            </div>
+          </div>
+          <div class="glass-card p-6 rounded-[1.6rem]">
+             <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="pie-chart" class="text-emerald-500"></i> Visão Geral RSVP</h3>
+             <div class="grid grid-cols-3 gap-4 text-center">
+               <div class="p-4 bg-emerald-50 rounded-2xl"><p class="text-[10px] uppercase text-emerald-600 font-bold">Sim</p><p class="text-2xl font-bold text-emerald-700" id="dash-rsvp-yes">0</p></div>
+               <div class="p-4 bg-amber-50 rounded-2xl"><p class="text-[10px] uppercase text-amber-600 font-bold">Talvez</p><p class="text-2xl font-bold text-amber-700" id="dash-rsvp-maybe">0</p></div>
+               <div class="p-4 bg-rose-50 rounded-2xl"><p class="text-[10px] uppercase text-rose-600 font-bold">Não</p><p class="text-2xl font-bold text-rose-700" id="dash-rsvp-no">0</p></div>
+             </div>
+          </div>
+        </section>
+
         <!-- SEÇÃO TAREFAS -->
-        <section id="tasks" class="tab-content active glass-card p-5 md:p-6 rounded-[1.6rem]">
+        <section id="tasks" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="check-circle-2"></i> Checklist</h2>
           <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-2 mb-6">
             <input type="text" id="newTask" placeholder="O que precisa ser feito?" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
@@ -370,7 +394,7 @@
     async function initApp() {
       try {
         await Promise.all([fetchTasks(), fetchGuests(), fetchExpenses(), fetchLogs(), loadNotesFromSupabase(), fetchTimeline()]);
-        initRealtime(); updateOverviewStats(); switchTab('tasks');
+        initRealtime(); updateOverviewStats(); updateDashboardSummary(); switchTab('dashboard');
         if (window.lucide) lucide.createIcons();
       } catch (err) { console.error("Erro setup:", err); }
     }
@@ -405,7 +429,7 @@
     };
 
     function switchTab(tabId) {
-      const tabs = ['tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline'];
+      const tabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline'];
       tabs.forEach(t => {
         const content = document.getElementById(t);
         const btn = document.getElementById(`btn-${t}`);
@@ -416,6 +440,7 @@
       const activeBtn = document.getElementById(`btn-${tabId}`);
       if (active) active.classList.add('active');
       if (activeBtn) { activeBtn.classList.remove('bg-white', 'text-slate-600'); activeBtn.classList.add('bg-vinho', 'text-white'); }
+      if (tabId === 'dashboard') updateDashboardSummary();
       if (tabId === 'analytics') updateAnalytics();
       if (tabId === 'suppliers') fetchSuppliers();
       if (window.lucide) lucide.createIcons();
@@ -453,7 +478,45 @@
       });
       renderTasks(); 
     }
-    async function toggleTask(id, status) { const next = status === 'concluido' ? 'pendente' : 'concluido'; await supabaseClient.from('tasks').update({ status: next }).eq('id', id); fetchTasks(); }
+    async function toggleTask(id, status) { 
+      const next = status === 'concluido' ? 'pendente' : 'concluido'; 
+      await supabaseClient.from('tasks').update({ status: next }).eq('id', id); 
+      if (next === 'concluido') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#120a74', '#e91e63', '#f5e6d3'] });
+      fetchTasks(); 
+    }
+
+    // DASHBOARD SUMMARY LOGIC
+    async function updateDashboardSummary() {
+      // Next Tasks
+      const nextTasks = dashboardState.tasks.filter(t => t.status !== 'concluido').slice(0, 3);
+      document.getElementById('dash-next-tasks').innerHTML = nextTasks.length > 0 ? nextTasks.map(t => `<div class="p-3 bg-white border border-slate-100 rounded-xl text-xs flex justify-between"><span>${t.title}</span><span class="font-bold text-vinho">${t.due_date ? new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR') : ''}</span></div>`).join('') : '<p class="text-xs text-slate-400 italic">Tudo em dia!</p>';
+      
+      // Next Event
+      const { data: timeline } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
+      const nextEvent = timeline && timeline[0] ? `<p class="text-sm font-bold text-vinho">${timeline[0].event_time.substring(0,5)}</p><p class="text-xs text-slate-600">${timeline[0].description}</p>` : '<p class="text-xs text-slate-400">Nenhum evento agendado.</p>';
+      document.getElementById('dash-next-event').innerHTML = nextEvent;
+
+      // RSVP Stats
+      const yes = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
+      const no = allGuests.filter(g => g.rsvp_status === 'recusado').length;
+      const maybe = allGuests.filter(g => g.rsvp_status === 'aguardando').length;
+      document.getElementById('dash-rsvp-yes').textContent = yes;
+      document.getElementById('dash-rsvp-maybe').textContent = maybe;
+      document.getElementById('dash-rsvp-no').textContent = no;
+    }
+
+    // AUTO-SAVE NOTES
+    let notesTimeout;
+    document.getElementById('meetingNotes').addEventListener('input', () => {
+      clearTimeout(notesTimeout);
+      document.getElementById('notesStatus').textContent = 'Digitando...';
+      notesTimeout = setTimeout(async () => {
+        const notes = document.getElementById('meetingNotes').value;
+        await supabaseClient.from(ORG_NOTES_TABLE_NAME).upsert([{ id: 'global', notes }]);
+        document.getElementById('notesStatus').textContent = '✓ Salvo automaticamente';
+        setTimeout(() => { document.getElementById('notesStatus').textContent = ''; }, 2000);
+      }, 1500);
+    });
     async function deleteTask(id) { if (confirm('Deletar?')) { await supabaseClient.from('tasks').delete().eq('id', id); fetchTasks(); } }
     async function addTask() {
       const title = document.getElementById('newTask').value;
