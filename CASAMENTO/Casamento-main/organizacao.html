@@ -330,18 +330,24 @@
 
         <!-- SEÇÃO FORNECEDORES -->
         <section id="suppliers" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
-          <h2 class="text-2xl font-titulo text-vinho mb-4"><i data-lucide="store"></i> Fornecedores</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
-            <input type="text" id="supplierName" placeholder="Nome do Fornecedor" class="p-3 border rounded-xl" />
-            <input type="text" id="supplierContact" placeholder="Contato (telefone/email)" class="p-3 border rounded-xl" />
-            <input list="categories" id="supplierCategory" placeholder="Categoria" class="p-3 border rounded-xl" />
+          <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="store"></i> Fornecedores</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
+            <div class="md:col-span-2 lg:col-span-1">
+              <input type="text" id="supplierName" placeholder="Nome do Fornecedor" class="w-full p-3 border rounded-xl outline-none focus:border-vinho" />
+            </div>
+            <input type="text" id="supplierContact" placeholder="Telefone ou Instagram" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+            <input list="categories" id="supplierCategory" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+            <input type="number" id="supplierValue" placeholder="Valor total R$" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+            <select id="supplierStatus" class="p-3 border rounded-xl bg-white outline-none focus:border-vinho text-sm">
+              <option value="Pendente">Pendente</option>
+              <option value="Pago Parcial">Pago Parcial</option>
+              <option value="Quitado">Quitado</option>
+            </select>
+            <button onclick="addSupplier()" class="bg-vinho text-white rounded-xl font-bold hover:opacity-90 transition-all">Salvar Fornecedor</button>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-6">
-            <input type="number" id="supplierValue" placeholder="Valor total R$" class="p-3 border rounded-xl" />
-            <input type="date" id="supplierDue" class="p-3 border rounded-xl bg-white text-sm" />
-            <button onclick="addSupplier()" class="bg-vinho text-white rounded-xl font-bold">Salvar Fornecedor</button>
-          </div>
-          <div id="supplierList" class="space-y-3"></div>
+
+          <div id="supplierList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </section>
 
         <!-- SEÇÃO CRONOGRAMA -->
@@ -995,9 +1001,74 @@
       }).join('');
     }
     function initRealtime() { supabaseClient.channel('db-changes').on('postgres_changes', { event: '*', schema: 'public' }, () => { fetchTasks(); fetchGuests(); fetchExpenses(); fetchTimeline(); }).subscribe(); }
-    async function fetchSuppliers() { const { data } = await supabaseClient.from('suppliers').select('*'); document.getElementById('supplierList').innerHTML = (data || []).map(s => `<div class="bg-white p-4 rounded-xl flex justify-between items-center"><div><p class="font-bold">${s.name}</p><p class="text-[10px] text-slate-500 uppercase">${s.category || 'Fornecedor'}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(s.value).toLocaleString('pt-BR')}</span><button onclick="deleteSupplier('${s.id}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join(''); }
-    async function deleteSupplier(id) { if (confirm('Remover este fornecedor?')) { await supabaseClient.from('suppliers').delete().eq('id', id); fetchSuppliers(); } }
-    async function addSupplier() { const name = document.getElementById('supplierName').value, cat = document.getElementById('supplierCategory').value, val = document.getElementById('supplierValue').value; if (name) { await supabaseClient.from('suppliers').insert([{ name, category: cat, value: parseFloat(val) || 0 }]); fetchSuppliers(); } }
+    async function fetchSuppliers() { 
+      const { data } = await supabaseClient.from('suppliers').select('*').order('name', { ascending: true }); 
+      const list = document.getElementById('supplierList');
+      if (!list) return;
+      
+      list.innerHTML = (data || []).map(s => {
+        const statusColors = {
+          'Quitado': 'bg-emerald-100 text-emerald-700',
+          'Pago Parcial': 'bg-blue-100 text-blue-700',
+          'Pendente': 'bg-amber-100 text-amber-700'
+        };
+        const color = statusColors[s.status] || 'bg-slate-100 text-slate-700';
+        
+        return `
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4">
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <h4 class="font-bold text-vinho">${s.name}</h4>
+                <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase ${color}">${s.status || 'Pendente'}</span>
+              </div>
+              <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">${s.category || 'Fornecedor'}</p>
+              ${s.contact ? `<p class="text-xs text-slate-600 mt-2 flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3"></i> ${s.contact}</p>` : ''}
+            </div>
+            <div class="flex justify-between items-center border-t pt-3 mt-auto">
+              <span class="text-lg font-bold text-vinho">R$ ${Number(s.value).toLocaleString('pt-BR')}</span>
+              <button onclick="deleteSupplier('${s.id}')" class="p-2 text-red-400 hover:text-red-600 transition-colors">🗑️</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    async function deleteSupplier(id) { 
+      if (confirm('Remover este fornecedor?')) { 
+        await supabaseClient.from('suppliers').delete().eq('id', id); 
+        fetchSuppliers(); 
+        showToast('Fornecedor removido', 'success');
+      } 
+    }
+
+    async function addSupplier() { 
+      const name = document.getElementById('supplierName').value;
+      const contact = document.getElementById('supplierContact').value;
+      const cat = document.getElementById('supplierCategory').value;
+      const val = document.getElementById('supplierValue').value;
+      const status = document.getElementById('supplierStatus').value;
+
+      if (name) { 
+        const { error } = await supabaseClient.from('suppliers').insert([{ 
+          name, 
+          contact, 
+          category: cat, 
+          value: parseFloat(val) || 0,
+          status: status
+        }]); 
+        
+        if (!error) {
+          document.getElementById('supplierName').value = '';
+          document.getElementById('supplierContact').value = '';
+          document.getElementById('supplierValue').value = '';
+          fetchSuppliers(); 
+          showToast('Fornecedor salvo!', 'success');
+        } else {
+          showToast('Erro ao salvar fornecedor', 'error');
+        }
+      } 
+    }
     
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
