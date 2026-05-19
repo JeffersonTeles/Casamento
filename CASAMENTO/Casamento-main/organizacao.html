@@ -97,6 +97,25 @@
       .stat-value { font-size: 1.75rem !important; }
       input, select, button { height: 48px; font-size: 16px !important; }
     }
+    /* FAB Styles */
+    .fab-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; }
+    .fab-main { width: 60px; height: 60px; border-radius: 50%; background: #120a74; color: white; display: flex; items-center: center; justify-content: center; box-shadow: 0 10px 25px rgba(18, 10, 116, 0.4); cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .fab-main:hover { transform: scale(1.1) rotate(90deg); }
+    .fab-main.active { transform: scale(0.9) rotate(45deg); background: #e91e63; }
+    
+    .fab-menu { display: none; flex-direction: column; gap: 0.75rem; margin-bottom: 0.5rem; pointer-events: none; }
+    .fab-menu.active { display: flex; pointer-events: auto; animation: slideUp 0.3s ease-out forwards; }
+    
+    .fab-item { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; opacity: 0; transform: translateY(10px); }
+    .fab-menu.active .fab-item { opacity: 1; transform: translateY(0); transition: all 0.3s ease-out; }
+    .fab-item span { background: white; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #120a74; }
+    .fab-icon { width: 44px; height: 44px; border-radius: 50%; background: white; color: #120a74; display: flex; items-center: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(18, 10, 116, 0.1); }
+    
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 768px) {
+      .fab-container { bottom: 1.5rem; right: 1.5rem; }
+    }
   </style>
 </head>
 <body class="font-corpo text-slate-800 min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(233,30,99,0.10),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(245,230,211,0.95),transparent_32%),linear-gradient(160deg,var(--bg-1),var(--bg-2))]">
@@ -217,6 +236,25 @@
               <button onclick="exportToPDF()" class="bg-rose-600 text-white text-[10px] md:text-xs px-4 py-2 rounded-full font-bold">PDF (Lista)</button>
             </div>
           </div>
+
+          <!-- Busca e Filtros -->
+          <div class="mb-6 space-y-4">
+            <div class="relative">
+              <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+              <input type="text" id="guestSearch" oninput="handleGuestSearch(this.value)" placeholder="Buscar por nome..." class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-vinho transition-all" />
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="setGuestFilter('all')" id="guest-filter-all" class="mini-pill bg-vinho text-white">Todos</button>
+              <button onclick="setGuestFilter('confirmado')" id="guest-filter-confirmado" class="mini-pill">Confirmados</button>
+              <button onclick="setGuestFilter('aguardando')" id="guest-filter-aguardando" class="mini-pill">Aguardando</button>
+              <button onclick="setGuestFilter('recusado')" id="guest-filter-recusado" class="mini-pill">Recusados</button>
+              <div class="w-px h-6 bg-slate-200 mx-1 self-center"></div>
+              <button onclick="setGuestOwnerFilter('all')" id="owner-filter-all" class="mini-pill bg-slate-100 text-slate-800">Todos os donos</button>
+              <button onclick="setGuestOwnerFilter('Jefferson')" id="owner-filter-Jefferson" class="mini-pill">Jefferson</button>
+              <button onclick="setGuestOwnerFilter('Bia')" id="owner-filter-Bia" class="mini-pill">Bia</button>
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-6">
             <input type="text" id="guestName" placeholder="Nome" class="p-3 rounded-xl border border-slate-300" />
             <input type="text" id="guestPhone" placeholder="Telefone" class="p-3 rounded-xl border border-slate-300" />
@@ -386,7 +424,48 @@
     const ORG_ACCESS_USERNAME = 'deus';
     const ORG_ACCESS_PASSWORD = '123456';
 
-    const dashboardState = { tasks: [], guests: [], expenses: [], taskFilter: 'all', guestFilter: 'all', searchQuery: '', sortOrder: 'name-asc' };
+    const dashboardState = { 
+      tasks: [], 
+      guests: [], 
+      expenses: [], 
+      taskFilter: 'all', 
+      guestFilter: 'all', 
+      guestOwnerFilter: 'all',
+      guestSearch: '',
+      searchQuery: '', 
+      sortOrder: 'name-asc' 
+    };
+
+    function handleGuestSearch(q) {
+      dashboardState.guestSearch = q.toLowerCase();
+      renderGuestList();
+    }
+
+    function setGuestFilter(f) {
+      dashboardState.guestFilter = f;
+      ['all', 'confirmado', 'aguardando', 'recusado'].forEach(id => {
+        const btn = document.getElementById(`guest-filter-${id}`);
+        if (btn) {
+          btn.classList.toggle('bg-vinho', id === f);
+          btn.classList.toggle('text-white', id === f);
+          if (id !== f) { btn.classList.add('bg-white', 'text-slate-600'); btn.classList.remove('bg-vinho', 'text-white'); }
+        }
+      });
+      renderGuestList();
+    }
+
+    function setGuestOwnerFilter(o) {
+      dashboardState.guestOwnerFilter = o;
+      ['all', 'Jefferson', 'Bia'].forEach(id => {
+        const btn = document.getElementById(`owner-filter-${id}`);
+        if (btn) {
+          btn.classList.toggle('bg-vinho', id === o);
+          btn.classList.toggle('text-white', id === o);
+          if (id !== o) { btn.classList.add('bg-slate-100', 'text-slate-800'); btn.classList.remove('bg-vinho', 'text-white'); }
+        }
+      });
+      renderGuestList();
+    }
     let allGuests = [], allSuppliers = [];
     let expenseChart, categoryChart, accessChart, inviterChart, rsvpChart;
     let isAnalyticsLoading = false, isExpenseChartLoading = false;
@@ -533,7 +612,34 @@
 
     function renderGuestList() {
       const list = document.getElementById('guestList');
-      list.innerHTML = allGuests.map(g => {
+      if (!list) return;
+
+      let filtered = allGuests;
+
+      // Search Filter
+      if (dashboardState.guestSearch) {
+        filtered = filtered.filter(g => g.name.toLowerCase().includes(dashboardState.guestSearch));
+      }
+
+      // Status Filter
+      if (dashboardState.guestFilter !== 'all') {
+        filtered = filtered.filter(g => g.rsvp_status === dashboardState.guestFilter);
+      }
+
+      // Owner Filter
+      if (dashboardState.guestOwnerFilter !== 'all') {
+        filtered = filtered.filter(g => {
+          if (dashboardState.guestOwnerFilter === 'Bia') return g.invited_by === 'Bia' || g.invited_by === 'Beatriz';
+          return g.invited_by === dashboardState.guestOwnerFilter;
+        });
+      }
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<p class="text-center py-10 text-slate-400 italic text-sm">Nenhum convidado encontrado com esses filtros.</p>';
+        return;
+      }
+
+      list.innerHTML = filtered.map(g => {
         return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''}"><div class="flex-1"><p class="font-bold">${g.name}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1"><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="generateIndividualPDF('${g.name}', '${g.invite_token}')" class="bg-[#120a74] text-white text-[10px] px-3 py-1 rounded-full">PDF</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.invited_by}', '${g.rsvp_status}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
@@ -906,5 +1012,44 @@
       }, 3000);
     }
     </script>
-    </body>
+      <!-- FAB (Floating Action Button) -->
+    <div class="fab-container">
+      <div id="fab-menu" class="fab-menu">
+        <div class="fab-item" onclick="quickAction('guest')">
+          <span>Novo Convidado</span>
+          <div class="fab-icon"><i data-lucide="user-plus"></i></div>
+        </div>
+        <div class="fab-item" onclick="quickAction('expense')">
+          <span>Lançar Gasto</span>
+          <div class="fab-icon"><i data-lucide="dollar-sign"></i></div>
+        </div>
+        <div class="fab-item" onclick="quickAction('task')">
+          <span>Nova Tarefa</span>
+          <div class="fab-icon"><i data-lucide="check-square"></i></div>
+        </div>
+      </div>
+      <div id="fab-main" class="fab-main" onclick="toggleFab()">
+        <i data-lucide="plus" id="fab-icon-plus"></i>
+      </div>
+    </div>
+
+    <script>
+      function toggleFab() {
+        const menu = document.getElementById('fab-menu');
+        const main = document.getElementById('fab-main');
+        menu.classList.toggle('active');
+        main.classList.toggle('active');
+      }
+      
+      function quickAction(type) {
+        toggleFab();
+        switch(type) {
+          case 'guest': switchTab('guests'); break;
+          case 'expense': switchTab('expenses'); break;
+          case 'task': switchTab('tasks'); break;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    </script>
+  </body>
     </html>
