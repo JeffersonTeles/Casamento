@@ -163,8 +163,8 @@
       .reveal-up { transform: translateY(15px); }
     }
   </style>
-<script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 overflow-x-hidden">
@@ -491,8 +491,18 @@
       }
     }
 
+    async function handleRsvpClick() {
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.8 }, colors: ['#120a74', '#C5A059', '#E5D5B0'] });
+    }
+
     // Init
     window.addEventListener("DOMContentLoaded", () => {
+      const rsvpBtn = document.getElementById('rsvp-button');
+      if (rsvpBtn) {
+        rsvpBtn.addEventListener('click', (e) => {
+          if (rsvpBtn.hasAttribute('href')) handleRsvpClick();
+        });
+      }
       if (window.lucide) lucide.createIcons();
       fetchMessages();
       initAnimations();
