@@ -299,22 +299,45 @@
         <!-- SEÇÃO FINANCEIRO -->
         <section id="expenses" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="banknote"></i> Financeiro</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-            <div class="summary-card p-4 rounded-xl">
-              <p class="text-xs uppercase text-slate-500">Orçamento</p>
-              <div class="flex items-center gap-2 mt-1"><span class="text-xl font-bold" id="stat-budget">R$ 0,00</span><button onclick="toggleBudgetEdit(true)" class="text-slate-400">✏️</button></div>
-              <div id="budget-edit-container" class="hidden mt-2 flex gap-1"><input type="number" id="budget-input" class="w-full p-1 border rounded" /><button onclick="saveBudgetFromInput()" class="bg-vinho text-white px-2 rounded">OK</button></div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            <div class="summary-card p-4 rounded-xl relative">
+              <p class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Orçamento Total</p>
+              <div class="flex items-center gap-2 mt-1"><span class="text-lg font-bold text-vinho" id="stat-budget">R$ 0,00</span><button onclick="toggleBudgetEdit(true)" class="text-slate-400 text-xs">✏️</button></div>
+              <div id="budget-edit-container" class="hidden absolute inset-0 bg-white/95 rounded-xl flex items-center p-2 gap-1 z-10"><input type="number" id="budget-input" class="w-full p-2 border rounded-lg text-sm" placeholder="Total" /><button onclick="saveBudgetFromInput()" class="bg-vinho text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button></div>
             </div>
-            <div class="summary-card p-4 rounded-xl"><p class="text-xs uppercase text-slate-500">Gasto</p><p class="text-xl font-bold text-vinho mt-1" id="stat-total-spent">R$ 0,00</p></div>
-            <div class="summary-card p-4 rounded-xl"><p class="text-xs uppercase text-slate-500">Saldo</p><p class="text-xl font-bold text-emerald-600 mt-1" id="stat-remaining">R$ 0,00</p></div>
+            <div class="summary-card p-4 rounded-xl relative">
+              <p class="text-[10px] uppercase text-emerald-600 font-bold tracking-wider">Guardado (Em Conta)</p>
+              <div class="flex items-center gap-2 mt-1"><span class="text-lg font-bold text-emerald-600" id="stat-savings">R$ 0,00</span><button onclick="toggleSavingsEdit(true)" class="text-emerald-300 text-xs">✏️</button></div>
+              <div id="savings-edit-container" class="hidden absolute inset-0 bg-emerald-50/95 rounded-xl flex items-center p-2 gap-1 z-10"><input type="number" id="savings-input" class="w-full p-2 border border-emerald-200 rounded-lg text-sm" placeholder="Valor guardado" /><button onclick="saveSavingsFromInput()" class="bg-emerald-600 text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button></div>
+            </div>
+            <div class="summary-card p-4 rounded-xl"><p class="text-[10px] uppercase text-rose-500 font-bold tracking-wider">Total Gasto</p><p class="text-lg font-bold text-rose-600 mt-1" id="stat-total-spent">R$ 0,00</p></div>
+            <div class="summary-card p-4 rounded-xl"><p class="text-[10px] uppercase text-blue-500 font-bold tracking-wider">Falta Guardar</p><p class="text-lg font-bold text-blue-600 mt-1" id="stat-remaining">R$ 0,00</p></div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-6">
-            <input type="text" id="expItem" placeholder="Item" class="p-3 border rounded-xl" />
-            <input list="categories" id="expCategory" placeholder="Categoria" class="p-3 border rounded-xl" />
-            <input type="number" id="expAmount" placeholder="Valor" class="p-3 border rounded-xl" />
-            <button onclick="addExpense()" class="md:col-span-3 bg-vinho text-white rounded-xl font-bold p-3">Lançar Gasto</button>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Lançamento de Gastos -->
+            <div class="space-y-4">
+              <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest">Novo Lançamento Real</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <input type="text" id="expItem" placeholder="Ex: Entrada do Fotógrafo" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+                <input list="categories" id="expCategory" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+                <input type="number" id="expAmount" placeholder="Valor R$" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+                <button onclick="addExpense()" class="bg-vinho text-white rounded-xl font-bold p-3 hover:opacity-90 transition-all">Lançar Gasto</button>
+              </div>
+              <div id="expenseList" class="space-y-2 max-h-[300px] overflow-y-auto no-scrollbar pr-1"></div>
+            </div>
+
+            <!-- Planejamento por Item -->
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest">Orçados / Planejados</h3>
+                <button onclick="togglePlannerModal(true)" class="text-[10px] bg-slate-100 px-3 py-1 rounded-full font-bold text-slate-600">+ Orçar Item</button>
+              </div>
+              <div id="plannerList" class="space-y-2 max-h-[350px] overflow-y-auto no-scrollbar pr-1">
+                <!-- Itens orçados entram aqui -->
+              </div>
+            </div>
           </div>
-          <div id="expenseList" class="space-y-2"></div>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
              <div class="bg-white/50 p-4 rounded-2xl h-[300px]"><canvas id="expenseChart"></canvas></div>
              <div class="bg-white/50 p-4 rounded-2xl h-[300px]"><canvas id="categoryChart"></canvas></div>
@@ -461,6 +484,21 @@
     </div>
   </div>
 
+  <!-- Modal de Planejamento de Item (Budget) -->
+  <div id="plannerModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md p-8">
+      <h3 class="text-2xl font-titulo text-vinho mb-6">Orçar Novo Item</h3>
+      <div class="space-y-4">
+        <input type="text" id="plannerCategory" list="categories" placeholder="Categoria (ex: Fotografia)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+        <input type="number" id="plannerAmount" placeholder="Valor Planejado R$" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+        <div class="flex gap-3 mt-6">
+          <button onclick="togglePlannerModal(false)" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500">Cancelar</button>
+          <button onclick="addPlannerItem()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold shadow-lg">Salvar Orçamento</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const SUPABASE_URL = 'https://ysadooisujkjindusjbu.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8';
@@ -474,6 +512,7 @@
       tasks: [], 
       guests: [], 
       expenses: [], 
+      budget: [],
       taskFilter: 'all', 
       guestFilter: 'all', 
       guestOwnerFilter: 'all',
@@ -481,6 +520,65 @@
       searchQuery: '', 
       sortOrder: 'name-asc' 
     };
+
+    function togglePlannerModal(s) { document.getElementById('plannerModal').classList.toggle('hidden', !s); }
+    async function fetchBudget() { 
+      const { data } = await supabaseClient.from('budget_categories').select('*').order('category', { ascending: true }); 
+      dashboardState.budget = data || []; 
+      renderBudgetPlanner(); 
+      updateExpenseStats(); 
+    }
+    
+    async function addPlannerItem() {
+      const cat = document.getElementById('plannerCategory').value.trim();
+      const amount = document.getElementById('plannerAmount').value;
+      if (cat && amount) {
+        await supabaseClient.from('budget_categories').insert([{ category: cat, planned_amount: parseFloat(amount) }]);
+        document.getElementById('plannerCategory').value = '';
+        document.getElementById('plannerAmount').value = '';
+        togglePlannerModal(false);
+        fetchBudget();
+      }
+    }
+
+    async function deletePlannerItem(id) {
+      if (confirm('Remover este item orçado?')) {
+        await supabaseClient.from('budget_categories').delete().eq('id', id);
+        fetchBudget();
+      }
+    }
+
+    function renderBudgetPlanner() {
+      const list = document.getElementById('plannerList');
+      if (!list) return;
+      
+      const expensesByCategory = {};
+      dashboardState.expenses.forEach(e => {
+        const c = (e.category || 'Outros').toLowerCase().trim();
+        expensesByCategory[c] = (expensesByCategory[c] || 0) + parseFloat(e.amount);
+      });
+
+      list.innerHTML = dashboardState.budget.map(b => {
+        const actual = expensesByCategory[b.category.toLowerCase().trim()] || 0;
+        const diff = b.planned_amount - actual;
+        const percent = Math.min(Math.round((actual / b.planned_amount) * 100), 100);
+        return `
+          <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-vinho">${b.category}</span>
+              <button onclick="deletePlannerItem('${b.id}')" class="text-slate-300 hover:text-red-500">✕</button>
+            </div>
+            <div class="flex justify-between text-[10px] uppercase font-bold text-slate-400">
+              <span>Orçado: R$ ${Number(b.planned_amount).toLocaleString('pt-BR')}</span>
+              <span>Gasto: R$ ${actual.toLocaleString('pt-BR')}</span>
+            </div>
+            <div class="w-full bg-slate-50 h-1.5 rounded-full overflow-hidden">
+              <div class="h-full ${diff < 0 ? 'bg-rose-500' : 'bg-emerald-500'}" style="width: ${percent}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
 
     function handleGuestSearch(q) {
       dashboardState.guestSearch = q.toLowerCase();
@@ -518,7 +616,7 @@
 
     async function initApp() {
       try {
-        await Promise.all([fetchTasks(), fetchGuests(), fetchExpenses(), fetchLogs(), loadNotesFromSupabase(), fetchTimeline()]);
+        await Promise.all([fetchTasks(), fetchGuests(), fetchExpenses(), fetchLogs(), loadNotesFromSupabase(), fetchTimeline(), fetchBudget()]);
         initRealtime(); updateOverviewStats(); updateDashboardSummary(); switchTab('dashboard');
         if (window.lucide) lucide.createIcons();
       } catch (err) { console.error("Erro setup:", err); }
@@ -888,12 +986,21 @@
       const item = document.getElementById('expItem').value, cat = document.getElementById('expCategory').value, amount = document.getElementById('expAmount').value;
       if (item && amount) { await supabaseClient.from('expenses').insert([{ item, category: cat, amount: parseFloat(amount) }]); fetchExpenses(); }
     }
+    function toggleSavingsEdit(s) { document.getElementById('savings-edit-container').classList.toggle('hidden', !s); }
+    function saveSavingsFromInput() { const v = document.getElementById('savings-input').value; if (v) { localStorage.setItem('weddingSavings', v); toggleSavingsEdit(false); updateExpenseStats(); } }
+
     function updateExpenseStats() {
-      const budget = parseFloat(localStorage.getItem('weddingBudget')) || 50000, spent = dashboardState.expenses.reduce((s, e) => s + parseFloat(e.amount), 0);
+      const budget = parseFloat(localStorage.getItem('weddingBudget')) || 0;
+      const savings = parseFloat(localStorage.getItem('weddingSavings')) || 0;
+      const spent = dashboardState.expenses.reduce((s, e) => s + parseFloat(e.amount), 0);
+      
       document.getElementById('stat-budget').textContent = `R$ ${budget.toLocaleString('pt-BR')}`;
+      document.getElementById('stat-savings').textContent = `R$ ${savings.toLocaleString('pt-BR')}`;
       document.getElementById('stat-total-spent').textContent = `R$ ${spent.toLocaleString('pt-BR')}`;
-      document.getElementById('stat-remaining').textContent = `R$ ${(budget - spent).toLocaleString('pt-BR')}`;
+      document.getElementById('stat-remaining').textContent = `R$ ${(budget - savings).toLocaleString('pt-BR')}`;
+      
       updateExpenseChart(); updateCategoryChart();
+      renderBudgetPlanner();
     }
     function toggleBudgetEdit(s) { document.getElementById('budget-edit-container').classList.toggle('hidden', !s); }
     function saveBudgetFromInput() { const v = document.getElementById('budget-input').value; if (v) { localStorage.setItem('weddingBudget', v); toggleBudgetEdit(false); updateExpenseStats(); } }
