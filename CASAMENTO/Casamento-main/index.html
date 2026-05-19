@@ -48,275 +48,233 @@
       theme: {
         extend: {
           colors: {
-            rosa: '#e91e63',
-            vinho: '#120a74',
-            champagne: '#f5e6d3',
+            navy: '#0B1220',
+            'navy-light': '#0F172A',
+            offwhite: '#F8F9FA',
+            champagne: '#E5D5B0',
+            gold: '#C5A059',
           },
           fontFamily: {
             titulo: ['"Cormorant Garamond"', 'serif'],
-            corpo: ['"Montserrat"', 'sans-serif'],
+            corpo: ['"Inter"', 'sans-serif'],
           },
         },
       },
     };
   </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
   <style>
     :root {
-      --primary: #120a74;
-      --secondary: #e91e63;
-      --accent: #f5e6d3;
-      --glass: rgba(255, 255, 255, 0.85);
-      --glass-border: rgba(18, 10, 116, 0.1);
+      --navy: #0B1220;
+      --gold: #C5A059;
+      --champagne: #E5D5B0;
+      --offwhite: #F8F9FA;
+      --glass: rgba(15, 23, 42, 0.7);
+      --glass-border: rgba(197, 160, 89, 0.2);
     }
 
     body {
-      background: #fdfbf7;
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(245, 230, 211, 0.2) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(18, 10, 116, 0.05) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(245, 230, 211, 0.2) 0px, transparent 50%),
-        radial-gradient(at 0% 100%, rgba(18, 10, 116, 0.05) 0px, transparent 50%);
-      background-attachment: fixed;
-      position: relative;
+      background: var(--navy);
+      color: var(--offwhite);
+      overflow-x: hidden;
+      font-family: 'Inter', sans-serif;
     }
 
-    /* Cinematic Noise Texture */
+    /* Cinematic Texture */
     body::before {
       content: "";
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       background: url('https://grainy-gradients.vercel.app/noise.svg');
-      opacity: 0.02;
+      opacity: 0.04;
       pointer-events: none;
-      z-index: 50;
+      z-index: 99;
     }
 
-    /* Refined Typography */
+    /* Typography */
     .font-titulo {
+      font-family: 'Cormorant Garamond', serif;
       letter-spacing: -0.01em;
-      word-spacing: 0.05em;
-      line-height: 1.1;
+      line-height: 1.05;
     }
 
-    /* Ultra-Smooth Motion */
-    .reveal { opacity: 0; transform: translateY(20px); transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+    /* Layers & Depth */
+    .premium-shadow {
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.45), 0 18px 36px -18px rgba(0, 0, 0, 0.5);
+    }
+
+    .glass-card {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 2rem;
+    }
+
+    /* Motion */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1.4s cubic-bezier(0.16, 1, 0.3, 1); }
     .reveal.active { opacity: 1; transform: translateY(0); }
 
-    .reveal-up { opacity: 0; transform: translateY(30px); transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal-up { opacity: 0; transform: translateY(60px); transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1); }
     .reveal-up.active { opacity: 1; transform: translateY(0); }
-    
-    .reveal-fade { opacity: 0; transition: opacity 2s ease-out; }
-    .reveal-fade.active { opacity: 1; }
 
-    /* Button Refinement */
     .btn-premium {
+      background: var(--gold);
+      color: var(--navy);
       transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
     }
     .btn-premium:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px -10px rgba(18, 10, 116, 0.2);
-    }
-    .btn-premium:active { transform: scale(0.98); }
-
-    /* Glassmorphism */
-    .premium-glass {
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px -10px rgba(197, 160, 89, 0.4);
+      background: var(--champagne);
     }
 
-    /* Utils */
-    .bg-vinho { background-color: #120a74 !important; }
-    .text-vinho { color: #120a74 !important; }
-    .text-rosa { color: #e91e63 !important; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Countdown Luxury */
+    .count-number {
+      font-size: 5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      line-height: 1;
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(197, 160, 89, 0.2);
     }
-    .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
-
-    .delay-100 { transition-delay: 150ms; }
-    .delay-200 { transition-delay: 300ms; }
-    .delay-300 { transition-delay: 450ms; }
-
-    @keyframes fadeInExpand {
-      0% { opacity: 0; letter-spacing: 0.1em; transform: translateY(-10px); }
-      100% { opacity: 1; letter-spacing: 0.5em; transform: translateY(0); }
+    .count-label {
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      font-size: 0.65rem;
+      color: var(--champagne);
+      opacity: 0.8;
     }
 
-    /* Mobile - Poco X8 Pro / iPhone 13 */
     @media (max-width: 640px) {
-      .font-titulo { font-size: 2.8rem !important; line-height: 1 !important; }
-      header { min-height: 70px; }
-      main section { padding-top: 2rem !important; padding-bottom: 2rem !important; }
-      .btn-premium { min-height: 54px; }
-      .reveal-up { transform: translateY(15px); }
+      .font-titulo { font-size: 3.5rem !important; }
+      .count-number { font-size: 3rem !important; }
+      main section { padding-top: 4rem !important; padding-bottom: 4rem !important; }
     }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
   </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 overflow-x-hidden">
-  <header class="w-full bg-white/70 backdrop-blur border-b border-white/60 sticky top-0 z-20">
-    <nav class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 py-4 md:py-3 gap-4 md:gap-3">
-      <a href="#topo" class="flex items-center gap-2">
-        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-vinho text-white text-base shadow-sm">J&B</span>
-        <span class="font-titulo text-2xl text-vinho">Jefferson & Beatriz</span>
+  <header class="w-full bg-navy/80 backdrop-blur-md border-b border-gold/10 sticky top-0 z-[100]">
+    <nav class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between px-6 py-4 md:py-4 gap-4">
+      <a href="#topo" class="flex items-center gap-3">
+        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gold text-navy font-bold text-base shadow-lg shadow-gold/20">J&B</span>
+        <span class="font-titulo text-2xl text-offwhite uppercase tracking-widest">Jefferson & Beatriz</span>
       </a>
-      <div class="flex items-center gap-4 text-xs font-semibold overflow-x-auto no-scrollbar whitespace-nowrap py-1 w-full md:w-auto justify-center">
-        <a href="#sobre" class="text-vinho/70 hover:text-vinho transition-colors">Sobre</a>
-        <a href="#contagem" class="text-vinho/70 hover:text-vinho transition-colors">Contagem</a>
-        <a href="gifts.html" class="text-vinho/70 hover:text-vinho transition-colors">Presentes</a>
-        <a href="faq.html" class="text-vinho/70 hover:text-vinho transition-colors">Dúvidas</a>
-        
-        <a href="#rsvp" class="bg-vinho text-white px-4 py-1.5 rounded-full shadow-sm hover:opacity-90 transition-all">RSVP</a>
+      <div class="flex items-center gap-6 text-[0.65rem] uppercase tracking-[0.2em] font-semibold overflow-x-auto no-scrollbar whitespace-nowrap py-1 w-full md:w-auto justify-center">
+        <a href="#sobre" class="text-offwhite/60 hover:text-gold transition-colors">Nossa História</a>
+        <a href="#contagem" class="text-offwhite/60 hover:text-gold transition-colors">Contagem</a>
+        <a href="gifts.html" class="text-offwhite/60 hover:text-gold transition-colors">Presentes</a>
+        <a href="faq.html" class="text-offwhite/60 hover:text-gold transition-colors">Dúvidas</a>
+        <a href="#rsvp" class="bg-gold text-navy px-5 py-2 rounded-full shadow-lg hover:bg-champagne transition-all">RSVP</a>
       </div>
     </nav>
   </header>
 
   <main id="topo">
-
-    <!-- Personalized Welcome Message -->
-    <div id="welcome-message" class="hidden max-w-5xl mx-auto px-4 mt-6">
-      <div class="bg-champagne/30 border border-vinho/10 rounded-2xl p-4 text-center animate-fade-in">
-        <p class="text-vinho font-medium italic">
-          <span id="guest-name-welcome"></span>, que alegria ter você aqui! 💍
-        </p>
+    <!-- Hero Section Cinematográfica -->
+    <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <!-- Background Layers -->
+      <div class="absolute inset-0 z-0 bg-navy">
+        <div class="absolute inset-0 bg-cover bg-center opacity-40 grayscale-[0.3]" style="background-image: url('./img/foto1.jpg'); background-attachment: fixed;"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/60 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-navy/40 via-transparent to-navy/40"></div>
       </div>
-    </div>
 
-    <section class="max-w-5xl mx-auto px-4 pt-8 pb-12 grid md:grid-cols-2 gap-8 reveal-up">
-      <div class="flex flex-col justify-center order-2 md:order-1">
-        <p class="uppercase tracking-[0.35em] text-[0.65rem] text-vinho/70 mb-2">
-          Save the date
-        </p>
-        <h1 class="font-titulo text-3xl md:text-5xl text-vinho leading-tight">
-          Jefferson <span class="text-rosa">&amp;</span> Beatriz
+      <div class="relative z-10 text-center max-w-4xl mx-auto px-6 reveal-up">
+        <p class="text-gold uppercase tracking-[0.6em] text-[0.6rem] md:text-[0.75rem] font-bold mb-8">Save the Date</p>
+        <h1 class="font-titulo text-6xl md:text-8xl lg:text-9xl text-offwhite mb-8">
+          Jefferson <span class="text-gold italic font-light">&amp;</span> Beatriz
         </h1>
-        <p class="mt-3 text-sm md:text-base text-zinc-600">
-          06 de fevereiro de 2027 às 08:00 DA MANHÃ (PONTUALMENTE) • Cascavel - PR
-        </p>
-
-        <p class="mt-4 text-sm md:text-base text-zinc-700 leading-relaxed max-w-xl mx-auto reveal-up delay-100">
-          Celebramos o amor em sua forma mais pura. Convidamos você para testemunhar nosso compromisso em uma manhã inesquecível.
-        </p>
-
-        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl reveal-up delay-200">
-          <div class="premium-glass p-4 rounded-3xl text-center">
-            <p class="text-[0.6rem] uppercase tracking-widest text-vinho/60 font-bold mb-1">Traje Sugerido</p>
-            <p class="text-sm font-medium text-vinho">Social / Livre</p>
-          </div>
-          <div class="premium-glass p-4 rounded-3xl text-center">
-            <p class="text-[0.6rem] uppercase tracking-widest text-vinho/60 font-bold mb-1">Destaque</p>
-            <p class="text-sm font-medium text-vinho italic">Sem cores brancas</p>
-          </div>
+        <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-offwhite/80 text-xs md:text-sm uppercase tracking-[0.2em] font-light">
+          <span>06 de Fevereiro de 2027</span>
+          <span class="hidden md:block w-1.5 h-1.5 bg-gold rounded-full opacity-40"></span>
+          <span>Cascavel - PR</span>
         </div>
-
-        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl reveal-up delay-300">
-          <a href="#rsvp" class="flex items-center justify-center gap-2 rounded-2xl bg-vinho px-6 py-4 text-sm font-bold text-white shadow-xl shadow-vinho/30 hover:scale-[1.02] transition-all">
-            💍 Confirmar Presença
-          </a>
-          <a href="gifts.html" class="flex items-center justify-center gap-2 rounded-2xl bg-white border-2 border-slate-100 px-6 py-4 text-sm font-bold text-vinho shadow-lg shadow-slate-100 hover:scale-[1.02] transition-all">
-            🎁 Lista de Presentes
-          </a>
-          <button onclick="addToGoogleCalendar()" class="flex items-center justify-center gap-2 rounded-2xl bg-slate-50 border-2 border-slate-100 px-6 py-4 text-sm font-bold text-vinho hover:scale-[1.02] transition-all col-span-1 sm:col-span-2">
-            📅 Adicionar ao Calendário
-          </button>
-        </div>
-      </div>
-
-      <div class="relative flex items-center justify-center md:justify-end order-1 md:order-2">
-        <div
-          class="h-56 w-56 md:h-72 md:w-72 overflow-hidden rounded-[2.5rem] bg-slate-50 shadow-xl shadow-slate-200/50 border border-white/80">
-          <img src="./img/foto1.jpg" alt="Jefferson e Beatriz sorrindo juntos" class="h-full w-full object-cover" loading="lazy" width="288" height="288" />
-        </div>
-        <div
-          class="hidden md:block absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white/90 rounded-2xl px-4 py-2 shadow-md text-[0.7rem] text-vinho">
-          <p class="font-semibold">“Um dia para guardar para sempre.”</p>
+        
+        <div class="mt-16 flex flex-col sm:flex-row items-center justify-center gap-6">
+          <a href="#rsvp" class="btn-premium px-12 py-5 rounded-full text-xs shadow-2xl">Confirmar Presença</a>
+          <a href="gifts.html" class="glass-card px-10 py-5 rounded-full text-xs text-offwhite border-offwhite/20 hover:border-gold/50 transition-all uppercase tracking-widest font-semibold">Lista de Presentes</a>
         </div>
       </div>
     </section>
 
-    <section class="max-w-5xl mx-auto px-4 pb-10">
-      <div
-        class="grid gap-4 md:grid-cols-3 text-xs text-zinc-700 bg-white/80 rounded-3xl border border-white/70 shadow-sm p-4">
-        <div>
-          <p class="font-semibold text-vinho">Cerimônia</p>
-          <p class="mt-1">
-            08:00 DA MANHÃ (PONTUALMENTE) • Capela São Maximiliano<br />
-            <strong>Rua Siqueira Campos, 1234 - Bairro Country</strong><br />
-            Cascavel - PR
+    <!-- Info Section (Cerimônia / Traje) -->
+    <section class="max-w-6xl mx-auto px-6 -mt-20 relative z-20 pb-20">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card p-10 premium-shadow reveal-up delay-100">
+          <p class="text-gold text-[0.6rem] uppercase tracking-[0.3em] font-bold mb-4">A Cerimônia</p>
+          <h3 class="font-titulo text-3xl text-offwhite mb-4">Capela São Maximiliano</h3>
+          <p class="text-offwhite/60 text-sm leading-relaxed mb-6">
+            Rua Siqueira Campos, 1234 - Bairro Country, Cascavel - PR<br>
+            Às 08:00 da manhã (Pontualmente)
           </p>
-          <a href="https://www.google.com/maps/search/?api=1&query=Capela+São+Maximiliano+Cascavel+PR"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-2 inline-block text-xs text-vinho underline"
-          >
-            Ver mapa de como chegar →
+          <a href="https://www.google.com/maps/search/?api=1&query=Capela+São+Maximiliano+Cascavel+PR" target="_blank" class="inline-flex items-center gap-3 text-[0.65rem] text-gold uppercase tracking-[0.2em] font-bold hover:gap-5 transition-all">
+            Ver Mapa <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </a>
         </div>
-        <div>
-          <p class="font-semibold text-vinho">Recepção</p>
-          <p class="mt-1">
-            Não teremos recepção após a cerimônia.
+
+        <div class="glass-card p-10 premium-shadow reveal-up delay-200">
+          <p class="text-gold text-[0.6rem] uppercase tracking-[0.3em] font-bold mb-4">Celebrando Juntos</p>
+          <h3 class="font-titulo text-3xl text-offwhite mb-4">Recepção</h3>
+          <p class="text-offwhite/60 text-sm leading-relaxed">
+            Nossa celebração será focada no momento do "Sim". Não teremos recepção após a cerimônia. Sua presença na capela é o nosso maior presente.
           </p>
         </div>
-        <div>
-          <p class="font-semibold text-vinho">Traje livre</p>
-          <p class="mt-1">
-            Proibido cores claras semelhantes ao branco.
+
+        <div class="glass-card p-10 premium-shadow reveal-up delay-300">
+          <p class="text-gold text-[0.6rem] uppercase tracking-[0.3em] font-bold mb-4">Estilo & Traje</p>
+          <h3 class="font-titulo text-3xl text-offwhite mb-4">Dress Code</h3>
+          <p class="text-offwhite/60 text-sm leading-relaxed mb-4">
+            O traje é social livre. Sugerimos roupas leves e elegantes para a manhã.
           </p>
+          <div class="bg-rose-900/20 border border-rose-500/20 p-4 rounded-xl">
+             <p class="text-rose-200 text-[0.6rem] uppercase tracking-widest font-bold">Importante</p>
+             <p class="text-rose-100 text-xs italic">Pedimos que evitem cores claras semelhantes ao branco.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="contagem" class="reveal" class="max-w-5xl mx-auto px-4 py-12">
-      <h2 class="font-titulo text-2xl text-center text-vinho">
-        Falta pouco para o grande dia
-      </h2>
-      <p id="countdown-note" class="mt-2 text-center text-sm text-zinc-600">
-        Acompanhe a contagem regressiva até o momento do “sim”.
-      </p>
+    <!-- Countdown Section -->
+    <section id="contagem" class="max-w-4xl mx-auto px-6 py-32 reveal">
+      <div class="text-center mb-16">
+        <h2 class="font-titulo text-4xl md:text-5xl text-offwhite mb-4">O momento está chegando</h2>
+        <div class="w-16 h-0.5 bg-gold mx-auto opacity-40"></div>
+      </div>
 
-      <div class="mt-6 bg-white/90 border border-slate-100 rounded-3xl p-5 shadow-sm">
-        <div id="countdown" class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 text-center text-vinho">
-          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-slate-100">
-            <div class="text-xl md:text-2xl font-semibold" id="days">--</div>
-            <div class="mt-0.5 text-[0.6rem] md:text-[0.65rem] uppercase tracking-wide text-zinc-500">
-              Dias
-            </div>
-          </div>
-          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-slate-100">
-            <div class="text-xl md:text-2xl font-semibold" id="hours">--</div>
-            <div class="mt-0.5 text-[0.6rem] md:text-[0.65rem] uppercase tracking-wide text-zinc-500">
-              Horas
-            </div>
-          </div>
-          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-slate-100">
-            <div class="text-xl md:text-2xl font-semibold" id="minutes">--</div>
-            <div class="mt-0.5 text-[0.6rem] md:text-[0.65rem] uppercase tracking-wide text-zinc-500">
-              Minutos
-            </div>
-          </div>
-          <div class="bg-white/90 rounded-2xl py-3 md:py-4 shadow-sm border border-slate-100">
-            <div class="text-xl md:text-2xl font-semibold" id="seconds">--</div>
-            <div class="mt-0.5 text-[0.6rem] md:text-[0.65rem] uppercase tracking-wide text-zinc-500">
-              Segundos
-            </div>
-          </div>
+      <div id="countdown" class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
+        <div class="flex flex-col gap-2">
+          <div class="count-number" id="days">--</div>
+          <div class="count-label">Dias</div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div class="count-number" id="hours">--</div>
+          <div class="count-label">Horas</div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div class="count-number" id="minutes">--</div>
+          <div class="count-label">Minutos</div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div class="count-number" id="seconds">--</div>
+          <div class="count-label">Segundos</div>
         </div>
       </div>
+    </section>
 
       <p class="mt-6 text-center text-xs text-zinc-600">
         Em caso de dúvidas sobre horário, local ou presentes,
