@@ -660,7 +660,7 @@
       document.getElementById('stat-total').textContent = total;
       document.getElementById('stat-confirmed').textContent = confirmed;
       document.getElementById('stat-jefferson').textContent = allGuests.filter(g => g.invited_by === 'Jefferson').length;
-      document.getElementById('stat-beatriz').textContent = allGuests.filter(g => g.invited_by === 'Beatriz').length;
+      document.getElementById('stat-beatriz').textContent = allGuests.filter(g => g.invited_by === 'Bia' || g.invited_by === 'Beatriz').length;
       document.getElementById('dueSoonStat').textContent = dueSoonCount;
       document.getElementById('pendingTasksStat').textContent = dashboardState.tasks.filter(t => t.status !== 'concluido').length;
     }
