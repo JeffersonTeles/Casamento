@@ -487,13 +487,14 @@
   <!-- Modal de Planejamento de Item (Budget) -->
   <div id="plannerModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md p-8">
-      <h3 class="text-2xl font-titulo text-vinho mb-6">Orçar Novo Item</h3>
+      <h3 id="plannerModalTitle" class="text-2xl font-titulo text-vinho mb-6">Orçar Novo Item</h3>
       <div class="space-y-4">
+        <input type="hidden" id="plannerId" />
         <input type="text" id="plannerCategory" list="categories" placeholder="Categoria (ex: Fotografia)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
         <input type="number" id="plannerAmount" placeholder="Valor Planejado R$" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
         <div class="flex gap-3 mt-6">
           <button onclick="togglePlannerModal(false)" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500">Cancelar</button>
-          <button onclick="addPlannerItem()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold shadow-lg">Salvar Orçamento</button>
+          <button onclick="addPlannerItem()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold shadow-lg">Salvar</button>
         </div>
       </div>
     </div>
@@ -521,21 +522,40 @@
       sortOrder: 'name-asc' 
     };
 
-    function togglePlannerModal(s) { document.getElementById('plannerModal').classList.toggle('hidden', !s); }
-    async function fetchBudget() { 
-      const { data } = await supabaseClient.from('budget_categories').select('*').order('category', { ascending: true }); 
-      dashboardState.budget = data || []; 
-      renderBudgetPlanner(); 
-      updateExpenseStats(); 
-    }
-    
-    async function addPlannerItem() {
-      const cat = document.getElementById('plannerCategory').value.trim();
-      const amount = document.getElementById('plannerAmount').value;
-      if (cat && amount) {
-        await supabaseClient.from('budget_categories').insert([{ category: cat, planned_amount: parseFloat(amount) }]);
+    function togglePlannerModal(s) { 
+      if (!s) {
+        document.getElementById('plannerId').value = '';
         document.getElementById('plannerCategory').value = '';
         document.getElementById('plannerAmount').value = '';
+        document.getElementById('plannerModalTitle').textContent = 'Orçar Novo Item';
+      }
+      document.getElementById('plannerModal').classList.toggle('hidden', !s); 
+    }
+
+    function editPlannerItem(id, cat, amount) {
+      document.getElementById('plannerId').value = id;
+      document.getElementById('plannerCategory').value = cat;
+      document.getElementById('plannerAmount').value = amount;
+      document.getElementById('plannerModalTitle').textContent = 'Editar Orçamento';
+      document.getElementById('plannerModal').classList.remove('hidden');
+    }
+
+    async function addPlannerItem() {
+      const id = document.getElementById('plannerId').value;
+      const cat = document.getElementById('plannerCategory').value.trim();
+      const amount = document.getElementById('plannerAmount').value;
+      
+      if (cat && amount) {
+        const payload = { category: cat, planned_amount: parseFloat(amount) };
+        
+        if (id) {
+          await supabaseClient.from('budget_categories').update(payload).eq('id', id);
+          showToast('Orçamento atualizado!', 'success');
+        } else {
+          await supabaseClient.from('budget_categories').insert([payload]);
+          showToast('Item orçado!', 'success');
+        }
+        
         togglePlannerModal(false);
         fetchBudget();
       }
@@ -545,6 +565,7 @@
       if (confirm('Remover este item orçado?')) {
         await supabaseClient.from('budget_categories').delete().eq('id', id);
         fetchBudget();
+        showToast('Item removido', 'success');
       }
     }
 
@@ -563,10 +584,13 @@
         const diff = b.planned_amount - actual;
         const percent = Math.min(Math.round((actual / b.planned_amount) * 100), 100);
         return `
-          <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2">
+          <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2 group relative">
             <div class="flex justify-between items-center">
               <span class="font-bold text-vinho">${b.category}</span>
-              <button onclick="deletePlannerItem('${b.id}')" class="text-slate-300 hover:text-red-500">✕</button>
+              <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onclick="editPlannerItem('${b.id}', '${b.category}', ${b.planned_amount})" class="text-slate-400 hover:text-vinho text-xs">✏️</button>
+                <button onclick="deletePlannerItem('${b.id}')" class="text-slate-300 hover:text-red-500 text-xs">✕</button>
+              </div>
             </div>
             <div class="flex justify-between text-[10px] uppercase font-bold text-slate-400">
               <span>Orçado: R$ ${Number(b.planned_amount).toLocaleString('pt-BR')}</span>
