@@ -160,26 +160,15 @@
       color: #fb7185;
     }
 
+    /* Mobile Optimization - Poco X8 Pro / iPhone 13 / High DPI */
     @media (max-width: 640px) {
-      .toggle-tema {
-        top: 10px;
-        right: 10px;
-        font-size: 13px;
-        padding: 5px 9px;
-      }
-    }
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  
-    /* Serious Mobile Improvements (Poco X8 Pro / iPhone 13) */
-    @media (max-width: 640px) {
-      .font-titulo { font-size: 2.25rem !important; line-height: 1.1 !important; }
-      header { min-height: 80px; }
-      nav a .font-titulo { font-size: 1.5rem !important; }
-      .section-title { font-size: 1.75rem !important; }
-      main section { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
-      .gift-card h3 { font-size: 1rem !important; }
+      .font-titulo { font-size: 2.5rem !important; line-height: 1.1 !important; }
+      header { min-height: 70px; }
+      nav a .font-titulo { font-size: 1.25rem !important; }
+      main section { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
       .no-scrollbar { -webkit-overflow-scrolling: touch; }
+      .toggle-tema { top: 10px; right: 10px; font-size: 13px; padding: 5px 9px; }
+      .btn-premium, a.bg-vinho, a.bg-white { min-height: 52px; display: flex; items-center: center; justify-center: center; }
     }
 
   
@@ -267,6 +256,13 @@
     
     .reveal-fade { opacity: 0; transition: opacity 1.5s ease-out; }
     .reveal-fade.active { opacity: 1; }
+    
+    .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     
     .delay-100 { transition-delay: 100ms; }
     .delay-200 { transition-delay: 200ms; }
