@@ -64,215 +64,104 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
   <style>
-    /* Cores personalizadas */
-    .bg-vinho { background-color: #120a74 !important; }
-    .bg-rosa { background-color: #120a74 !important; }
-    .text-vinho { color: #120a74 !important; }
-    .text-rosa { color: #120a74 !important; }
-    .border-vinho { border-color: #120a74 !important; }
-    
-    .bg-vinho\/90 { background-color: rgba(18, 10, 116, 0.9) !important; }
-    .bg-vinho\/5 { background-color: rgba(18, 10, 116, 0.05) !important; }
-    .shadow-vinho\/20 { box-shadow: 0 4px 6px -1px rgba(18, 10, 116, 0.2) !important; }
-    
-    .text-vinho\/80 { color: rgba(18, 10, 116, 0.8) !important; }
-    .border-vinho\/60 { border-color: rgba(18, 10, 116, 0.6) !important; }
-    
-    .bg-champagne\/60 { background-color: rgba(249, 250, 251, 0.6) !important; }
-    .bg-slate-50 { background-color: #f9fafb !important; }
-    .bg-slate-100 { background-color: #f3f4f6 !important; }
-    .shadow-rose-200\/70 { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05) !important; }
-    
-    /* Botões */
-    .rounded-full { border-radius: 9999px !important; }
-    .rounded-3xl { border-radius: 1.5rem !important; }
-    .rounded-2xl { border-radius: 1rem !important; }
-    .rounded-xl { border-radius: 0.75rem !important; }
-    
-    .px-6 { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
-    .py-2\.5 { padding-top: 0.625rem !important; padding-bottom: 0.625rem !important; }
-    .py-3 { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
-    
-    .text-xs { font-size: 0.75rem !important; }
-    .text-sm { font-size: 0.875rem !important; }
-    .font-semibold { font-weight: 600 !important; }
-    .text-white { color: white !important; }
-    
-    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important; }
-    .hover\:bg-vinho\/90:hover { background-color: rgba(102, 50, 68, 0.9) !important; }
-    .hover\:bg-vinho\/5:hover { background-color: rgba(102, 50, 68, 0.05) !important; }
-    .transition { transition: all 0.2s ease !important; }
-    
-    .inline-flex { display: inline-flex !important; }
-    .items-center { align-items: center !important; }
-    .justify-center { justify-content: center !important; }
-    .gap-3 { gap: 0.75rem !important; }
-    
-    /* Botão do modo escuro */
-    .toggle-tema {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      z-index: 999;
-      border: none;
-      background: rgba(102, 50, 68, 0.95);
-      color: #f9fafb;
-      border-radius: 999px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: 14px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-    }
-
-    .toggle-tema:hover {
-      background: rgba(233, 30, 99, 0.95);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
-    }
-
-    /* Dark Mode */
-    body.dark-mode {
-      background-color: #020617;
-      color: #e5e7eb;
-    }
-
-    body.dark-mode .bg-white\/60,
-    body.dark-mode .bg-white\/70,
-    body.dark-mode .bg-white\/80,
-    body.dark-mode .bg-white\/90,
-    body.dark-mode .bg-slate-50\/80,
-    body.dark-mode .bg-slate-50\/40 {
-      background-color: #0b1120 !important;
-    }
-
-    body.dark-mode .text-zinc-600,
-    body.dark-mode .text-zinc-700,
-    body.dark-mode .text-zinc-500 {
-      color: #e5e7eb !important;
-    }
-
-    body.dark-mode a {
-      color: #f9a8d4;
-    }
-
-    body.dark-mode a:hover {
-      color: #fb7185;
-    }
-
-    /* Mobile Optimization - Poco X8 Pro / iPhone 13 / High DPI */
-    @media (max-width: 640px) {
-      .font-titulo { font-size: 2.5rem !important; line-height: 1.1 !important; }
-      header { min-height: 70px; }
-      nav a .font-titulo { font-size: 1.25rem !important; }
-      main section { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
-      .no-scrollbar { -webkit-overflow-scrolling: touch; }
-      .toggle-tema { top: 10px; right: 10px; font-size: 13px; padding: 5px 9px; }
-      .btn-premium, a.bg-vinho, a.bg-white { min-height: 52px; display: flex; items-center: center; justify-center: center; }
-    }
-
-  
     :root {
       --primary: #120a74;
-      --secondary: #120a74;
+      --secondary: #e91e63;
+      --accent: #f5e6d3;
       --glass: rgba(255, 255, 255, 0.85);
       --glass-border: rgba(18, 10, 116, 0.1);
     }
-    
-    .premium-glass {
-      background: var(--glass);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+
+    body {
+      background: #fdfbf7;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(245, 230, 211, 0.2) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(18, 10, 116, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(245, 230, 211, 0.2) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(18, 10, 116, 0.05) 0px, transparent 50%);
+      background-attachment: fixed;
+      position: relative;
     }
-    
-    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+
+    /* Cinematic Noise Texture */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: url('https://grainy-gradients.vercel.app/noise.svg');
+      opacity: 0.02;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    /* Refined Typography */
+    .font-titulo {
+      letter-spacing: -0.01em;
+      word-spacing: 0.05em;
+      line-height: 1.1;
+    }
+
+    /* Ultra-Smooth Motion */
+    .reveal { opacity: 0; transform: translateY(20px); transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
     .reveal.active { opacity: 1; transform: translateY(0); }
+
+    .reveal-up { opacity: 0; transform: translateY(30px); transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal-up.active { opacity: 1; transform: translateY(0); }
     
+    .reveal-fade { opacity: 0; transition: opacity 2s ease-out; }
+    .reveal-fade.active { opacity: 1; }
+
+    /* Button Refinement */
     .btn-premium {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
     }
-    .btn-premium:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 25px rgba(18, 10, 116, 0.25); }
-    .btn-premium:active { transform: translateY(0) scale(0.98); }
-
-    .msg-card {
-      border-left: 3px solid var(--secondary);
-      background: linear-gradient(90deg, rgba(233, 30, 99, 0.05) 0%, transparent 100%);
+    .btn-premium:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -10px rgba(18, 10, 116, 0.2);
     }
+    .btn-premium:active { transform: scale(0.98); }
+
+    /* Glassmorphism */
+    .premium-glass {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Utils */
+    .bg-vinho { background-color: #120a74 !important; }
+    .text-vinho { color: #120a74 !important; }
+    .text-rosa { color: #e91e63 !important; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-  
-    :root {
-      --primary: #663244;
-      --secondary: #e91e63;
-      --accent: #f5e6d3;
-      --text-main: #1f2937;
-      --text-muted: #4b5563;
-    }
-
-    .editorial-title {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--primary);
-    }
-
-    .editorial-card {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(18, 10, 116, 0.08);
-      border-radius: 2rem;
-      padding: 2.5rem;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .editorial-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 25px 50px -12px rgba(18, 10, 116, 0.15);
-      border-color: rgba(18, 10, 116, 0.2);
-    }
-
-    .hero-gradient {
-      background: radial-gradient(circle at top right, rgba(233, 30, 99, 0.08), transparent),
-                  radial-gradient(circle at bottom left, rgba(245, 230, 211, 0.5), transparent);
-    }
-
-    .line-accent {
-      width: 40px;
-      height: 2px;
-      background: var(--secondary);
-      margin: 1.5rem 0;
-    }
-
-    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
-    .reveal.active { opacity: 1; transform: translateY(0); }
-
-    /* New Luxury Animations */
-    .reveal-up { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
-    .reveal-up.active { opacity: 1; transform: translateY(0); }
-    
-    .reveal-fade { opacity: 0; transition: opacity 1.5s ease-out; }
-    .reveal-fade.active { opacity: 1; }
-    
-    .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
-    
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
-    .delay-100 { transition-delay: 100ms; }
-    .delay-200 { transition-delay: 200ms; }
-    .delay-300 { transition-delay: 300ms; }
-    
+    .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+
+    .delay-100 { transition-delay: 150ms; }
+    .delay-200 { transition-delay: 300ms; }
+    .delay-300 { transition-delay: 450ms; }
+
     @keyframes fadeInExpand {
       0% { opacity: 0; letter-spacing: 0.1em; transform: translateY(-10px); }
       100% { opacity: 1; letter-spacing: 0.5em; transform: translateY(0); }
     }
 
+    /* Mobile - Poco X8 Pro / iPhone 13 */
+    @media (max-width: 640px) {
+      .font-titulo { font-size: 2.8rem !important; line-height: 1 !important; }
+      header { min-height: 70px; }
+      main section { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+      .btn-premium { min-height: 54px; }
+      .reveal-up { transform: translateY(15px); }
+    }
   </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -319,12 +208,22 @@
           06 de fevereiro de 2027 às 08:00 DA MANHÃ (PONTUALMENTE) • Cascavel - PR
         </p>
 
-        <p class="mt-4 text-sm md:text-base text-zinc-700 leading-relaxed">
-          É com muita alegria que convidamos você para celebrar conosco este
-          dia tão especial. Sua presença tornará tudo ainda mais inesquecível.
+        <p class="mt-4 text-sm md:text-base text-zinc-700 leading-relaxed max-w-xl mx-auto reveal-up delay-100">
+          Celebramos o amor em sua forma mais pura. Convidamos você para testemunhar nosso compromisso em uma manhã inesquecível.
         </p>
 
-        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl reveal-up delay-200">
+          <div class="premium-glass p-4 rounded-3xl text-center">
+            <p class="text-[0.6rem] uppercase tracking-widest text-vinho/60 font-bold mb-1">Traje Sugerido</p>
+            <p class="text-sm font-medium text-vinho">Social / Livre</p>
+          </div>
+          <div class="premium-glass p-4 rounded-3xl text-center">
+            <p class="text-[0.6rem] uppercase tracking-widest text-vinho/60 font-bold mb-1">Destaque</p>
+            <p class="text-sm font-medium text-vinho italic">Sem cores brancas</p>
+          </div>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl reveal-up delay-300">
           <a href="#rsvp" class="flex items-center justify-center gap-2 rounded-2xl bg-vinho px-6 py-4 text-sm font-bold text-white shadow-xl shadow-vinho/30 hover:scale-[1.02] transition-all">
             💍 Confirmar Presença
           </a>
