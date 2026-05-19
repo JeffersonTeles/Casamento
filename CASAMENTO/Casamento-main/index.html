@@ -302,6 +302,15 @@
 
   <main id="topo">
 
+    <!-- Personalized Welcome Message -->
+    <div id="welcome-message" class="hidden max-w-5xl mx-auto px-4 mt-6">
+      <div class="bg-champagne/30 border border-vinho/10 rounded-2xl p-4 text-center animate-fade-in">
+        <p class="text-vinho font-medium italic">
+          <span id="guest-name-welcome"></span>, que alegria ter você aqui! 💍
+        </p>
+      </div>
+    </div>
+
     <section class="max-w-5xl mx-auto px-4 pt-8 pb-12 grid md:grid-cols-2 gap-8 reveal-up">
       <div class="flex flex-col justify-center order-2 md:order-1">
         <p class="uppercase tracking-[0.35em] text-[0.65rem] text-vinho/70 mb-2">
@@ -573,11 +582,29 @@
       btn.innerText = "Enviar Mensagem ❤️";
     }
 
+    // Personalized Welcome Logic
+    async function checkWelcome() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      if (token) {
+        const { data, error } = await supabase.createClient(
+          'https://ysadooisujkjindusjbu.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8'
+        ).from('guests').select('name').eq('invite_token', token).maybeSingle();
+        
+        if (data && data.name) {
+          document.getElementById('guest-name-welcome').textContent = `Olá, ${data.name.split(' ')[0]}`;
+          document.getElementById('welcome-message').classList.remove('hidden');
+        }
+      }
+    }
+
     // Init
     window.addEventListener("DOMContentLoaded", () => {
       if (window.lucide) lucide.createIcons();
       fetchMessages();
       reveal();
+      checkWelcome();
     });
 
 </script>
