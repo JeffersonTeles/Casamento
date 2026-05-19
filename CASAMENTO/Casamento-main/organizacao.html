@@ -179,6 +179,7 @@
         <button onclick="switchTab('analytics')" id="btn-analytics" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Analytics</button>
         <button onclick="switchTab('suppliers')" id="btn-suppliers" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Fornecedores</button>
         <button onclick="switchTab('timeline')" id="btn-timeline" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Cronograma</button>
+        <button onclick="switchTab('docs')" id="btn-docs" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Documentos</button>
         <button onclick="switchTab('audit')" id="btn-audit" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Log</button>
       </div>
     </nav>
@@ -226,6 +227,13 @@
                   <div class="h-32">
                     <canvas id="dashDonutChart"></canvas>
                   </div>
+                </div>
+              </div>
+              <div class="glass-card p-6 rounded-[1.6rem]">
+                <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="message-circle" class="text-blue-400"></i> Novos Recados</h3>
+                <div id="dash-new-messages" class="p-4 bg-blue-50/50 rounded-2xl border border-blue-100 text-center">
+                  <p class="text-2xl font-bold text-blue-600" id="dash-msg-count">0</p>
+                  <p class="text-[10px] uppercase text-blue-400 font-bold tracking-widest">Mensagens no Mural</p>
                 </div>
               </div>
               <div class="glass-card p-6 rounded-[1.6rem]">
@@ -354,6 +362,19 @@
           <textarea id="meetingNotes" class="w-full p-4 rounded-2xl border border-slate-300 min-h-[300px]" placeholder="Escreva aqui suas ideias, lembretes..."></textarea>
           <button id="saveNotesBtn" class="mt-4 w-full bg-vinho text-white py-4 rounded-xl font-bold text-lg shadow-lg">Salvar Notas</button>
           <p id="notesStatus" class="text-center mt-2 text-sm text-slate-500"></p>
+
+          <div class="mt-8 pt-8 border-t border-slate-100">
+            <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="image"></i> Moodboard & Inspirações</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <input type="text" id="moodLink" placeholder="Cole link da imagem (Pinterest/Instagram)..." class="w-full p-2 text-xs border rounded-lg mb-2" />
+                <button onclick="addMoodLink()" class="w-full bg-slate-800 text-white py-2 rounded-lg text-xs font-bold">Adicionar Referência</button>
+              </div>
+              <div id="moodGrid" class="grid grid-cols-3 gap-2">
+                <!-- Moodboard links go here -->
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- SEÇÃO ANALYTICS -->
@@ -421,6 +442,31 @@
             <!-- Timeline items will go here -->
             <div class="relative"><div class="absolute -left-[1.35rem] top-1 w-3 h-3 bg-vinho rounded-full"></div><p class="font-bold text-vinho text-sm">08:00</p><p class="text-slate-700">Cerimônia na Capela</p></div>
             <div class="relative"><div class="absolute -left-[1.35rem] top-1 w-3 h-3 bg-vinho rounded-full"></div><p class="font-bold text-vinho text-sm">09:30</p><p class="text-slate-700">Sessão de fotos dos noivos</p></div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO DOCUMENTOS -->
+        <section id="docs" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+          <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="folder-lock"></i> Checklist de Documentação</h2>
+          <p class="text-xs text-slate-500 mb-6 italic">Gerencie os documentos necessários para o Civil e Religioso.</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="docsList">
+            <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
+              <input type="checkbox" class="w-5 h-5 accent-vinho" />
+              <div class="flex-1"><p class="font-bold text-sm">Certidão de Nascimento (Noivos)</p><p class="text-[10px] text-slate-400">Atualizada 90 dias</p></div>
+            </div>
+            <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
+              <input type="checkbox" class="w-5 h-5 accent-vinho" />
+              <div class="flex-1"><p class="font-bold text-sm">Comprovante de Residência</p><p class="text-[10px] text-slate-400">Jefferson & Bia</p></div>
+            </div>
+            <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
+              <input type="checkbox" class="w-5 h-5 accent-vinho" />
+              <div class="flex-1"><p class="font-bold text-sm">Certificado de Batismo</p><p class="text-[10px] text-slate-400">Para o religioso</p></div>
+            </div>
+            <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
+              <input type="checkbox" class="w-5 h-5 accent-vinho" />
+              <div class="flex-1"><p class="font-bold text-sm">Cópia RG/CPF Padrinhos</p><p class="text-[10px] text-slate-400">Civil & Igreja</p></div>
+            </div>
           </div>
         </section>
 
@@ -680,7 +726,7 @@
     };
 
     function switchTab(tabId) {
-      const tabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline'];
+      const tabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline', 'docs'];
       tabs.forEach(t => {
         const content = document.getElementById(t);
         const btn = document.getElementById(`btn-${t}`);
@@ -694,8 +740,40 @@
       if (tabId === 'dashboard') updateDashboardSummary();
       if (tabId === 'analytics') updateAnalytics();
       if (tabId === 'suppliers') fetchSuppliers();
+      if (tabId === 'notes') fetchMoodLinks();
       if (window.lucide) lucide.createIcons();
     }
+
+    // CALENDAR INTEGRATION FOR TASKS
+    function addToPersonalCalendar(title, date) {
+      if (!date) return;
+      const d = new Date(date + 'T12:00:00');
+      const start = d.toISOString().replace(/-|:|\.\d\d\d/g, "");
+      const end = d.toISOString().replace(/-|:|\.\d\d\d/g, "");
+      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('CASAMENTO: ' + title)}&dates=${start}/${end}&details=Lembrete de tarefa do painel de organização.`;
+      window.open(url, '_blank');
+    }
+
+    // MOODBOARD LOGIC
+    async function addMoodLink() {
+      const link = document.getElementById('moodLink').value.trim();
+      if (!link) return;
+      const { error } = await supabaseClient.from('moodboard').insert([{ url: link }]);
+      if (!error) { document.getElementById('moodLink').value = ''; fetchMoodLinks(); }
+    }
+    async function fetchMoodLinks() {
+      const { data } = await supabaseClient.from('moodboard').select('*').order('created_at', { ascending: false });
+      const grid = document.getElementById('moodGrid');
+      if (!grid) return;
+      grid.innerHTML = (data || []).map(m => `
+        <div class="relative group aspect-square bg-slate-100 rounded-lg overflow-hidden border">
+          <img src="${m.url}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x100?text=Link'"/>
+          <button onclick="deleteMood('${m.id}')" class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-2 h-2"></i></button>
+        </div>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+    async function deleteMood(id) { await supabaseClient.from('moodboard').delete().eq('id', id); fetchMoodLinks(); }
 
     async function fetchTasks() {
       const { data } = await supabaseClient.from('tasks').select('*').order('due_date', { ascending: true, nullsFirst: false });
@@ -721,7 +799,7 @@
 
         let ownerTag = t.owner ? `<span class="text-[9px] px-2 py-0.5 rounded-full bg-slate-100 font-bold uppercase ml-2 text-slate-500">${t.owner}</span>` : '';
         const dateStr = t.due_date ? `<span class="text-[10px] text-slate-400 ml-auto">${new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>` : '';
-        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${t.id}', '${t.status}')" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${t.title} ${ownerTag}</span></div>${dateStr}</div><button onclick="deleteTask('${t.id}')" class="p-1 hover:bg-red-50 rounded">🗑️</button></div>`;
+        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${t.id}', '${t.status}')" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${t.title} ${ownerTag}</span></div>${dateStr}</div><div class="flex gap-2">${t.due_date ? `<button onclick="addToPersonalCalendar('${t.title}', '${t.due_date}')" class="p-1 hover:bg-blue-50 rounded" title="Agendar"><i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-500"></i></button>` : ''}<button onclick="deleteTask('${t.id}')" class="p-1 hover:bg-red-50 rounded">🗑️</button></div></div>`;
       }).join('');
     }
     function filterTasks(f) {
@@ -793,6 +871,10 @@
       const { data: timeline } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
       const nextEvent = timeline && timeline[0] ? `<p class="text-sm font-bold text-vinho">${timeline[0].event_time.substring(0,5)}</p><p class="text-xs text-slate-600">${timeline[0].description}</p>` : '<p class="text-xs text-slate-400 text-center">Nenhum evento no cronograma.</p>';
       document.getElementById('dash-next-event').innerHTML = nextEvent;
+
+      // Mural de Mensagens (Count)
+      const { count } = await supabaseClient.from('guestbook').select('*', { count: 'exact', head: true });
+      document.getElementById('dash-msg-count').textContent = count || 0;
     }
 
     // AUTO-SAVE NOTES
