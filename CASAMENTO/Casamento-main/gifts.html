@@ -128,19 +128,27 @@
       <div class="premium-glass rounded-[2.5rem] p-8 md:p-12 text-center flex flex-col items-center">
         <p class="text-xs font-bold text-vinho uppercase tracking-widest mb-6">Chave PIX (Telefone)</p>
         
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-8 inline-block">
-          <img src="https://quickchart.io/qr?size=250&text=44999277915" alt="QR Code PIX" class="w-48 h-48 md:w-64 md:h-64" />
+        <div id="pix-container" class="relative group cursor-pointer" onclick="revealPix()">
+          <!-- Hidden QR Code placeholder -->
+          <div id="qr-placeholder" class="bg-slate-100 w-48 h-48 md:w-64 md:h-64 rounded-3xl flex flex-col items-center justify-center border border-dashed border-vinho/20 mb-8">
+            <i data-lucide="lock" class="w-12 h-12 text-vinho/20 mb-3"></i>
+            <p class="text-[10px] text-vinho/40 uppercase font-bold tracking-widest">Clique para revelar</p>
+          </div>
+          
+          <div id="qr-real" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-8 inline-block animate-fade-in">
+            <img src="https://quickchart.io/qr?size=250&text=44999277915" alt="QR Code PIX" class="w-48 h-48 md:w-64 md:h-64" />
+          </div>
         </div>
 
         <div class="space-y-4 w-full max-w-sm">
           <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-            <p class="text-[0.65rem] text-vinho/70 uppercase font-bold tracking-tight mb-1">Telefone</p>
-            <p class="text-xl font-mono text-vinho font-bold">44999277915</p>
+            <p class="text-[0.65rem] text-vinho/70 uppercase font-bold tracking-tight mb-1">Telefone (Chave PIX)</p>
+            <p id="pix-number" class="text-xl font-mono text-vinho font-bold tracking-tighter blur-sm select-none">00000000000</p>
           </div>
 
           <button id="btnPix"
-            class="w-full inline-flex items-center justify-center rounded-2xl bg-vinho px-6 py-4 text-sm font-bold text-white shadow-xl shadow-vinho/20 hover:scale-[1.02] transition-all"
-            type="button">
+            class="w-full inline-flex items-center justify-center rounded-2xl bg-vinho px-6 py-4 text-sm font-bold text-white shadow-xl shadow-vinho/20 hover:scale-[1.02] transition-all disabled:opacity-50"
+            type="button" disabled>
             Copiar Chave PIX
           </button>
         </div>
@@ -158,17 +166,27 @@
     </div>
   </footer>
 
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script>
+    function revealPix() {
+      document.getElementById('qr-placeholder').classList.add('hidden');
+      document.getElementById('qr-real').classList.remove('hidden');
+      const pix = document.getElementById('pix-number');
+      pix.textContent = '44999277915';
+      pix.classList.remove('blur-sm', 'select-none');
+      document.getElementById('btnPix').disabled = false;
+    }
+
     const btnPix = document.getElementById('btnPix');
     if (btnPix) {
       btnPix.addEventListener('click', () => {
         navigator.clipboard.writeText('44999277915');
         const original = btnPix.textContent;
         btnPix.textContent = 'Chave copiada! ✓';
-        btnPix.classList.replace('bg-vinho', 'bg-green-600');
+        btnPix.classList.add('bg-green-600');
         setTimeout(() => {
           btnPix.textContent = original;
-          btnPix.classList.replace('bg-green-600', 'bg-vinho');
+          btnPix.classList.remove('bg-green-600');
         }, 2000);
       });
     }
@@ -185,7 +203,10 @@
       }
     }
     window.addEventListener("scroll", reveal);
-    window.onload = reveal;
+    window.onload = () => {
+      reveal();
+      if (window.lucide) lucide.createIcons();
+    };
   </script>
 </body>
 
