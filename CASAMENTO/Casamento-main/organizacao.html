@@ -189,22 +189,45 @@
         <!-- SEÇÃO DASHBOARD (INÍCIO) -->
         <section id="dashboard" class="tab-content active space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="glass-card p-6 rounded-[1.6rem]">
-              <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="bell" class="text-amber-500"></i> Próximas Tarefas</h3>
-              <div id="dash-next-tasks" class="space-y-3"></div>
+            <!-- Coluna Esquerda: Tarefas e RSVP -->
+            <div class="space-y-4">
+              <div class="glass-card p-6 rounded-[1.6rem]">
+                <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="bell" class="text-amber-500"></i> Próximas Tarefas</h3>
+                <div id="dash-next-tasks" class="space-y-3"></div>
+              </div>
+              <div class="glass-card p-6 rounded-[1.6rem]">
+                <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="pie-chart" class="text-emerald-500"></i> Visão Geral RSVP</h3>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                  <div class="p-3 bg-emerald-50 rounded-2xl"><p class="text-[9px] uppercase text-emerald-600 font-bold">Sim</p><p class="text-xl font-bold text-emerald-700" id="dash-rsvp-yes">0</p></div>
+                  <div class="p-3 bg-amber-50 rounded-2xl"><p class="text-[9px] uppercase text-amber-600 font-bold">Aguardando</p><p class="text-xl font-bold text-amber-700" id="dash-rsvp-maybe">0</p></div>
+                  <div class="p-3 bg-rose-50 rounded-2xl"><p class="text-[9px] uppercase text-rose-600 font-bold">Não</p><p class="text-xl font-bold text-rose-700" id="dash-rsvp-no">0</p></div>
+                </div>
+              </div>
             </div>
-            <div class="glass-card p-6 rounded-[1.6rem]">
-              <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="calendar-days" class="text-rosa"></i> Próximo Evento</h3>
-              <div id="dash-next-event" class="p-4 bg-vinho/5 rounded-2xl border border-vinho/10"></div>
+
+            <!-- Coluna Direita: Financeiro e Eventos -->
+            <div class="space-y-4">
+              <div class="glass-card p-6 rounded-[1.6rem]">
+                <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="wallet" class="text-blue-500"></i> Resumo Financeiro</h3>
+                <div class="space-y-3">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-slate-500">Gasto Atual</span>
+                    <span class="font-bold text-vinho" id="dash-spent">R$ 0,00</span>
+                  </div>
+                  <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div id="dash-budget-progress" class="bg-vinho h-full transition-all duration-1000" style="width: 0%"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest">
+                    <span class="text-slate-400">Total Pago</span>
+                    <span id="dash-budget-percent" class="text-vinho">0%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="glass-card p-6 rounded-[1.6rem]">
+                <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="calendar-days" class="text-rosa"></i> Próximo Evento</h3>
+                <div id="dash-next-event" class="p-4 bg-vinho/5 rounded-2xl border border-vinho/10"></div>
+              </div>
             </div>
-          </div>
-          <div class="glass-card p-6 rounded-[1.6rem]">
-             <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="pie-chart" class="text-emerald-500"></i> Visão Geral RSVP</h3>
-             <div class="grid grid-cols-3 gap-4 text-center">
-               <div class="p-4 bg-emerald-50 rounded-2xl"><p class="text-[10px] uppercase text-emerald-600 font-bold">Sim</p><p class="text-2xl font-bold text-emerald-700" id="dash-rsvp-yes">0</p></div>
-               <div class="p-4 bg-amber-50 rounded-2xl"><p class="text-[10px] uppercase text-amber-600 font-bold">Talvez</p><p class="text-2xl font-bold text-amber-700" id="dash-rsvp-maybe">0</p></div>
-               <div class="p-4 bg-rose-50 rounded-2xl"><p class="text-[10px] uppercase text-rose-600 font-bold">Não</p><p class="text-2xl font-bold text-rose-700" id="dash-rsvp-no">0</p></div>
-             </div>
           </div>
         </section>
 
@@ -547,12 +570,17 @@
         const isDone = t.status === 'concluido';
         const dueDate = t.due_date ? new Date(t.due_date + 'T12:00:00') : null;
         const isOverdue = !isDone && dueDate && dueDate < now;
-        let ownerTag = t.owner ? `<span class="text-[9px] px-2 py-0.5 rounded-full bg-slate-100 font-bold uppercase ml-2">${t.owner}</span>` : '';
+
+        // Cor por responsável
+        let borderClass = 'border-slate-200';
+        if (t.owner === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
+        else if (t.owner === 'Bia' || t.owner === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
+
+        let ownerTag = t.owner ? `<span class="text-[9px] px-2 py-0.5 rounded-full bg-slate-100 font-bold uppercase ml-2 text-slate-500">${t.owner}</span>` : '';
         const dateStr = t.due_date ? `<span class="text-[10px] text-slate-400 ml-auto">${new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>` : '';
-        return `<div class="item-card ${isDone ? 'done' : ''} ${isOverdue ? 'border-red-400 border-2' : ''}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${t.id}', '${t.status}')" /><div class="flex flex-col"><span>${t.title} ${ownerTag}</span></div>${dateStr}</div><button onclick="deleteTask('${t.id}')">🗑️</button></div>`;
+        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${t.id}', '${t.status}')" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${t.title} ${ownerTag}</span></div>${dateStr}</div><button onclick="deleteTask('${t.id}')" class="p-1 hover:bg-red-50 rounded">🗑️</button></div>`;
       }).join('');
     }
-
     function filterTasks(f) {
       dashboardState.taskFilter = f;
       ['all', 'Jefferson', 'Bia', 'Ambos'].forEach(id => {
@@ -572,22 +600,33 @@
 
     // DASHBOARD SUMMARY LOGIC
     async function updateDashboardSummary() {
-      // Next Tasks
+      // Tarefas Próximas
       const nextTasks = dashboardState.tasks.filter(t => t.status !== 'concluido').slice(0, 3);
-      document.getElementById('dash-next-tasks').innerHTML = nextTasks.length > 0 ? nextTasks.map(t => `<div class="p-3 bg-white border border-slate-100 rounded-xl text-xs flex justify-between"><span>${t.title}</span><span class="font-bold text-vinho">${t.due_date ? new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR') : ''}</span></div>`).join('') : '<p class="text-xs text-slate-400 italic">Tudo em dia!</p>';
+      document.getElementById('dash-next-tasks').innerHTML = nextTasks.length > 0 ? nextTasks.map(t => {
+        const ownerColor = t.owner === 'Jefferson' ? 'text-blue-500' : 'text-purple-500';
+        return `<div class="p-3 bg-white border border-slate-100 rounded-xl text-xs flex justify-between items-center"><span>${t.title}</span><span class="font-bold ${ownerColor}">${t.due_date ? new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR') : ''}</span></div>`
+      }).join('') : '<p class="text-xs text-slate-400 italic text-center py-4">Tudo em dia!</p>';
       
-      // Next Event
-      const { data: timeline } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
-      const nextEvent = timeline && timeline[0] ? `<p class="text-sm font-bold text-vinho">${timeline[0].event_time.substring(0,5)}</p><p class="text-xs text-slate-600">${timeline[0].description}</p>` : '<p class="text-xs text-slate-400">Nenhum evento agendado.</p>';
-      document.getElementById('dash-next-event').innerHTML = nextEvent;
-
-      // RSVP Stats
+      // RSVP
       const yes = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
       const no = allGuests.filter(g => g.rsvp_status === 'recusado').length;
       const maybe = allGuests.filter(g => g.rsvp_status === 'aguardando').length;
       document.getElementById('dash-rsvp-yes').textContent = yes;
       document.getElementById('dash-rsvp-maybe').textContent = maybe;
       document.getElementById('dash-rsvp-no').textContent = no;
+
+      // Financeiro
+      const budget = parseFloat(localStorage.getItem('weddingBudget')) || 50000;
+      const spent = dashboardState.expenses.reduce((s, e) => s + parseFloat(e.amount), 0);
+      const percent = Math.min(Math.round((spent / budget) * 100), 100);
+      document.getElementById('dash-spent').textContent = `R$ ${spent.toLocaleString('pt-BR')}`;
+      document.getElementById('dash-budget-progress').style.width = `${percent}%`;
+      document.getElementById('dash-budget-percent').textContent = `${percent}%`;
+
+      // Evento
+      const { data: timeline } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
+      const nextEvent = timeline && timeline[0] ? `<p class="text-sm font-bold text-vinho">${timeline[0].event_time.substring(0,5)}</p><p class="text-xs text-slate-600">${timeline[0].description}</p>` : '<p class="text-xs text-slate-400 text-center">Nenhum evento no cronograma.</p>';
+      document.getElementById('dash-next-event').innerHTML = nextEvent;
     }
 
     // AUTO-SAVE NOTES
@@ -646,7 +685,12 @@
       }
 
       list.innerHTML = filtered.map(g => {
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''}"><div class="flex-1"><p class="font-bold">${g.name}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1"><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="generateIndividualPDF('${g.name}', '${g.invite_token}')" class="bg-[#120a74] text-white text-[10px] px-3 py-1 rounded-full">PDF</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.invited_by}', '${g.rsvp_status}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
+        // Cor por responsável
+        let borderClass = 'border-slate-200';
+        if (g.invited_by === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
+        else if (g.invited_by === 'Bia' || g.invited_by === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
+
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold">${g.name}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1"><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="generateIndividualPDF('${g.name}', '${g.invite_token}')" class="bg-[#120a74] text-white text-[10px] px-3 py-1 rounded-full">PDF</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.invited_by}', '${g.rsvp_status}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
     }
