@@ -795,7 +795,29 @@
       }
     }
 
-    async function fetchLogs() { const { data } = await supabaseClient.from('audit_logs').select('*').limit(10); }
+    async function fetchLogs() { 
+      const { data } = await supabaseClient.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(20); 
+      const list = document.getElementById('auditLogs');
+      if (!list) return;
+      if (!data || data.length === 0) {
+        list.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">Nenhum log registrado.</p>';
+        return;
+      }
+      list.innerHTML = data.map(log => {
+        const date = new Date(log.created_at).toLocaleString('pt-BR');
+        const actionMap = { 'INSERT': 'Adicionou', 'UPDATE': 'Editou', 'DELETE': 'Removeu' };
+        const action = actionMap[log.action] || log.action;
+        return `
+          <div class="bg-white/40 p-2.5 rounded-xl border border-white/50 text-[11px] flex flex-col gap-0.5 shadow-sm">
+            <div class="flex justify-between items-center font-bold text-vinho">
+              <span>${log.user_name || 'Alguém'} ${action}</span>
+              <span class="text-[9px] text-slate-400 font-normal">${date}</span>
+            </div>
+            <p class="text-slate-600 truncate">Tabela: ${log.table_name}</p>
+          </div>
+        `;
+      }).join('');
+    }
     function initRealtime() { supabaseClient.channel('db-changes').on('postgres_changes', { event: '*', schema: 'public' }, () => { fetchTasks(); fetchGuests(); fetchExpenses(); fetchTimeline(); }).subscribe(); }
     async function fetchSuppliers() { const { data } = await supabaseClient.from('suppliers').select('*'); document.getElementById('supplierList').innerHTML = (data || []).map(s => `<div class="bg-white p-4 rounded-xl flex justify-between items-center"><div><p class="font-bold">${s.name}</p><p class="text-[10px] text-slate-500 uppercase">${s.category || 'Fornecedor'}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(s.value).toLocaleString('pt-BR')}</span><button onclick="deleteSupplier('${s.id}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join(''); }
     async function deleteSupplier(id) { if (confirm('Remover este fornecedor?')) { await supabaseClient.from('suppliers').delete().eq('id', id); fetchSuppliers(); } }
