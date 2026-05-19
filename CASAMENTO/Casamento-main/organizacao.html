@@ -285,6 +285,7 @@
               <button onclick="setGuestFilter('confirmado')" id="guest-filter-confirmado" class="mini-pill">Confirmados</button>
               <button onclick="setGuestFilter('aguardando')" id="guest-filter-aguardando" class="mini-pill">Aguardando</button>
               <button onclick="setGuestFilter('recusado')" id="guest-filter-recusado" class="mini-pill">Recusados</button>
+              <button onclick="toggleVipFilter()" id="guest-filter-vip" class="mini-pill border-amber-400 text-amber-600">⭐ VIPs</button>
               <div class="w-px h-6 bg-slate-200 mx-1 self-center"></div>
               <button onclick="setGuestOwnerFilter('all')" id="owner-filter-all" class="mini-pill bg-slate-100 text-slate-800">Todos os donos</button>
               <button onclick="setGuestOwnerFilter('Jefferson')" id="owner-filter-Jefferson" class="mini-pill">Jefferson</button>
@@ -414,6 +415,7 @@
               <input type="text" id="supplierName" placeholder="Nome do Fornecedor" class="w-full p-3 border rounded-xl outline-none focus:border-vinho" />
             </div>
             <input type="text" id="supplierContact" placeholder="Telefone ou Instagram" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+            <input type="text" id="supplierMap" placeholder="Link do Google Maps" class="p-3 border rounded-xl outline-none focus:border-vinho" />
             <input list="categories" id="supplierCategory" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
             <input type="number" id="supplierValue" placeholder="Valor total R$" class="p-3 border rounded-xl outline-none focus:border-vinho" />
             <select id="supplierStatus" class="p-3 border rounded-xl bg-white outline-none focus:border-vinho text-sm">
@@ -567,6 +569,7 @@
       taskFilter: 'all', 
       guestFilter: 'all', 
       guestOwnerFilter: 'all',
+      vipOnly: false,
       guestSearch: '',
       searchQuery: '', 
       sortOrder: 'name-asc' 
@@ -903,6 +906,21 @@
       renderGuestList(); 
     }
 
+    function shareThankYou(name) {
+      const msg = `❤️ *AGRADECIMENTO* ❤️\n\nOlá, *${name}*!\n\nPassando para dizer que ficamos muito felizes com a sua confirmação. Mal podemos esperar para celebrar esse momento com você!\n\nCom carinho,\nJefferson & Bia`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    function toggleVipFilter() {
+      dashboardState.vipOnly = !dashboardState.vipOnly;
+      const btn = document.getElementById('guest-filter-vip');
+      if (btn) {
+        btn.classList.toggle('bg-amber-400', dashboardState.vipOnly);
+        btn.classList.toggle('text-white', dashboardState.vipOnly);
+      }
+      renderGuestList();
+    }
+
     function renderGuestList() {
       const list = document.getElementById('guestList');
       if (!list) return;
@@ -927,6 +945,11 @@
         });
       }
 
+      // VIP Filter
+      if (dashboardState.vipOnly) {
+        filtered = filtered.filter(g => g.is_vip);
+      }
+
       if (filtered.length === 0) {
         list.innerHTML = '<p class="text-center py-10 text-slate-400 italic text-sm">Nenhum convidado encontrado com esses filtros.</p>';
         return;
@@ -938,9 +961,12 @@
         if (g.invited_by === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
         else if (g.invited_by === 'Bia' || g.invited_by === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
 
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold">${g.name}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1"><button onclick="previewInvite('${g.invite_token}')" class="bg-slate-100 text-slate-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="generateIndividualPDF('${g.name}', '${g.invite_token}')" class="bg-[#120a74] text-white text-[10px] px-3 py-1 rounded-full">PDF</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.invited_by}', '${g.rsvp_status}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
+        const thankBtn = g.rsvp_status === 'confirmado' ? `<button onclick="shareThankYou('${g.name}')" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> Agradecer</button>` : '';
+
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${g.name} ${g.is_vip ? '⭐' : ''}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button onclick="previewInvite('${g.invite_token}')" class="bg-slate-100 text-slate-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.invited_by}', '${g.rsvp_status}', ${g.is_vip})" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
+      if (window.lucide) lucide.createIcons();
     }
     function toggleEditModal(s) { document.getElementById('editGuestModal').classList.toggle('hidden', !s); }
     function editGuest(id, name, phone, owner, status) { 
@@ -1355,7 +1381,10 @@
                 <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase ${color}">${s.status || 'Pendente'}</span>
               </div>
               <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">${s.category || 'Fornecedor'}</p>
-              ${s.contact ? `<p class="text-xs text-slate-600 mt-2 flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3"></i> ${s.contact}</p>` : ''}
+              <div class="flex flex-wrap gap-3 mt-3">
+                ${s.contact ? `<p class="text-xs text-slate-600 flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3"></i> ${s.contact}</p>` : ''}
+                ${s.map_link ? `<a href="${s.map_link}" target="_blank" class="text-xs text-blue-500 font-bold flex items-center gap-1 hover:underline"><i data-lucide="map-pin" class="w-3 h-3"></i> Mapa</a>` : ''}
+              </div>
             </div>
             <div class="flex justify-between items-center border-t pt-3 mt-auto">
               <span class="text-lg font-bold text-vinho">R$ ${Number(s.value).toLocaleString('pt-BR')}</span>
@@ -1379,6 +1408,7 @@
     async function addSupplier() { 
       const name = document.getElementById('supplierName').value;
       const contact = document.getElementById('supplierContact').value;
+      const map_link = document.getElementById('supplierMap').value;
       const cat = document.getElementById('supplierCategory').value;
       const val = document.getElementById('supplierValue').value;
       const status = document.getElementById('supplierStatus').value;
@@ -1387,6 +1417,7 @@
         const { error } = await supabaseClient.from('suppliers').insert([{ 
           name, 
           contact, 
+          map_link,
           category: cat, 
           value: parseFloat(val) || 0,
           status: status
@@ -1395,6 +1426,7 @@
         if (!error) {
           document.getElementById('supplierName').value = '';
           document.getElementById('supplierContact').value = '';
+          document.getElementById('supplierMap').value = '';
           document.getElementById('supplierValue').value = '';
           fetchSuppliers(); 
           showToast('Fornecedor salvo!', 'success');
