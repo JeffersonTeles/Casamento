@@ -1,121 +1,129 @@
-// Data do casamento (AJUSTE AQUI)
-const weddingDateValue = "February 6, 2027 08:00:00";
-const weddingDate = new Date(weddingDateValue).getTime();
-const rsvpOpenDate = new Date(weddingDateValue);
-rsvpOpenDate.setMonth(rsvpOpenDate.getMonth() - 3);
+// Configuração da Data do Casamento (Cascavel - PR)
+// Ano, Mês (0-11), Dia, Hora, Minuto, Segundo
+// Fevereiro é mês 1
+const TARGET_DATE = new Date(2027, 1, 6, 8, 0, 0); 
+const WEDDING_TIME = TARGET_DATE.getTime();
 
-// Armazena valores anteriores para animação
+// Data de abertura do RSVP (3 meses antes)
+const RSVP_OPEN_DATE = new Date(2027, 1, 6, 8, 0, 0);
+RSVP_OPEN_DATE.setMonth(RSVP_OPEN_DATE.getMonth() - 3);
+
+// Armazena valores anteriores para evitar animações desnecessárias
 let previousValues = { days: -1, hours: -1, minutes: -1, seconds: -1 };
 
+/**
+ * Função principal que atualiza o cronômetro
+ */
 function updateCountdown() {
   const now = new Date().getTime();
-  const distance = weddingDate - now;
+  const distance = WEDDING_TIME - now;
 
-  // Se já passou da data
+  // Seleção dos elementos (cache manual para performance)
+  const elDays = document.getElementById("days");
+  const elHours = document.getElementById("hours");
+  const elMins = document.getElementById("minutes");
+  const elSecs = document.getElementById("seconds");
+
+  if (!elDays || !elHours || !elMins || !elSecs) return;
+
+  // Se já passou da data ou é o momento exato
   if (distance <= 0) {
-    document.getElementById("days").innerText = "0";
-    document.getElementById("hours").innerText = "0";
-    document.getElementById("minutes").innerText = "0";
-    document.getElementById("seconds").innerText = "0";
+    elDays.innerText = "0";
+    elHours.innerText = "0";
+    elMins.innerText = "0";
+    elSecs.innerText = "0";
     updateCountdownMessage(0);
+    updateRsvpButton(); // Garante que o botão atualiza se o tempo passar com a página aberta
     return;
   }
 
+  // Cálculos matemáticos de tempo
   const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  const hours = Math.floor(
-    (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  );
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-  // Atualiza com animação apenas se o valor mudou
-  updateWithAnimation("days", days, previousValues.days);
-  updateWithAnimation("hours", hours, previousValues.hours);
-  updateWithAnimation("minutes", minutes, previousValues.minutes);
-  updateWithAnimation("seconds", seconds, previousValues.seconds);
+  // Atualiza a interface com efeito visual de escala
+  updateValueWithEffect("days", days, previousValues.days);
+  updateValueWithEffect("hours", hours, previousValues.hours);
+  updateValueWithEffect("minutes", minutes, previousValues.minutes);
+  updateValueWithEffect("seconds", seconds, previousValues.seconds);
 
-  // Atualiza valores anteriores
+  // Guarda o estado atual
   previousValues = { days, hours, minutes, seconds };
 
-  // Atualiza mensagem baseada no tempo restante
+  // Atualiza a frase de impacto
   updateCountdownMessage(distance);
+  
+  // Atualiza o estado do botão RSVP
+  updateRsvpButton();
 }
 
-function updateWithAnimation(elementId, newValue, oldValue) {
-  const element = document.getElementById(elementId);
-  if (!element) return;
-
-  if (newValue !== oldValue) {
-    element.style.transform = "scale(1.2)";
-    element.style.transition = "transform 0.2s ease-out";
-    
+/**
+ * Aplica efeito visual apenas quando o número muda
+ */
+function updateValueWithEffect(id, newVal, oldVal) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  
+  if (newVal !== oldVal) {
+    el.innerText = newVal < 10 && id !== "days" ? "0" + newVal : newVal;
+    el.style.transform = "scale(1.15)";
+    el.style.transition = "transform 0.1s ease-out";
     setTimeout(() => {
-      element.style.transform = "scale(1)";
-    }, 200);
+      el.style.transform = "scale(1)";
+    }, 150);
   }
-
-  element.innerText = newValue;
 }
 
+/**
+ * Atualiza a mensagem de acordo com a proximidade
+ */
 function updateCountdownMessage(distance) {
-  const noteElement = document.getElementById("countdown-note");
-  if (!noteElement) return;
+  const note = document.getElementById("countdown-note");
+  if (!note) return;
 
   const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  let msg = "";
 
-  let message = "";
-  
-  if (days > 365) {
-    message = "Falta mais de um ano para o grande dia!";
-  } else if (days > 180) {
-    message = "Menos de 6 meses! A ansiedade está crescendo!";
-  } else if (days > 90) {
-    message = "Menos de 3 meses! É hora de começar os preparativos finais!";
-  } else if (days > 30) {
-    message = "Menos de 1 mês! O grande dia está chegando!";
-  } else if (days > 7) {
-    message = "Menos de uma semana! Estamos quase lá!";
-  } else if (days > 0) {
-    message = "Dias finais! Tudo pronto para o sim!";
-  } else {
-    message = "É hoje! O momento mais especial chegou!";
-  }
+  if (distance <= 0) msg = "É hoje! O grande momento chegou! ❤️";
+  else if (days > 365) msg = "Falta mais de um ano para o nosso grande dia!";
+  else if (days > 90) msg = "Os preparativos estão a todo vapor!";
+  else if (days > 30) msg = "Falta pouco para o momento do sim!";
+  else if (days > 7) msg = "A ansiedade está batendo, falta muito pouco!";
+  else msg = "Contagem regressiva final para o dia mais especial!";
 
-  noteElement.textContent = message;
+  if (note.textContent !== msg) note.textContent = msg;
 }
 
+/**
+ * Controla a liberação do botão de confirmação
+ */
 function updateRsvpButton() {
-  const button = document.getElementById("rsvp-button");
-  const status = document.getElementById("rsvp-status");
+  const btn = document.getElementById("rsvp-button");
+  if (!btn) return;
 
-  if (!button || !status) {
-    return;
-  }
-
-  const isOpen = Date.now() >= rsvpOpenDate.getTime();
-  const formattedDate = new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(rsvpOpenDate);
+  const now = Date.now();
+  const isOpen = now >= RSVP_OPEN_DATE.getTime();
 
   if (isOpen) {
-    button.href = button.dataset.href;
-    button.classList.remove("pointer-events-none", "cursor-not-allowed", "opacity-50");
-    button.setAttribute("aria-disabled", "false");
-    button.textContent = "Confirmar pelo WhatsApp";
-    status.textContent = "Você pode editar a mensagem antes de enviar.";
-    return;
+    if (btn.classList.contains("opacity-50")) {
+      btn.href = btn.dataset.href;
+      btn.classList.remove("pointer-events-none", "cursor-not-allowed", "opacity-50");
+      btn.innerHTML = "Confirmar pelo WhatsApp";
+    }
+  } else {
+    // Mantém bloqueado
+    if (!btn.classList.contains("opacity-50")) {
+      btn.removeAttribute("href");
+      btn.classList.add("pointer-events-none", "cursor-not-allowed", "opacity-50");
+    }
   }
-
-  button.removeAttribute("href");
-  button.classList.add("pointer-events-none", "cursor-not-allowed", "opacity-50");
-  button.setAttribute("aria-disabled", "true");
-  button.textContent = "Confirmação indisponível no momento";
-  status.textContent = `A confirmação ficará disponível a partir de ${formattedDate}.`;
 }
 
-// atualiza a cada 1 segundo
-updateCountdown();
-updateRsvpButton();
-setInterval(updateCountdown, 1000);
+// Inicialização imediata
+document.addEventListener("DOMContentLoaded", () => {
+  updateCountdown();
+  // Loop de atualização (1s)
+  setInterval(updateCountdown, 1000);
+});
