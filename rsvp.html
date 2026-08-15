@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Confirme sua presença — Jefferson & Beatriz</title>
+  <script src="./js/config.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -308,9 +309,10 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://ysadooisujkjindusjbu.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const WEDDING_CONFIG = window.WEDDING_CONFIG || {};
+    const SUPABASE_URL = WEDDING_CONFIG.supabaseUrl || '';
+    const SUPABASE_KEY = WEDDING_CONFIG.supabaseAnonKey || '';
+    const supabaseClient = supabase.createClient(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_KEY || 'public-anon-placeholder');
 
     // CONFIGURAÇÕES DO TELEGRAM (Preencha aqui para ativar)
     const TELEGRAM_BOT_TOKEN = ''; // Ex: '123456:ABC-DEF...'

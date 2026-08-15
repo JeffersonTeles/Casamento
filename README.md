@@ -27,6 +27,41 @@ O app usa Supabase. Configure as variáveis no `.env` (veja `src/lib/supabaseCli
 
 Basta abrir `index.html` no navegador — não precisa de servidor.
 
+### Configuração do Supabase (páginas estáticas)
+
+As páginas `index.html`, `rsvp.html` e `organizacao.html` leem as credenciais de `js/config.js`
+(excluído do git). Para rodar localmente:
+
+```bash
+cp js/config.example.js js/config.js
+# edite js/config.js com sua URL e chave anon
+```
+
+**Nunca** commite `js/config.js` — ele está no `.gitignore`.
+
+### Em produção (Vercel)
+
+`js/config.js` é gerado automaticamente no build pelo `build-config.js`
+(script `npm run build`), a partir das variáveis de ambiente:
+
+| Variável | Descrição |
+| --- | --- |
+| `REACT_APP_SUPABASE_URL` (ou `SUPABASE_URL`) | URL do projeto Supabase |
+| `REACT_APP_SUPABASE_ANON_KEY` (ou `SUPABASE_ANON_KEY`) | Chave anon pública |
+| `REACT_APP_ADMIN_EMAIL` (ou `SUPABASE_ADMIN_EMAIL`) | E-mail do noivo (admin) |
+| `REACT_APP_SECOND_ADMIN_EMAIL` (ou `SUPABASE_SECOND_ADMIN_EMAIL`) | E-mail da noiva (admin) |
+
+Se `adminEmails` ficar vazio, o painel aceita qualquer e-mail autenticado no Supabase
+(fallback para testes — preencha os e-mails para restringir o acesso).
+
+### Banco de dados (RLS)
+
+As políticas de segurança (Row Level Security) e as funções RPC usadas pelo site estão em
+`db/schema.sql`. Execute o conteúdo desse arquivo no **SQL Editor** do Supabase.
+
+- Chave `anon` é pública por design — a segurança real vem das políticas RLS + Supabase Auth.
+- Crie os usuários dos noivos em **Authentication → Users** (ou via painel `organizacao.html`).
+
 ## 📅 Evento
 
 06 de fevereiro de 2027 às 08:00 • Cascavel - PR

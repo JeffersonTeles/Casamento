@@ -6,6 +6,9 @@
 # Supabase (local config)
 supabase/
 
+# Config gerada (local / build)
+js/config.js
+
 # Dependencies
 node_modules/
 package-lock.json

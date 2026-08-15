@@ -165,6 +165,7 @@
   </style>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./js/config.js"></script>
 </head>
 
 <body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 overflow-x-hidden">
@@ -400,9 +401,10 @@
   </script>
 <script>
 
-    const SUPABASE_URL = "https://ysadooisujkjindusjbu.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8";
-    const supabaseClientGuest = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    const WEDDING_CONFIG = window.WEDDING_CONFIG || {};
+    const SUPABASE_URL = WEDDING_CONFIG.supabaseUrl || '';
+    const SUPABASE_KEY = WEDDING_CONFIG.supabaseAnonKey || '';
+    const supabaseClientGuest = window.supabase ? window.supabase.createClient(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_KEY || 'public-anon-placeholder') : null;
 
     // Reveal animations on scroll (Cinematic)
     const revealObserver = new IntersectionObserver((entries) => {
@@ -480,8 +482,8 @@
       const token = urlParams.get('token');
       if (token) {
         const { data, error } = await supabase.createClient(
-          'https://ysadooisujkjindusjbu.supabase.co',
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8'
+          SUPABASE_URL || 'https://placeholder.supabase.co',
+          SUPABASE_KEY || 'public-anon-placeholder'
         ).from('guests').select('name').eq('invite_token', token).maybeSingle();
         
         if (data && data.name) {
