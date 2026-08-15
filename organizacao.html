@@ -131,24 +131,24 @@
         <div class="mx-auto h-16 w-16 rounded-2xl bg-vinho/10 flex items-center justify-center">
           <i data-lucide="lock-keyhole" class="w-8 h-8 text-vinho"></i>
         </div>
-        <p class="text-xs uppercase tracking-[0.35em] text-vinho/70 mt-4">Área privada</p>
+        <p class="text-xs uppercase tracking-[0.35em] text-vinho/80 mt-4">Área privada</p>
         <h1 class="text-3xl font-titulo font-bold text-vinho mt-1">Jefferson <span class="text-rosa">&amp;</span> Beatriz</h1>
-        <p class="text-sm text-slate-500 mt-2">Acesso restrito. Entre com suas credenciais para abrir a Central do Casal.</p>
+        <p class="text-sm text-slate-600 mt-2">Acesso restrito. Entre com suas credenciais para abrir a Central do Casal.</p>
       </div>
       <form id="accessForm" class="mt-6 space-y-4">
         <div>
-          <label for="accessEmail" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Usuário ou e-mail</label>
+          <label for="accessEmail" class="block text-sm font-medium uppercase tracking-wider text-slate-600 mb-1.5">Usuário ou e-mail</label>
           <div class="relative">
-            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <i data-lucide="user" class="w-4 h-4 text-slate-600 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             <input type="text" id="accessEmail" autocomplete="username" placeholder="Seu usuário ou e-mail" class="w-full pl-10 p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-vinho focus:ring-2 focus:ring-vinho/15 transition" />
           </div>
         </div>
         <div>
-          <label for="accessPassword" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Senha</label>
+          <label for="accessPassword" class="block text-sm font-medium uppercase tracking-wider text-slate-600 mb-1.5">Senha</label>
           <div class="relative">
-            <i data-lucide="key-round" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <i data-lucide="key-round" class="w-4 h-4 text-slate-600 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             <input type="password" id="accessPassword" autocomplete="current-password" placeholder="••••••••" class="w-full pl-10 pr-10 p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-vinho focus:ring-2 focus:ring-vinho/15 transition" />
-            <button type="button" id="togglePass" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-vinho transition-colors" aria-label="Mostrar senha">
+            <button type="button" id="togglePass" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-vinho transition-colors" aria-label="Mostrar senha">
               <i data-lucide="eye" class="w-4 h-4"></i>
             </button>
           </div>
@@ -159,7 +159,7 @@
         </button>
       </form>
       <div class="mt-4 text-center">
-        <button type="button" id="forgotPass" class="text-xs font-medium text-vinho/70 hover:text-vinho transition-colors">
+        <button type="button" id="forgotPass" class="text-xs font-medium text-vinho/80 hover:text-vinho transition-colors">
           Esqueceu a senha? Redefinir
         </button>
       </div>
@@ -183,13 +183,13 @@
     <header class="glass-card rounded-[2rem] p-5 md:p-6 mb-6">
       <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] text-vinho/70">Área do casal</p>
+          <p class="text-xs uppercase tracking-[0.35em] text-vinho/80">Área do casal</p>
           <h1 class="mt-2 text-3xl md:text-4xl font-titulo font-bold text-vinho">Central do Casal</h1>
         </div>
         <div class="flex items-center gap-3 flex-wrap">
           <div class="glass-card rounded-2xl px-4 py-3 flex items-center gap-4">
             <div>
-              <p class="text-[0.65rem] uppercase tracking-[0.28em] text-slate-500">Logado como</p>
+              <p class="text-xs font-medium uppercase tracking-[0.28em] text-slate-700">Logado como</p>
               <select id="userSelect" class="mt-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none">
                 <option value="Jefferson">Jefferson</option>
                 <option value="Bia">Bia</option>
@@ -254,14 +254,14 @@
                 <div class="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-4">
                   <div class="space-y-3">
                     <div class="flex justify-between text-sm">
-                      <span class="text-slate-500">Gasto Atual</span>
+                      <span class="text-slate-600">Gasto Atual</span>
                       <span class="font-bold text-vinho" id="dash-spent">R$ 0,00</span>
                     </div>
                     <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                       <div id="dash-budget-progress" class="bg-vinho h-full transition-all duration-1000" style="width: 0%"></div>
                     </div>
                     <div class="flex justify-between text-[10px] uppercase font-bold tracking-widest">
-                      <span class="text-slate-400">Total Pago</span>
+                      <span class="text-slate-700">Total Pago</span>
                       <span id="dash-budget-percent" class="text-vinho">0%</span>
                     </div>
                   </div>
@@ -318,7 +318,7 @@
           <!-- Busca e Filtros -->
           <div class="mb-6 space-y-4">
             <div class="relative">
-              <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+              <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-700"></i>
               <input type="text" id="guestSearch" oninput="handleGuestSearch(this.value)" placeholder="Buscar por nome..." class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-vinho transition-all" />
             </div>
             <div class="flex flex-wrap gap-2">
@@ -351,8 +351,8 @@
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="banknote"></i> Financeiro</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
             <div class="summary-card p-4 rounded-xl relative">
-              <p class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Orçamento Total</p>
-              <div class="flex items-center gap-2 mt-1"><span class="text-lg font-bold text-vinho" id="stat-budget">R$ 0,00</span><button onclick="toggleBudgetEdit(true)" class="text-slate-400 text-xs">✏️</button></div>
+              <p class="text-xs font-medium text-slate-700 uppercase tracking-wider">Orçamento Total</p>
+              <div class="flex items-center gap-2 mt-1"><span class="text-lg font-bold text-vinho" id="stat-budget">R$ 0,00</span><button onclick="toggleBudgetEdit(true)" class="text-slate-700 text-xs">✏️</button></div>
               <div id="budget-edit-container" class="hidden absolute inset-0 bg-white/95 rounded-xl flex items-center p-2 gap-1 z-10"><input type="number" id="budget-input" class="w-full p-2 border rounded-lg text-sm" placeholder="Total" /><button onclick="saveBudgetFromInput()" class="bg-vinho text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button></div>
             </div>
             <div class="summary-card p-4 rounded-xl relative">
@@ -371,7 +371,7 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Lançamento de Gastos -->
             <div class="space-y-4">
-              <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest">Novo Lançamento Real</h3>
+              <h3 class="text-sm font-bold text-slate-700 uppercase tracking-widest">Novo Lançamento Real</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <input type="text" id="expItem" placeholder="Ex: Entrada do Fotógrafo" class="p-3 border rounded-xl outline-none focus:border-vinho" />
                 <input list="categories" id="expCategory" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
@@ -384,7 +384,7 @@
             <!-- Planejamento por Item -->
             <div class="space-y-4">
               <div class="flex justify-between items-center">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest">Orçados / Planejados</h3>
+                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-widest">Orçados / Planejados</h3>
                 <button onclick="togglePlannerModal(true)" class="text-[10px] bg-slate-100 px-3 py-1 rounded-full font-bold text-slate-600">+ Orçar Item</button>
               </div>
               <div id="plannerList" class="space-y-2 max-h-[350px] overflow-y-auto no-scrollbar pr-1">
@@ -403,7 +403,7 @@
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="sticky-note"></i> Mural do Casal</h2>
           <textarea id="meetingNotes" class="w-full p-4 rounded-2xl border border-slate-300 min-h-[300px]" placeholder="Escreva aqui suas ideias, lembretes..."></textarea>
           <button id="saveNotesBtn" class="mt-4 w-full bg-vinho text-white py-4 rounded-xl font-bold text-lg shadow-lg">Salvar Notas</button>
-          <p id="notesStatus" class="text-center mt-2 text-sm text-slate-500"></p>
+          <p id="notesStatus" class="text-center mt-2 text-sm text-slate-600"></p>
 
           <div class="mt-8 pt-8 border-t border-slate-100">
             <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="image"></i> Moodboard & Inspirações</h3>
@@ -424,19 +424,19 @@
            <h2 class="text-2xl font-titulo text-vinho mb-6"><i data-lucide="bar-chart-2"></i> Analytics</h2>
            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
               <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-[0.6rem] uppercase text-slate-400">Total Cliques</p>
+                <p class="text-xs uppercase text-slate-700">Total Cliques</p>
                 <p class="text-2xl font-bold text-vinho" id="analytics-total-access">0</p>
               </div>
               <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-[0.6rem] uppercase text-slate-400">Convidados Únicos</p>
+                <p class="text-xs uppercase text-slate-700">Convidados Únicos</p>
                 <p class="text-2xl font-bold text-vinho" id="analytics-unique-guests">0</p>
               </div>
               <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-[0.6rem] uppercase text-slate-400">Taxa RSVP</p>
+                <p class="text-xs uppercase text-slate-700">Taxa RSVP</p>
                 <p class="text-2xl font-bold text-vinho" id="analytics-conversion-rate">0%</p>
               </div>
               <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-[0.6rem] uppercase text-slate-400">Acessos Hoje</p>
+                <p class="text-xs uppercase text-slate-700">Acessos Hoje</p>
                 <p class="text-2xl font-bold text-vinho" id="analytics-today-access">0</p>
               </div>
            </div>
@@ -491,24 +491,24 @@
         <!-- SEÇÃO DOCUMENTOS -->
         <section id="docs" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="folder-lock"></i> Checklist de Documentação</h2>
-          <p class="text-xs text-slate-500 mb-6 italic">Gerencie os documentos necessários para o Civil e Religioso.</p>
+          <p class="text-sm font-medium text-slate-600 mb-6 italic">Gerencie os documentos necessários para o Civil e Religioso.</p>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="docsList">
             <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
               <input type="checkbox" class="w-5 h-5 accent-vinho" />
-              <div class="flex-1"><p class="font-bold text-sm">Certidão de Nascimento (Noivos)</p><p class="text-[10px] text-slate-400">Atualizada 90 dias</p></div>
+              <div class="flex-1"><p class="font-bold text-sm">Certidão de Nascimento (Noivos)</p><p class="text-xs font-medium text-slate-700">Atualizada 90 dias</p></div>
             </div>
             <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
               <input type="checkbox" class="w-5 h-5 accent-vinho" />
-              <div class="flex-1"><p class="font-bold text-sm">Comprovante de Residência</p><p class="text-[10px] text-slate-400">Jefferson & Bia</p></div>
+              <div class="flex-1"><p class="font-bold text-sm">Comprovante de Residência</p><p class="text-xs font-medium text-slate-700">Jefferson & Bia</p></div>
             </div>
             <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
               <input type="checkbox" class="w-5 h-5 accent-vinho" />
-              <div class="flex-1"><p class="font-bold text-sm">Certificado de Batismo</p><p class="text-[10px] text-slate-400">Para o religioso</p></div>
+              <div class="flex-1"><p class="font-bold text-sm">Certificado de Batismo</p><p class="text-xs font-medium text-slate-700">Para o religioso</p></div>
             </div>
             <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
               <input type="checkbox" class="w-5 h-5 accent-vinho" />
-              <div class="flex-1"><p class="font-bold text-sm">Cópia RG/CPF Padrinhos</p><p class="text-[10px] text-slate-400">Civil & Igreja</p></div>
+              <div class="flex-1"><p class="font-bold text-sm">Cópia RG/CPF Padrinhos</p><p class="text-xs font-medium text-slate-700">Civil & Igreja</p></div>
             </div>
           </div>
         </section>
@@ -524,9 +524,9 @@
         <div class="glass-card p-6 rounded-3xl">
           <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="heart" class="text-rosa"></i> Resumo</h3>
           <div class="space-y-4">
-            <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-500">Pendentes</span><strong id="pendingTasksStat" class="text-vinho text-lg">0</strong></div>
-            <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-500 text-amber-600">Vencem em 7 dias</span><strong id="dueSoonStat" class="text-amber-600 text-lg">0</strong></div>
-            <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-500">RSVP Confirmados</span><strong id="stat-confirmed-aside" class="text-emerald-600 text-lg">0</strong></div>
+            <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-600">Pendentes</span><strong id="pendingTasksStat" class="text-vinho text-lg">0</strong></div>
+            <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-amber-600">Vencem em 7 dias</span><strong id="dueSoonStat" class="text-amber-600 text-lg">0</strong></div>
+            <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-600">RSVP Confirmados</span><strong id="stat-confirmed-aside" class="text-emerald-600 text-lg">0</strong></div>
           </div>
         </div>
       </aside>
@@ -536,19 +536,19 @@
   <!-- Bottom Bar (Mobile App Style) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 px-2 py-3 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
     <div class="flex items-center justify-around">
-      <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+      <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
         <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Início</span>
       </button>
-      <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+      <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
         <i data-lucide="check-square" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Tarefas</span>
       </button>
-      <button onclick="switchTab('guests')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+      <button onclick="switchTab('guests')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
         <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Convidados</span>
       </button>
-      <button onclick="switchTab('expenses')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+      <button onclick="switchTab('expenses')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
         <i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Finanças</span>
       </button>
-      <button onclick="switchTab('notes')" class="flex flex-col items-center gap-1 text-slate-400 focus:text-vinho active:text-vinho">
+      <button onclick="switchTab('notes')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
         <i data-lucide="sticky-note" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Mural</span>
       </button>
     </div>
@@ -586,7 +586,7 @@
         <input type="text" id="plannerCategory" list="categories" placeholder="Categoria (ex: Fotografia)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
         <input type="number" id="plannerAmount" placeholder="Valor Planejado R$" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
         <div class="flex gap-3 mt-6">
-          <button onclick="togglePlannerModal(false)" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500">Cancelar</button>
+          <button onclick="togglePlannerModal(false)" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-700">Cancelar</button>
           <button onclick="addPlannerItem()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold shadow-lg">Salvar</button>
         </div>
       </div>
@@ -683,11 +683,11 @@
             <div class="flex justify-between items-center">
               <span class="font-bold text-vinho">${b.category}</span>
               <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onclick="editPlannerItem('${b.id}', '${b.category}', ${b.planned_amount})" class="text-slate-400 hover:text-vinho text-xs">✏️</button>
+                <button onclick="editPlannerItem('${b.id}', '${b.category}', ${b.planned_amount})" class="text-slate-600 hover:text-vinho text-xs">✏️</button>
                 <button onclick="deletePlannerItem('${b.id}')" class="text-slate-300 hover:text-red-500 text-xs">✕</button>
               </div>
             </div>
-            <div class="flex justify-between text-[10px] uppercase font-bold text-slate-400">
+            <div class="flex justify-between text-[10px] uppercase font-bold text-slate-700">
               <span>Orçado: R$ ${Number(b.planned_amount).toLocaleString('pt-BR')}</span>
               <span>Gasto: R$ ${actual.toLocaleString('pt-BR')}</span>
             </div>
@@ -1031,8 +1031,8 @@
         if (t.owner === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
         else if (t.owner === 'Bia' || t.owner === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
 
-        let ownerTag = t.owner ? `<span class="text-[9px] px-2 py-0.5 rounded-full bg-slate-100 font-bold uppercase ml-2 text-slate-500">${t.owner}</span>` : '';
-        const dateStr = t.due_date ? `<span class="text-[10px] text-slate-400 ml-auto">${new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>` : '';
+        let ownerTag = t.owner ? `<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 uppercase ml-2 text-slate-700">${t.owner}</span>` : '';
+        const dateStr = t.due_date ? `<span class="text-xs font-medium text-slate-700 ml-auto">${new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>` : '';
         return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${t.id}', '${t.status}')" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${t.title} ${ownerTag}</span></div>${dateStr}</div><div class="flex gap-2">${t.due_date ? `<button onclick="addToPersonalCalendar('${t.title}', '${t.due_date}')" class="p-1 hover:bg-blue-50 rounded" title="Agendar"><i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-500"></i></button>` : ''}<button onclick="deleteTask('${t.id}')" class="p-1 hover:bg-red-50 rounded">🗑️</button></div></div>`;
       }).join('');
     }
@@ -1060,7 +1060,7 @@
       document.getElementById('dash-next-tasks').innerHTML = nextTasks.length > 0 ? nextTasks.map(t => {
         const ownerColor = t.owner === 'Jefferson' ? 'text-blue-500' : 'text-purple-500';
         return `<div class="p-3 bg-white border border-slate-100 rounded-xl text-xs flex justify-between items-center"><span>${t.title}</span><span class="font-bold ${ownerColor}">${t.due_date ? new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR') : ''}</span></div>`
-      }).join('') : '<p class="text-xs text-slate-400 italic text-center py-4">Tudo em dia!</p>';
+      }).join('') : '<p class="text-xs font-medium text-slate-700 italic text-center py-4">Tudo em dia!</p>';
       
       // RSVP
       const yes = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
@@ -1103,7 +1103,7 @@
 
       // Evento
       const { data: timeline } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
-      const nextEvent = timeline && timeline[0] ? `<p class="text-sm font-bold text-vinho">${timeline[0].event_time.substring(0,5)}</p><p class="text-xs text-slate-600">${timeline[0].description}</p>` : '<p class="text-xs text-slate-400 text-center">Nenhum evento no cronograma.</p>';
+      const nextEvent = timeline && timeline[0] ? `<p class="text-sm font-bold text-vinho">${timeline[0].event_time.substring(0,5)}</p><p class="text-xs text-slate-700">${timeline[0].description}</p>` : '<p class="text-xs font-medium text-slate-700 text-center">Nenhum evento no cronograma.</p>';
       document.getElementById('dash-next-event').innerHTML = nextEvent;
 
       // Mural de Mensagens (Count)
@@ -1192,7 +1192,7 @@
       }
 
       if (filtered.length === 0) {
-        list.innerHTML = '<p class="text-center py-10 text-slate-400 italic text-sm">Nenhum convidado encontrado com esses filtros.</p>';
+        list.innerHTML = '<p class="text-center py-10 text-slate-700 italic text-sm">Nenhum convidado encontrado com esses filtros.</p>';
         return;
       }
 
@@ -1204,7 +1204,7 @@
 
         const thankBtn = g.rsvp_status === 'confirmado' ? `<button onclick="shareThankYou('${g.name}')" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> Agradecer</button>` : '';
 
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${g.name} ${g.is_vip ? '⭐' : ''}</p><p class="text-[10px] text-slate-500 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button onclick="previewInvite('${g.invite_token}')" class="bg-slate-100 text-slate-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.invited_by}', '${g.rsvp_status}', ${g.is_vip})" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${g.name} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${g.invited_by} • ${g.rsvp_status}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button onclick="previewInvite('${g.invite_token}')" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="editGuest('${g.id}', '${g.name}', '${g.phone||''}', '${g.invited_by}', '${g.rsvp_status}', ${g.is_vip})" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
       if (window.lucide) lucide.createIcons();
@@ -1365,7 +1365,7 @@
 
     async function fetchExpenses() { const { data } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false }); dashboardState.expenses = data || []; renderExpenses(); updateExpenseStats(); }
     function renderExpenses() {
-      document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${e.item}</p><p class="text-[10px] text-slate-500 uppercase">${e.category || 'Sem categoria'}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button onclick="deleteExpense('${e.id}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join('');
+      document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${e.item}</p><p class="text-xs font-medium text-slate-700 uppercase">${e.category || 'Sem categoria'}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button onclick="deleteExpense('${e.id}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join('');
     }
     async function deleteExpense(id) { 
       if (confirm('Remover este gasto?')) { 
@@ -1555,7 +1555,7 @@
       const list = document.getElementById('timelineList');
       if (!list) return;
       if (events.length === 0) {
-        list.innerHTML = '<p class="text-sm text-slate-500 italic">Nenhum evento no cronograma ainda.</p>';
+        list.innerHTML = '<p class="text-sm text-slate-600 italic">Nenhum evento no cronograma ainda.</p>';
         return;
       }
       list.innerHTML = events.map(ev => `
@@ -1650,7 +1650,7 @@
       const list = document.getElementById('auditLogs');
       if (!list) return;
       if (!data || data.length === 0) {
-        list.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">Nenhum log registrado.</p>';
+        list.innerHTML = '<p class="text-xs font-medium text-slate-700 italic text-center py-4">Nenhum log registrado.</p>';
         return;
       }
       list.innerHTML = data.map(log => {
@@ -1661,7 +1661,7 @@
           <div class="bg-white/40 p-2.5 rounded-xl border border-white/50 text-[11px] flex flex-col gap-0.5 shadow-sm">
             <div class="flex justify-between items-center font-bold text-vinho">
               <span>${log.user_name || 'Alguém'} ${action}</span>
-              <span class="text-[9px] text-slate-400 font-normal">${date}</span>
+              <span class="text-xs font-medium text-slate-700 font-normal">${date}</span>
             </div>
             <p class="text-slate-600 truncate">Tabela: ${log.table_name}</p>
           </div>
@@ -1694,9 +1694,9 @@
                 <h4 class="font-bold text-vinho">${s.name}</h4>
                 <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase ${color}">${s.status || 'Pendente'}</span>
               </div>
-              <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">${s.category || 'Fornecedor'}</p>
+              <p class="text-xs font-medium text-slate-700 uppercase tracking-widest font-semibold">${s.category || 'Fornecedor'}</p>
               <div class="flex flex-wrap gap-3 mt-3">
-                ${s.contact ? `<p class="text-xs text-slate-600 flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3"></i> ${s.contact}</p>` : ''}
+                ${s.contact ? `<p class="text-xs text-slate-700 flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3"></i> ${s.contact}</p>` : ''}
                 ${s.map_link ? `<a href="${s.map_link}" target="_blank" class="text-xs text-blue-500 font-bold flex items-center gap-1 hover:underline"><i data-lucide="map-pin" class="w-3 h-3"></i> Mapa</a>` : ''}
               </div>
             </div>
