@@ -69,6 +69,12 @@ create policy "suppliers_admin" on public.suppliers
   for all to authenticated using (true) with check (true);
 
 -- ---------- TIMELINE ----------
+create table if not exists public.timeline (
+  id uuid primary key default gen_random_uuid(),
+  event_time time not null,
+  description text not null,
+  created_at timestamptz not null default now()
+);
 alter table public.timeline enable row level security;
 
 drop policy if exists "timeline_admin" on public.timeline;
@@ -76,6 +82,11 @@ create policy "timeline_admin" on public.timeline
   for all to authenticated using (true) with check (true);
 
 -- ---------- MOODBOARD ----------
+create table if not exists public.moodboard (
+  id uuid primary key default gen_random_uuid(),
+  url text not null,
+  created_at timestamptz not null default now()
+);
 alter table public.moodboard enable row level security;
 
 drop policy if exists "moodboard_admin" on public.moodboard;
@@ -85,6 +96,12 @@ create policy "moodboard_admin" on public.moodboard
 -- ---------- GUESTBOOK (público) ----------
 -- O livro de recados deve permitir leitura e inserção anônimas,
 -- mas sem atualizar/excluir.
+create table if not exists public.guestbook (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  message text not null,
+  created_at timestamptz not null default now()
+);
 alter table public.guestbook enable row level security;
 
 drop policy if exists "guestbook_select_public" on public.guestbook;
@@ -121,6 +138,7 @@ create policy "rsvp_logs_insert_anon" on public.rsvp_access_logs
 -- ============================================================
 
 -- Retorna dados públicos de um convidado pelo token do convite.
+drop function if exists public.get_guest_public_by_token(text);
 create or replace function public.get_guest_public_by_token(p_invite_token text)
 returns table (id uuid, name text, rsvp_status text, invite_token text)
 language sql security definer
@@ -135,6 +153,7 @@ $$;
 grant execute on function public.get_guest_public_by_token(text) to anon, authenticated;
 
 -- Confirma/atualiza o RSVP de um convidado via token.
+drop function if exists public.confirm_guest_rsvp(text, text);
 create or replace function public.confirm_guest_rsvp(p_invite_token text, p_rsvp_status text)
 returns boolean
 language plpgsql security definer
