@@ -126,16 +126,56 @@
 
   <!-- Acesso -->
   <div id="accessGate" class="gate-overlay">
-    <div class="gate-card glass-card p-6 rounded-3xl">
-      <p class="text-xs uppercase tracking-[0.35em] text-vinho/70">Área privada</p>
-      <h1 class="text-3xl font-titulo font-bold text-vinho mt-2">Jefferson & Beatriz</h1>
-      <p class="text-sm text-slate-600 mt-2">Acesso restrito aos noivos. Use usuário <strong>jefferson</strong> ou <strong>beatriz</strong>.</p>
-      <form id="accessForm" class="mt-5 space-y-3">
-        <input type="text" id="accessEmail" autocomplete="username" placeholder="Usuário ou e-mail" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-        <input type="password" id="accessPassword" autocomplete="current-password" placeholder="Senha do painel" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-        <button type="submit" id="accessSubmit" class="w-full bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition">Entrar</button>
+    <div class="gate-card glass-card p-8 rounded-3xl">
+      <div class="text-center">
+        <div class="mx-auto h-16 w-16 rounded-2xl bg-vinho/10 flex items-center justify-center">
+          <i data-lucide="lock-keyhole" class="w-8 h-8 text-vinho"></i>
+        </div>
+        <p class="text-xs uppercase tracking-[0.35em] text-vinho/70 mt-4">Área privada</p>
+        <h1 class="text-3xl font-titulo font-bold text-vinho mt-1">Jefferson <span class="text-rosa">&amp;</span> Beatriz</h1>
+        <p class="text-sm text-slate-500 mt-2">Acesso restrito. Entre com suas credenciais para abrir a Central do Casal.</p>
+      </div>
+      <form id="accessForm" class="mt-6 space-y-4">
+        <div>
+          <label for="accessEmail" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Usuário ou e-mail</label>
+          <div class="relative">
+            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="accessEmail" autocomplete="username" placeholder="Seu usuário ou e-mail" class="w-full pl-10 p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-vinho focus:ring-2 focus:ring-vinho/15 transition" />
+          </div>
+        </div>
+        <div>
+          <label for="accessPassword" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Senha</label>
+          <div class="relative">
+            <i data-lucide="key-round" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="password" id="accessPassword" autocomplete="current-password" placeholder="••••••••" class="w-full pl-10 pr-10 p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-vinho focus:ring-2 focus:ring-vinho/15 transition" />
+            <button type="button" id="togglePass" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-vinho transition-colors" aria-label="Mostrar senha">
+              <i data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+        <button type="submit" id="accessSubmit" class="w-full bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 active:scale-[0.99] transition font-semibold flex items-center justify-center gap-2">
+          <span>Entrar</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
       </form>
-      <p id="accessError" class="mt-3 text-sm text-red-600 min-h-[1.25rem]"></p>
+      <div class="mt-4 text-center">
+        <button type="button" id="forgotPass" class="text-xs font-medium text-vinho/70 hover:text-vinho transition-colors">
+          Esqueceu a senha? Redefinir
+        </button>
+      </div>
+      <p id="accessError" class="mt-3 text-sm text-red-600 min-h-[1.25rem] text-center"></p>
+      <p id="accessInfo" class="mt-2 text-sm text-emerald-600 min-h-[1.25rem] text-center font-medium"></p>
+
+      <!-- Form de nova senha (retorno do link de redefinição) -->
+      <div id="resetForm" class="gate-hidden mt-6 pt-6 border-t border-slate-200">
+        <p class="text-sm font-semibold text-slate-700 mb-2">Defina uma nova senha</p>
+        <div class="space-y-3">
+          <input type="password" id="newPassword" autocomplete="new-password" placeholder="Nova senha" class="w-full p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-vinho focus:ring-2 focus:ring-vinho/15 transition" />
+          <input type="password" id="newPassword2" autocomplete="new-password" placeholder="Confirmar nova senha" class="w-full p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-vinho focus:ring-2 focus:ring-vinho/15 transition" />
+          <button type="button" id="submitNewPass" class="w-full bg-emerald-600 text-white px-4 py-3 rounded-xl hover:bg-emerald-700 active:scale-[0.99] transition font-semibold">Salvar nova senha</button>
+        </div>
+        <p id="resetError" class="mt-2 text-sm text-red-600 min-h-[1.25rem] text-center"></p>
+      </div>
     </div>
   </div>
 
@@ -769,8 +809,114 @@
       openOrgApp();
     });
 
+    // Mostrar/ocultar senha
+    const togglePassBtn = document.getElementById('togglePass');
+    if (togglePassBtn) {
+      togglePassBtn.addEventListener('click', () => {
+        const passInput = document.getElementById('accessPassword');
+        const isHidden = passInput.type === 'password';
+        passInput.type = isHidden ? 'text' : 'password';
+        togglePassBtn.querySelector('i').setAttribute('data-lucide', isHidden ? 'eye-off' : 'eye');
+        if (window.lucide) lucide.createIcons();
+      });
+    }
+
+    // Redefinição de senha (envia link de reset por e-mail)
+    const forgotPassBtn = document.getElementById('forgotPass');
+    if (forgotPassBtn) {
+      forgotPassBtn.addEventListener('click', async () => {
+        const errorEl = document.getElementById('accessError');
+        const infoEl = document.getElementById('accessInfo');
+        const identifier = document.getElementById('accessEmail').value.trim();
+        const email = resolveAdminEmail(identifier);
+
+        if (!email) {
+          errorEl.textContent = 'Informe seu usuário ou e-mail para redefinir a senha.';
+          infoEl.textContent = '';
+          return;
+        }
+
+        errorEl.textContent = '';
+        infoEl.textContent = 'Enviando link de redefinição...';
+
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/organizacao.html',
+        });
+
+        if (error) {
+          infoEl.textContent = '';
+          errorEl.textContent = 'Não foi possível enviar. Tente novamente.';
+        } else {
+          infoEl.textContent = 'Link de redefinição enviado! Verifique seu e-mail.';
+        }
+      });
+    }
+
+    // Fluxo de redefinição de senha: detecta retorno do link do e-mail
+    function handleRecoveryRedirect() {
+      const parseHash = () => {
+        const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+        return {
+          type: params.get('type'),
+          token: params.get('access_token') || params.get('code'),
+        };
+      };
+      const q = new URLSearchParams(window.location.search);
+      const type = parseHash().type || q.get('type');
+      const code = parseHash().token || q.get('code');
+
+      if ((type === 'recovery' || type === 'reset_password') && code) {
+        const resetForm = document.getElementById('resetForm');
+        const form = document.getElementById('accessForm');
+        if (resetForm) resetForm.classList.remove('gate-hidden');
+        if (form) form.classList.add('gate-hidden');
+        document.getElementById('accessInfo').textContent = '';
+      }
+    }
+
+    const submitNewPassBtn = document.getElementById('submitNewPass');
+    if (submitNewPassBtn) {
+      submitNewPassBtn.addEventListener('click', async () => {
+        const p1 = document.getElementById('newPassword').value;
+        const p2 = document.getElementById('newPassword2').value;
+        const errEl = document.getElementById('resetError');
+
+        if (!p1 || p1.length < 6) {
+          errEl.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+          return;
+        }
+        if (p1 !== p2) {
+          errEl.textContent = 'As senhas não coincidem.';
+          return;
+        }
+
+        errEl.textContent = '';
+        submitNewPassBtn.disabled = true;
+        submitNewPassBtn.textContent = 'Salvando...';
+
+        const { error } = await supabaseClient.auth.updateUser({ password: p1 });
+
+        submitNewPassBtn.disabled = false;
+        submitNewPassBtn.textContent = 'Salvar nova senha';
+
+        if (error) {
+          errEl.textContent = 'Não foi possível atualizar a senha.';
+          return;
+        }
+
+        // Limpa a URL (remove o token) e volta para o login
+        window.history.replaceState({}, '', window.location.pathname);
+        document.getElementById('resetForm').classList.add('gate-hidden');
+        document.getElementById('accessForm').classList.remove('gate-hidden');
+        const infoEl = document.getElementById('accessInfo');
+        infoEl.textContent = 'Senha alterada! Entre com a nova senha.';
+        document.getElementById('accessPassword').value = '';
+      });
+    }
+
     window.onload = async () => {
       if (window.lucide) lucide.createIcons();
+      handleRecoveryRedirect();
 
       // Restaura sessão existente do Supabase Auth
       try {
