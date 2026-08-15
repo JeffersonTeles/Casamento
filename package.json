@@ -4,5 +4,9 @@
   "private": true,
   "dependencies": {
     "@supabase/supabase-js": "^2.52.1"
+  },
+  "scripts": {
+    "build": "node build-config.js",
+    "build:config": "node build-config.js"
   }
 }
