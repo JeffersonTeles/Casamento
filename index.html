@@ -282,7 +282,7 @@
       </div>
     </section>
 
-    <section id="contagem" class="reveal" class="max-w-5xl mx-auto px-4 py-12">
+    <section id="contagem" class="reveal max-w-5xl mx-auto px-4 py-12">
       <h2 class="font-titulo text-2xl text-center text-vinho">
         Falta pouco para o grande dia
       </h2>
@@ -357,7 +357,7 @@
       </div>
     </section>
 
-    <section id="rsvp" class="reveal" class="max-w-5xl mx-auto px-4 pb-14 flex flex-col items-center">
+    <section id="rsvp" class="reveal max-w-5xl mx-auto px-4 pb-14 flex flex-col items-center">
       <div class="w-full bg-white/90 border border-slate-100 rounded-3xl shadow-sm p-5 md:p-6">
         <h2 class="font-titulo text-2xl text-vinho text-center">
           Confirme sua presença
@@ -389,8 +389,8 @@
   <script>
     function addToGoogleCalendar() {
       const title = 'Casamento de Jefferson & Beatriz';
-      const startDate = '20270206T080000Z'; // 06/02/2027 às 08:00
-      const endDate = '20270206T120000Z'; // 06/02/2027 às 12:00
+      const startDate = '20270206T110000Z'; // 06/02/2027 às 08:00
+      const endDate = '20270206T150000Z'; // 06/02/2027 às 12:00
       const location = 'Cascavel - PR';
       const description = 'Casamento de Jefferson & Beatriz. Sua presença é muito importante para nós!';
       
@@ -481,13 +481,12 @@
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get('token');
       if (token) {
-        const { data, error } = await supabase.createClient(
-          SUPABASE_URL || 'https://placeholder.supabase.co',
-          SUPABASE_KEY || 'public-anon-placeholder'
-        ).from('guests').select('name').eq('invite_token', token).maybeSingle();
-        
-        if (data && data.name) {
-          document.getElementById('guest-name-welcome').textContent = `Olá, ${data.name.split(' ')[0]}`;
+        const { data, error } = await supabase.from('guests').select('*').single(); // fallback direto se RPC não disponível
+        // Usa o RPC get_guest_public_by_token (definido no db/schema.sql)
+        const { data: guestData, error: rpcError } = await supabase.rpc('get_guest_public_by_token', { p_invite_token: token });
+        const guest = guestData || data;
+        if (guest && guest.name) {
+          document.getElementById('guest-name-welcome').textContent = `Olá, ${guest.name.split(' ')[0]}`;
           document.getElementById('welcome-message').classList.remove('hidden');
         }
       }
