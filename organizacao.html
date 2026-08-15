@@ -129,9 +129,9 @@
     <div class="gate-card glass-card p-6 rounded-3xl">
       <p class="text-xs uppercase tracking-[0.35em] text-vinho/70">Área privada</p>
       <h1 class="text-3xl font-titulo font-bold text-vinho mt-2">Jefferson & Beatriz</h1>
-      <p class="text-sm text-slate-600 mt-2">Entre com o e-mail e a senha cadastrados no Supabase para abrir a organização.</p>
+      <p class="text-sm text-slate-600 mt-2">Acesso restrito aos noivos. Use usuário <strong>jefferson</strong> ou <strong>beatriz</strong>.</p>
       <form id="accessForm" class="mt-5 space-y-3">
-        <input type="email" id="accessEmail" autocomplete="email" placeholder="E-mail" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
+        <input type="text" id="accessEmail" autocomplete="username" placeholder="Usuário ou e-mail" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
         <input type="password" id="accessPassword" autocomplete="current-password" placeholder="Senha do painel" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
         <button type="submit" id="accessSubmit" class="w-full bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 transition">Entrar</button>
       </form>
@@ -719,20 +719,30 @@
       return ADMIN_EMAILS.includes(email);
     }
 
+    function resolveAdminEmail(input) {
+      const value = String(input || '').trim();
+      if (!value) return '';
+      const lower = value.toLowerCase();
+      if (lower.includes('@')) return value;
+      const match = (WEDDING_CONFIG.adminUsers || []).find((u) => String(u.username).toLowerCase() === lower);
+      return match ? match.email : '';
+    }
+
     document.getElementById('accessForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const errorEl = document.getElementById('accessError');
       const submitBtn = document.getElementById('accessSubmit');
-      const email = document.getElementById('accessEmail').value.trim();
+      const identifier = document.getElementById('accessEmail').value.trim();
       const password = document.getElementById('accessPassword').value.trim();
+      const email = resolveAdminEmail(identifier);
 
       if (!SUPABASE_URL || !SUPABASE_KEY) {
         errorEl.textContent = 'Configuração ausente. Copie js/config.example.js para js/config.js.';
         return;
       }
 
-      if (!email || !password) {
-        errorEl.textContent = 'Informe e-mail e senha.';
+      if (!identifier || !password) {
+        errorEl.textContent = 'Informe usuário ou e-mail e senha.';
         return;
       }
 
@@ -746,7 +756,7 @@
       submitBtn.textContent = 'Entrar';
 
       if (error || !data.user) {
-        errorEl.textContent = 'E-mail ou senha inválidos.';
+        errorEl.textContent = 'Usuário ou senha inválidos.';
         return;
       }
 

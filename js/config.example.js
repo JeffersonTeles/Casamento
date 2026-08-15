@@ -18,4 +18,8 @@ window.WEDDING_CONFIG = {
   supabaseUrl: 'https://SEU-PROJETO.supabase.co',
   supabaseAnonKey: 'sua-chave-anon-publica',
   adminEmails: ['email-do-noivo@exemplo.com', 'email-da-noiva@exemplo.com'],
+  adminUsers: [
+    { username: 'jefferson', email: 'email-do-noivo@exemplo.com' },
+    { username: 'beatriz', email: 'email-da-noiva@exemplo.com' },
+  ],
 };

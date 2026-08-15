@@ -15,13 +15,24 @@ const supabaseUrl = env(['REACT_APP_SUPABASE_URL', 'SUPABASE_URL']);
 const supabaseAnonKey = env(['REACT_APP_SUPABASE_ANON_KEY', 'SUPABASE_ANON_KEY']);
 const primaryAdminEmail = env(['REACT_APP_ADMIN_EMAIL', 'SUPABASE_ADMIN_EMAIL']);
 const secondaryAdminEmail = env(['REACT_APP_SECOND_ADMIN_EMAIL', 'SUPABASE_SECOND_ADMIN_EMAIL']);
+const primaryAdminUsername = env(['REACT_APP_ADMIN_USERNAME', 'SUPABASE_ADMIN_USERNAME']);
+const secondaryAdminUsername = env(['REACT_APP_SECOND_ADMIN_USERNAME', 'SUPABASE_SECOND_ADMIN_USERNAME']);
 
 const adminEmails = [primaryAdminEmail, secondaryAdminEmail].filter(Boolean);
+
+const adminUsers = [];
+for (let i = 0; i < adminEmails.length; i++) {
+  const email = adminEmails[i];
+  const username = i === 0 ? primaryAdminUsername : secondaryAdminUsername;
+  if (!username) continue;
+  adminUsers.push({ username, email });
+}
 
 const config = {
   supabaseUrl,
   supabaseAnonKey,
   adminEmails,
+  adminUsers,
 };
 
 const output = `// Arquivo gerado automaticamente por build-config.js a partir das variáveis de ambiente.
