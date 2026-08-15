@@ -1,7 +1,7 @@
 {
-  "name": "Casamento Jefferson & Bia",
+  "name": "Casamento Jefferson & Beatriz",
   "short_name": "Casamento",
-  "description": "Painel de organização do casamento de Jefferson & Bia",
+  "description": "Site e painel de organização do casamento de Jefferson & Beatriz",
   "start_url": "/organizacao.html",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -9,13 +9,13 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://quickchart.io/qr?size=192&text=J%26B",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://quickchart.io/qr?size=512&text=J%26B",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

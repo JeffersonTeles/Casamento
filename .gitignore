@@ -1,19 +1,40 @@
-# Secrets and local env
+# Environment variables
 .env
-.env.*
+.env.local
+.env.*.local
 
-# Vercel local metadata
-.vercel/
+# Supabase (local config)
+supabase/
 
-# Node
+# Dependencies
 node_modules/
+package-lock.json
 
-# OS/editor
-.DS_Store
+# Build outputs
+build/
+dist/
+*.min.js
+*.min.css
+
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# Local folders not for deploy
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
 OUTROS/
 OrganizarCasamento/
 SCRIPT PROMO/
+*.tmp
+.vercel
+.env*.local
