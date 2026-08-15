@@ -474,7 +474,7 @@
         <section id="timeline" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
             <h2 class="text-2xl font-titulo text-vinho flex items-center gap-2"><i data-lucide="clock"></i> Cronograma do Dia</h2>
-            <button onclick="alert('Funcionalidade de impressão em breve!')" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-full font-bold">Imprimir Roteiro</button>
+            <button onclick="printTimeline()" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-full font-bold hover:bg-slate-700 transition"><i data-lucide="printer" class="w-3 h-3 inline mr-1"></i>Imprimir Roteiro</button>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-6">
             <input type="time" id="tlTime" class="p-3 border rounded-xl bg-white text-sm" />
@@ -768,6 +768,24 @@
       return match ? match.email : '';
     }
 
+    // Helper para registrar auditoria
+    async function logAudit(tableName, recordId, action, oldData = null, newData = null) {
+      try {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        const userName = user?.user_metadata?.username || user?.email || 'Sistema';
+        await supabaseClient.from('audit_logs').insert([{
+          table_name: tableName,
+          record_id: recordId,
+          action: action,
+          user_name: userName,
+          old_data: oldData,
+          new_data: newData
+        }]);
+      } catch (err) {
+        console.warn('Falha ao registrar auditoria:', err);
+      }
+    }
+
     document.getElementById('accessForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const errorEl = document.getElementById('accessError');
@@ -968,7 +986,9 @@
     async function addMoodLink() {
       const link = document.getElementById('moodLink').value.trim();
       if (!link) return;
-      const { error } = await supabaseClient.from('moodboard').insert([{ url: link }]);
+      const { data, error } = await supabaseClient.from('moodboard').insert([{ url: link }]).select('id').single();
+      if (!error && data?.id) await logAudit('moodboard', data.id, 'INSERT');
+      if (error) console.error('Erro mood:', error);
       if (!error) { document.getElementById('moodLink').value = ''; fetchMoodLinks(); }
     }
     async function fetchMoodLinks() {
@@ -983,7 +1003,11 @@
       `).join('');
       if (window.lucide) lucide.createIcons();
     }
-    async function deleteMood(id) { await supabaseClient.from('moodboard').delete().eq('id', id); fetchMoodLinks(); }
+    async function deleteMood(id) { 
+      await supabaseClient.from('moodboard').delete().eq('id', id); 
+      await logAudit('moodboard', id, 'DELETE');
+      fetchMoodLinks(); 
+    }
 
     async function fetchTasks() {
       const { data } = await supabaseClient.from('tasks').select('*').order('due_date', { ascending: true, nullsFirst: false });
@@ -1099,12 +1123,22 @@
         setTimeout(() => { document.getElementById('notesStatus').textContent = ''; }, 2000);
       }, 1500);
     });
-    async function deleteTask(id) { if (confirm('Deletar?')) { await supabaseClient.from('tasks').delete().eq('id', id); fetchTasks(); } }
+    async function deleteTask(id) { 
+      if (confirm('Deletar?')) { 
+        await supabaseClient.from('tasks').delete().eq('id', id); 
+        await logAudit('tasks', id, 'DELETE');
+        fetchTasks(); 
+      } 
+    }
     async function addTask() {
       const title = document.getElementById('newTask').value;
       const due_date = document.getElementById('taskDue').value || null;
       const owner = document.getElementById('taskOwner').value || null;
-      if (title) { await supabaseClient.from('tasks').insert([{ title, status: 'pendente', due_date, owner }]); fetchTasks(); }
+      if (title) { 
+        const { data, error } = await supabaseClient.from('tasks').insert([{ title, status: 'pendente', due_date, owner }]).select('id').single();
+        if (data?.id) await logAudit('tasks', data.id, 'INSERT', null, { title, status: 'pendente', due_date, owner });
+        fetchTasks(); 
+      }
     }
 
     async function fetchGuests() { 
@@ -1192,9 +1226,17 @@
         invited_by: document.getElementById('editGuestOwner').value,
         rsvp_status: document.getElementById('editGuestStatus').value
       };
-      await supabaseClient.from('guests').update(payload).eq('id', id); toggleEditModal(false); fetchGuests();
+      await supabaseClient.from('guests').update(payload).eq('id', id); 
+      await logAudit('guests', id, 'UPDATE', null, payload);
+      toggleEditModal(false); fetchGuests();
     }
-    async function deleteGuest(id) { if (confirm('Remover?')) { await supabaseClient.from('guests').delete().eq('id', id); fetchGuests(); } }
+    async function deleteGuest(id) { 
+      if (confirm('Remover?')) { 
+        await supabaseClient.from('guests').delete().eq('id', id); 
+        await logAudit('guests', id, 'DELETE');
+        fetchGuests(); 
+      } 
+    }
     async function addGuest() {
       const nameEl = document.getElementById('guestName');
       const phoneEl = document.getElementById('guestPhone');
@@ -1208,8 +1250,9 @@
 
       try {
         const token = window.crypto?.randomUUID ? window.crypto.randomUUID() : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        const { error } = await supabaseClient.from('guests').insert([{ name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando' }]);
+        const { data, error } = await supabaseClient.from('guests').insert([{ name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando' }]).select('id').single();
         if (error) throw error;
+        if (data?.id) await logAudit('guests', data.id, 'INSERT', null, { name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando' });
         nameEl.value = ''; phoneEl.value = '';
         fetchGuests();
       } catch (err) {
@@ -1324,10 +1367,20 @@
     function renderExpenses() {
       document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${e.item}</p><p class="text-[10px] text-slate-500 uppercase">${e.category || 'Sem categoria'}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button onclick="deleteExpense('${e.id}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join('');
     }
-    async function deleteExpense(id) { if (confirm('Remover este gasto?')) { await supabaseClient.from('expenses').delete().eq('id', id); fetchExpenses(); } }
+    async function deleteExpense(id) { 
+      if (confirm('Remover este gasto?')) { 
+        await supabaseClient.from('expenses').delete().eq('id', id); 
+        await logAudit('expenses', id, 'DELETE');
+        fetchExpenses(); 
+      } 
+    }
     async function addExpense() {
       const item = document.getElementById('expItem').value, cat = document.getElementById('expCategory').value, amount = document.getElementById('expAmount').value;
-      if (item && amount) { await supabaseClient.from('expenses').insert([{ item, category: cat, amount: parseFloat(amount) }]); fetchExpenses(); }
+      if (item && amount) { 
+        const { data, error } = await supabaseClient.from('expenses').insert([{ item, category: cat, amount: parseFloat(amount) }]).select('id').single();
+        if (data?.id) await logAudit('expenses', data.id, 'INSERT', null, { item, category: cat, amount: parseFloat(amount) });
+        fetchExpenses(); 
+      }
     }
     function toggleSavingsEdit(s) { document.getElementById('savings-edit-container').classList.toggle('hidden', !s); }
     function saveSavingsFromInput() { const v = document.getElementById('savings-input').value; if (v) { localStorage.setItem('weddingSavings', v); toggleSavingsEdit(false); updateExpenseStats(); } }
@@ -1384,7 +1437,7 @@
         const conversionRate = totalConvidados > 0 ? Math.round((confirmados / totalConvidados) * 100) : 0;
         
         const today = new Date().toISOString().split('T')[0];
-        const todayAccess = logs.filter(l => l.accessed_at && l.accessed_at.startsWith(today)).length;
+        const todayAccess = logs.filter(l => l.access_time && l.access_time.startsWith(today)).length;
         
         document.getElementById('analytics-total-access').textContent = totalAccess;
         document.getElementById('analytics-unique-guests').textContent = uniqueGuests;
@@ -1401,7 +1454,7 @@
           return d.toISOString().split('T')[0];
         }).reverse();
         
-        const accessByDay = last7Days.map(day => logs.filter(l => l.accessed_at && l.accessed_at.startsWith(day)).length);
+        const accessByDay = last7Days.map(day => logs.filter(l => l.access_time && l.access_time.startsWith(day)).length);
         const dayLabels = last7Days.map(day => {
           const [y, m, d] = day.split('-');
           return `${d}/${m}`;
@@ -1523,7 +1576,8 @@
       const time = document.getElementById('tlTime').value;
       const desc = document.getElementById('tlEvent').value;
       if (!time || !desc) { showToast('Preencha hora e descrição!', 'error'); return; }
-      const { error } = await supabaseClient.from('timeline').insert([{ event_time: time, description: desc }]);
+      const { data, error } = await supabaseClient.from('timeline').insert([{ event_time: time, description: desc }]).select('id').single();
+      if (!error && data?.id) await logAudit('timeline', data.id, 'INSERT', null, { event_time: time, description: desc });
       if (!error) { 
         document.getElementById('tlEvent').value = '';
         showToast('Evento adicionado!', 'success');
@@ -1534,8 +1588,61 @@
     async function deleteTimelineEvent(id) {
       if (confirm('Excluir este horário?')) {
         await supabaseClient.from('timeline').delete().eq('id', id);
+        await logAudit('timeline', id, 'DELETE');
         fetchTimeline();
       }
+    }
+
+    function printTimeline() {
+      const events = document.getElementById('timelineList');
+      if (!events || events.children.length === 0) {
+        showToast('Nenhum evento no cronograma para imprimir.', 'error');
+        return;
+      }
+      const printWindow = window.open('', '_blank');
+      const now = new Date().toLocaleDateString('pt-BR');
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8">
+          <title>Roteiro do Casamento - ${now}</title>
+          <style>
+            body { font-family: 'Georgia', serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a; }
+            .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #120a74; padding-bottom: 20px; }
+            .header h1 { font-family: 'Playfair Display', serif; color: #120a74; margin: 0 0 8px; font-size: 2.5rem; }
+            .header p { color: #663244; margin: 0; font-size: 1.1rem; }
+            .meta { text-align: center; margin-bottom: 30px; color: #666; font-size: 0.9rem; }
+            .timeline { position: relative; padding-left: 30px; }
+            .timeline::before { content: ''; position: absolute; left: 14px; top: 0; bottom: 0; width: 2px; background: #120a74; }
+            .event { position: relative; padding-left: 40px; margin-bottom: 24px; page-break-inside: avoid; }
+            .event::before { content: ''; position: absolute; left: 4px; top: 4px; width: 20px; height: 20px; background: #120a74; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px #120a74; }
+            .event-time { font-weight: bold; color: #120a74; font-size: 1.1rem; margin-bottom: 4px; }
+            .event-desc { color: #333; font-size: 1rem; line-height: 1.5; }
+            @media print { body { padding: 0; } .no-print { display: none; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Jefferson &amp; Beatriz</h1>
+            <p>Roteiro do Dia do Casamento</p>
+          </div>
+          <div class="meta">Gerado em ${new Date().toLocaleString('pt-BR')} | Capela São Maximiliano — Cascavel/PR</div>
+          <div class="timeline">
+            ${Array.from(events.children).map(el => `
+              <div class="event">
+                <div class="event-time">${el.querySelector('p.font-bold')?.textContent || ''}</div>
+                <div class="event-desc">${el.querySelector('p.text-slate-700')?.textContent || ''}</div>
+              </div>
+            `).join('')}
+          </div>
+          <script>
+            window.onload = function() { window.print(); window.onafterprint = function() { window.close(); }; };
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
     }
 
     async function fetchLogs() { 
@@ -1607,6 +1714,7 @@
     async function deleteSupplier(id) { 
       if (confirm('Remover este fornecedor?')) { 
         await supabaseClient.from('suppliers').delete().eq('id', id); 
+        await logAudit('suppliers', id, 'DELETE');
         fetchSuppliers(); 
         showToast('Fornecedor removido', 'success');
       } 
@@ -1621,14 +1729,16 @@
       const status = document.getElementById('supplierStatus').value;
 
       if (name) { 
-        const { error } = await supabaseClient.from('suppliers').insert([{ 
+        const { data, error } = await supabaseClient.from('suppliers').insert([{ 
           name, 
           contact, 
           map_link,
           category: cat, 
           value: parseFloat(val) || 0,
           status: status
-        }]); 
+        }]).select('id').single(); 
+        
+        if (!error && data?.id) await logAudit('suppliers', data.id, 'INSERT', null, { name, contact, map_link, category: cat, value: parseFloat(val) || 0, status });
         
         if (!error) {
           document.getElementById('supplierName').value = '';

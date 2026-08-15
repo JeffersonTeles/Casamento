@@ -359,10 +359,7 @@
       try {
         const { error } = await supabaseClient.from('rsvp_access_logs').insert([{
           guest_id: guestId,
-          guest_name: guestName,
           access_time: new Date().toISOString(),
-          user_agent: navigator.userAgent,
-          ip_address: null // IP address would need to be captured server-side
         }]);
         if (error) console.error('Error logging access:', error);
       } catch (err) {
