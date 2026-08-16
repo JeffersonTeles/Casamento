@@ -327,22 +327,44 @@
     <section id="presentes" class="max-w-5xl mx-auto px-4 py-16 reveal">
       <div class="text-center mb-10">
         <h2 class="font-titulo text-4xl text-vinho">Presentes</h2>
-        <p class="text-zinc-600 mt-2 italic">Sua presença é o maior presente, mas se quiser nos presentear...</p>
+        <p class="text-zinc-600 mt-2 italic">Sua presença já é o maior presente. Mas se quiser nos presentear...</p>
       </div>
 
-      <div class="flex flex-col items-center">
-        <div class="premium-glass p-8 rounded-[2rem] text-center max-w-md w-full">
-          <p class="text-xs font-bold uppercase tracking-widest text-vinho/80 mb-4">Chave PIX (Telefone)</p>
+      <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <!-- Ideias -->
+        <div class="premium-glass p-6 rounded-[2rem]">
+          <p class="text-xs font-bold uppercase tracking-widest text-vinho/80 mb-4">Algumas ideias</p>
+          <ul class="space-y-3 text-sm text-zinc-600">
+            <li class="flex items-start gap-2">
+              <span class="text-[#c9a96e] mt-0.5">✦</span>
+              <span>Ajuda na lua de mel</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-[#c9a96e] mt-0.5">✦</span>
+              <span>Utensílios para a cozinha</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-[#c9a96e] mt-0.5">✦</span>
+              <span>Toalhas e lençóis</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-[#c9a96e] mt-0.5">✦</span>
+              <span>Quadros para decorar a casa</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- PIX -->
+        <div class="premium-glass p-6 rounded-[2rem] text-center flex flex-col items-center justify-center">
+          <p class="text-xs font-bold uppercase tracking-widest text-vinho/80 mb-4">PIX</p>
           
-          <div class="flex justify-center mb-4">
-            <img src="https://quickchart.io/qr?size=200&text=44999277915&margin=1" alt="QR Code PIX" class="w-48 h-48 rounded-xl" />
-          </div>
+          <img src="https://quickchart.io/qr?size=160&text=44999277915&margin=1" alt="QR Code PIX" class="w-40 h-40 rounded-xl mb-3" />
           
           <p class="text-[0.65rem] text-vinho/60 uppercase font-bold tracking-tight mb-1">Telefone</p>
-          <p id="pix-number" class="text-xl font-mono text-vinho font-bold tracking-tighter blur-sm select-none cursor-pointer hover:blur-none transition-all" onclick="this.classList.toggle('blur-none')">(44) 99927-7915</p>
+          <p class="text-lg font-mono text-vinho font-bold tracking-tighter blur-sm select-none cursor-pointer hover:blur-none transition-all" onclick="this.classList.toggle('blur-none')">(44) 99927-7915</p>
           
-          <button onclick="navigator.clipboard.writeText('44999277915').then(() => this.innerText = 'Copiado! ✓')" class="mt-4 bg-vinho text-white px-6 py-3 rounded-full text-xs font-bold hover:bg-vinho/90 transition-all">
-            Copiar Chave PIX
+          <button onclick="navigator.clipboard.writeText('44999277915').then(() => this.innerText = 'Copiado! ✓')" class="mt-3 bg-[#1a1a2e] text-white px-5 py-2 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/90 transition-all">
+            Copiar Chave
           </button>
         </div>
       </div>
