@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Confirme sua presença — Jefferson & Beatriz</title>
+  <title>Convite — Jefferson & Beatriz</title>
   <script src="./js/config.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -24,224 +24,221 @@
       },
     };
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     body {
       background: linear-gradient(180deg, #f5e6d3 0%, #ffffff 100%);
-    }
-    
-    body.dark-mode {
-      background: linear-gradient(180deg, #020617 0%, #1e1b4b 100%);
-      color: #e5e7eb;
-    }
-    
-    body.dark-mode .bg-white\/90 {
-      background-color: #1e293b !important;
-    }
-    
-    body.dark-mode .text-slate-600,
-    body.dark-mode .text-slate-700,
-    body.dark-mode .text-slate-800 {
-      color: #e5e7eb !important;
-    }
-    
-    body.dark-mode .border-slate-200,
-    body.dark-mode .border-slate-300 {
-      border-color: #475569 !important;
-    }
-    
-    body.dark-mode input,
-    body.dark-mode select,
-    body.dark-mode textarea {
-      background-color: #1e293b !important;
-      color: #e5e7eb !important;
-      border-color: #475569 !important;
+      margin: 0;
     }
 
-    /* Animações */
+    /* === TEMA NORMAL === */
+    .invite-normal body,
+    body { }
+
+    /* === TEMA PADRINHOS — Convite Impresso Digital === */
+    .padrinhos-bg {
+      background-color: #faf7f2;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      min-height: 100vh;
+    }
+
+    .padrinhos-card {
+      background: #fffcf7;
+      border: 1px solid rgba(18, 10, 116, 0.08);
+      box-shadow:
+        0 1px 3px rgba(18, 10, 116, 0.04),
+        0 8px 30px rgba(18, 10, 116, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .padrinhos-card::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(18, 10, 116, 0.06);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    /* Folhas decorativas */
+    .leaf-top, .leaf-bottom {
+      position: absolute;
+      width: 100%;
+      pointer-events: none;
+      opacity: 0.18;
+    }
+    .leaf-top { top: 0; }
+    .leaf-bottom { bottom: 0; transform: rotate(180deg); }
+
+    /* Linha decorativa */
+    .divider-line {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #120a74, transparent);
+      margin: 0 auto;
+    }
+
+    /* Animação de entrada suave */
+    @keyframes inviteReveal {
+      from { opacity: 0; transform: translateY(24px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .invite-animate {
+      animation: inviteReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
     @keyframes slideIn {
       from { opacity: 0; transform: translateX(-20px); }
       to { opacity: 1; transform: translateX(0); }
     }
-    
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
-    
-    .animate-fade-in {
-      animation: fadeIn 0.6s ease-out;
-    }
-    
-    .animate-slide-in {
-      animation: slideIn 0.5s ease-out;
-    }
-    
-    .animate-pulse-slow {
-      animation: pulse 2s infinite;
-    }
-    
-    button {
-      transition: all 0.3s ease;
-    }
-    
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(18, 10, 116, 0.2);
-    }
-    
-    button:focus {
-      outline: 3px solid #e91e63;
-      outline-offset: 2px;
-    }
-    
-    input, select, textarea {
-      transition: all 0.3s ease;
-    }
-    
+    .animate-fade-in { animation: fadeIn 0.6s ease-out; }
+    .animate-slide-in { animation: slideIn 0.5s ease-out; }
+    .animate-pulse-slow { animation: pulse 2s infinite; }
+
+    button { transition: all 0.3s ease; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(18, 10, 116, 0.2); }
+    button:focus { outline: 3px solid #e91e63; outline-offset: 2px; }
+    input, select, textarea { transition: all 0.3s ease; }
     input:focus, select:focus, textarea:focus {
       transform: scale(1.02);
       box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.2);
     }
 
-    /* Versão para impressão */
     @media print {
-      body {
-        background: white !important;
-        color: black !important;
-      }
-      
-      .bg-white\/90 {
-        background: white !important;
-        box-shadow: none !important;
-      }
-      
-      button, #loading, #error {
-        display: none !important;
-      }
-      
-      #rsvp-form, #success {
-        display: block !important;
-      }
-      
-      .bg-gradient-to-r, .bg-vinho\/5, .bg-rose-50, .bg-blue-50, .bg-amber-50 {
-        background: white !important;
-        border: 1px solid #ccc !important;
-      }
-      
-      a[href]::after {
-        content: " (" attr(href) ")";
-        font-size: 0.8em;
-      }
+      body { background: white !important; color: black !important; }
+      .bg-white\/90 { background: white !important; box-shadow: none !important; }
+      button, #loading, #error { display: none !important; }
+      #rsvp-form, #success { display: block !important; }
+    }
+
+    @media (max-width: 640px) {
+      .padrinhos-card { margin: 8px; border-radius: 20px; }
     }
   </style>
-  <meta name="description" content="Participe do nosso grande dia! Site oficial do casamento de Jefferson & Beatriz com RSVP, presentes e informações.">
+  <meta name="description" content="Participe do nosso grande dia! Convite de casamento de Jefferson & Beatriz com RSVP.">
 </head>
 <body class="font-corpo text-slate-800 min-h-screen">
-  <div class="min-h-screen flex items-center justify-center p-4 py-8">
-    <div class="max-w-lg w-full bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-8 animate-fade-in border border-rose-100">
-      <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-br from-vinho to-rosa mb-4 shadow-lg">
-          <span class="text-4xl">💍</span>
+
+  <!-- ========== LOADING (compartilhado) ========== -->
+  <div id="loading" class="min-h-screen flex items-center justify-center">
+    <div class="text-center">
+      <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-vinho"></div>
+      <p class="mt-4 text-sm text-slate-600">Carregando seu convite...</p>
+    </div>
+  </div>
+
+  <!-- ========== ERRO (compartilhado) ========== -->
+  <div id="error" class="hidden min-h-screen flex items-center justify-center p-4">
+    <div class="text-center max-w-sm">
+      <div class="text-6xl mb-4">😕</div>
+      <p class="text-red-600 font-medium text-lg mb-2">Convite não encontrado</p>
+      <p class="text-sm text-slate-600">Verifique se o link está correto ou entre em contato com o casal.</p>
+    </div>
+  </div>
+
+  <!-- ========== CONVITE PADRINHOS (template especial) ========== -->
+  <div id="padrinhos-invite" class="hidden padrinhos-bg">
+    <div class="max-w-lg mx-auto px-4 py-10 md:py-16">
+      <div class="padrinhos-card rounded-2xl p-8 md:p-12 invite-animate relative">
+
+        <!-- Folha topo -->
+        <svg class="leaf-top" viewBox="0 0 400 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M200 70 C180 40, 120 20, 60 30 C90 15, 140 5, 200 10 C260 5, 310 15, 340 30 C280 20, 220 40, 200 70Z" fill="#120a74"/>
+          <path d="M200 70 C190 50, 150 35, 100 40 C130 28, 165 20, 200 22 C235 20, 270 28, 300 40 C250 35, 210 50, 200 70Z" fill="#120a74" opacity="0.5"/>
+          <line x1="200" y1="70" x2="200" y2="10" stroke="#120a74" stroke-width="0.8" opacity="0.4"/>
+          <path d="M200 50 C185 42, 140 38, 105 42" stroke="#120a74" stroke-width="0.5" fill="none" opacity="0.3"/>
+          <path d="M200 50 C215 42, 260 38, 295 42" stroke="#120a74" stroke-width="0.5" fill="none" opacity="0.3"/>
+        </svg>
+
+        <!-- Folha base -->
+        <svg class="leaf-bottom" viewBox="0 0 400 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M200 70 C180 40, 120 20, 60 30 C90 15, 140 5, 200 10 C260 5, 310 15, 340 30 C280 20, 220 40, 200 70Z" fill="#120a74"/>
+          <path d="M200 70 C190 50, 150 35, 100 40 C130 28, 165 20, 200 22 C235 20, 270 28, 300 40 C250 35, 210 50, 200 70Z" fill="#120a74" opacity="0.5"/>
+        </svg>
+
+        <!-- Ilustração: Alianças -->
+        <div class="text-center mb-6 pt-4">
+          <svg width="72" height="48" viewBox="0 0 72 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4">
+            <ellipse cx="26" cy="28" rx="18" ry="16" stroke="#120a74" stroke-width="1.5" fill="none"/>
+            <ellipse cx="46" cy="28" rx="18" ry="16" stroke="#120a74" stroke-width="1.5" fill="none"/>
+            <ellipse cx="26" cy="28" rx="18" ry="16" stroke="#120a74" stroke-width="0.5" fill="none" stroke-dasharray="2 3" opacity="0.3"/>
+            <ellipse cx="46" cy="28" rx="18" ry="16" stroke="#120a74" stroke-width="0.5" fill="none" stroke-dasharray="2 3" opacity="0.3"/>
+            <path d="M26 12 L26 8 L30 10" stroke="#120a74" stroke-width="1" fill="none" opacity="0.5"/>
+            <path d="M46 12 L46 8 L50 10" stroke="#120a74" stroke-width="1" fill="none" opacity="0.5"/>
+          </svg>
         </div>
-        <h1 class="font-titulo text-4xl text-vinho mb-2">Jefferson & Beatriz</h1>
-        <p class="text-sm text-slate-600">Convite Especial</p>
-        <button onclick="window.print()" class="mt-2 text-xs text-vinho hover:underline" aria-label="Imprimir convite">
-          🖨️ Imprimir convite
-        </button>
-      </div>
 
-      <div class="bg-gradient-to-r from-vinho/10 to-rosa/10 rounded-2xl p-5 mb-6 border border-vinho/20 animate-slide-in">
-        <h2 class="font-titulo text-lg text-vinho mb-4 text-center">📅 Detalhes do Evento</h2>
-        <div class="grid gap-4 text-sm">
-          <div class="bg-white rounded-xl p-4 shadow-sm">
-            <div class="flex items-center gap-3">
-              <span class="text-2xl">⏰</span>
-              <div>
-                <p class="font-medium text-slate-800">Horário</p>
-                <p class="text-slate-600">Cerimônia: 08h00 DA MANHÃ (PONTUALMENTE)</p>
-                <p class="text-slate-600">Não teremos recepção após a cerimônia.</p>
-              </div>
-            </div>
-          </div>
-          <div class="bg-white rounded-xl p-4 shadow-sm">
-            <div class="flex items-center gap-3">
-              <span class="text-2xl">📍</span>
-              <div>
-                <p class="font-medium text-slate-800">Local</p>
-                <p class="text-slate-600">Capela São Maximiliano</p>
-                <p class="text-slate-600">Cascavel - PR</p>
-              </div>
-            </div>
-            <div class="mt-4 rounded-xl overflow-hidden border border-vinho/20 shadow-inner">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.0!2d-53.4558!3d-24.9578!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCapela+S%C3%A3o+Maximiliano+Cascavel+PR!5e0!3m2!1spt!2sbr!4v1"
-                width="100%"
-                height="200"
-                style="border:0;"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-                title="Localização da Capela São Maximiliano"
-                class="w-full"
-              ></iframe>
-            </div>
-            <a href="https://www.google.com/maps/search/?api=1&query=Capela+São+Maximiliano+Cascavel+PR"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="mt-3 inline-block text-xs text-vinho underline font-bold"
-            >
-              Abrir no Google Maps →
-            </a>
-          </div>
+        <!-- Texto de abertura -->
+        <p class="text-center font-titulo text-base md:text-lg text-slate-600 italic leading-relaxed mb-6 px-4">
+          Amigos especiais todos temos,<br>
+          mas você é mais que especial.<br>
+          E nós não poderíamos viver um momento tão<br>
+          único sem você ao nosso lado.
+        </p>
+
+        <div class="divider-line mb-8"></div>
+
+        <!-- Pergunta principal -->
+        <h1 class="text-center font-titulo text-3xl md:text-4xl text-vinho leading-tight mb-2">
+          Você aceita ser nosso
+        </h1>
+        <h2 class="text-center font-titulo text-4xl md:text-5xl font-bold text-vinho tracking-wide mb-8">
+          PADRINHO?
+        </h2>
+
+        <div class="divider-line mb-8"></div>
+
+        <!-- Detalhes do evento -->
+        <div class="text-center space-y-3 mb-8">
+          <p class="font-titulo text-xl md:text-2xl text-vinho">06 · 02 · 2027</p>
+          <p class="text-sm text-slate-600 font-medium tracking-wider uppercase">Sábado, às 08h00</p>
+        </div>
+
+        <div class="text-center mb-8">
+          <p class="text-sm text-slate-700 font-medium">Capela São Maximiliano</p>
+          <p class="text-xs text-slate-500 mt-1">Cascavel — PR</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=Capela+São+Maximiliano+Cascavel+PR"
+            target="_blank" rel="noopener noreferrer"
+            class="inline-block mt-2 text-xs text-vinho/70 underline hover:text-vinho transition-colors">
+            Ver no Google Maps
+          </a>
+        </div>
+
+        <!-- Botão confirmar -->
+        <div class="text-center">
+          <button onclick="showPadrinhosForm()" id="padrinhos-rsvp-btn"
+            class="inline-block bg-vinho text-white px-8 py-3 rounded-full text-sm font-semibold tracking-wider hover:bg-vinho/90 transition-all shadow-lg shadow-vinho/20 hover:shadow-vinho/30">
+            CONFIRMAR PRESENÇA
+          </button>
+        </div>
+
+        <!-- Rodapé do convite -->
+        <div class="mt-10 pt-6 border-t border-vinho/10 text-center">
+          <p class="font-titulo text-lg text-vinho">Jefferson & Beatriz</p>
+          <p class="text-[0.65rem] text-slate-500 mt-1 tracking-wider uppercase">06 de Fevereiro de 2027</p>
         </div>
       </div>
+    </div>
 
-      <div class="bg-gradient-to-br from-vinho to-rosa rounded-2xl p-5 mb-6 shadow-lg">
-        <h3 class="font-titulo text-sm text-white mb-4 text-center">⏳ Contagem Regressiva</h3>
-        <div class="grid grid-cols-4 gap-3 text-center">
-          <div class="bg-white/20 backdrop-blur rounded-xl p-3">
-            <p class="text-3xl font-bold text-white" id="days">--</p>
-            <p class="text-[0.65rem] text-white/90">Dias</p>
-          </div>
-          <div class="bg-white/20 backdrop-blur rounded-xl p-3">
-            <p class="text-3xl font-bold text-white" id="hours">--</p>
-            <p class="text-[0.65rem] text-white/90">Horas</p>
-          </div>
-          <div class="bg-white/20 backdrop-blur rounded-xl p-3">
-            <p class="text-3xl font-bold text-white" id="minutes">--</p>
-            <p class="text-[0.65rem] text-white/90">Min</p>
-          </div>
-          <div class="bg-white/20 backdrop-blur rounded-xl p-3">
-            <p class="text-3xl font-bold text-white" id="seconds">--</p>
-            <p class="text-[0.65rem] text-white/90">Seg</p>
-          </div>
-        </div>
-      </div>
-
-      <div id="loading" class="text-center py-8">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-vinho"></div>
-        <p class="mt-3 text-sm text-slate-600">Carregando...</p>
-      </div>
-
-      <div id="error" class="hidden text-center py-8">
-        <div class="text-5xl mb-4">😕</div>
-        <p class="text-red-600 font-medium mb-2">Convite não encontrado</p>
-        <p class="text-sm text-slate-600">Verifique se o link está correto ou entre em contato com o casal.</p>
-      </div>
-
-      <div id="rsvp-form" class="hidden">
-        <div class="bg-rose-50 rounded-2xl p-4 mb-6">
+    <!-- Formulário RSVP (aparece abaixo do convite) -->
+    <div id="padrinhos-rsvp-section" class="hidden max-w-lg mx-auto px-4 pb-12">
+      <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 animate-fade-in border border-rose-100">
+        <div class="text-center mb-5">
           <p class="text-sm text-slate-700">
-            Olá, <strong id="guest-name" class="text-vinho"></strong><span id="partner-name-display"></span>!
+            Olá, <strong id="guest-name-padrinhos" class="text-vinho"></strong><span id="partner-name-display-padrinhos"></span>!
           </p>
           <p class="text-sm text-slate-600 mt-1">
-            Por favor, confirme sua presença no nosso casamento até <strong>20 de Dezembro de 2026</strong>.
+            Confirme sua presença até <strong>20 de Dezembro de 2026</strong>.
           </p>
         </div>
 
@@ -249,18 +246,18 @@
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-2">Você vai?</label>
             <div class="flex gap-3">
-              <button onclick="selectRsvp('confirmado')" id="btn-confirmar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-vinho hover:text-vinho transition">
+              <button onclick="selectRsvp('confirmado')" id="btn-confirmar-p" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-vinho hover:text-vinho transition">
                 ✅ Sim, vou!
               </button>
-              <button onclick="selectRsvp('recusado')" id="btn-recusar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition">
+              <button onclick="selectRsvp('recusado')" id="btn-recusar-p" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition">
                 ❌ Não posso
               </button>
             </div>
           </div>
 
-          <div id="plus-ones-section" class="hidden">
+          <div id="plus-ones-section-p" class="hidden">
             <label class="block text-sm font-medium text-slate-700 mb-2">Quantos acompanhantes?</label>
-            <select id="plus-ones" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa">
+            <select id="plus-ones-p" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa">
               <option value="0">Nenhum acompanhante</option>
               <option value="1">1 acompanhante</option>
               <option value="2">2 acompanhantes</option>
@@ -270,28 +267,24 @@
 
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-2">Mensagem para o casal (opcional)</label>
-            <textarea id="message" rows="3" placeholder="Deixe uma mensagem carinhosa para nós..." class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa resize-none"></textarea>
+            <textarea id="message-p" rows="3" placeholder="Deixe uma mensagem carinhosa para nós..." class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa resize-none"></textarea>
           </div>
 
-          <div class="bg-blue-50 rounded-xl p-3 border border-blue-100">
-            <p class="text-xs text-slate-700">
-              <strong>ℹ️ Informações adicionais:</strong> Estacionamento gratuito disponível no local. Caso tenha alguma dúvida, entre em contato pelo WhatsApp: (11) 99999-9999
-            </p>
-          </div>
-
-          <button onclick="submitRsvp()" id="submit-btn" class="w-full bg-vinho text-white py-3 rounded-xl hover:bg-vinho/90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          <button onclick="submitRsvp()" id="submit-btn-p" class="w-full bg-vinho text-white py-3 rounded-xl hover:bg-vinho/90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
             Enviar confirmação
           </button>
         </div>
       </div>
+    </div>
 
-      <div id="success" class="hidden text-center py-8">
+    <!-- Sucesso (padrinhos) -->
+    <div id="success-padrinhos" class="hidden max-w-lg mx-auto px-4 pb-12">
+      <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 text-center animate-fade-in border border-rose-100">
         <div class="text-5xl mb-4">💍</div>
         <p class="text-green-600 font-medium text-lg mb-2">Confirmação enviada!</p>
-        <p class="text-sm text-slate-600 mb-4" id="success-message">
+        <p class="text-sm text-slate-600 mb-4" id="success-message-p">
           Obrigado por confirmar sua presença. Mal podemos esperar para te ver no nosso grande dia!
         </p>
-        
         <div class="bg-rose-50 rounded-2xl p-4 mb-4 text-left">
           <p class="text-sm font-medium text-vinho mb-2">📝 Lembre-se:</p>
           <ul class="text-sm text-slate-600 space-y-1">
@@ -300,10 +293,157 @@
             <li>• Traje: Livre (proibido cores claras semelhantes ao branco)</li>
           </ul>
         </div>
-
         <a href="index.html" class="inline-block bg-vinho text-white px-6 py-2 rounded-full text-sm hover:bg-vinho/90 transition">
           Voltar ao site
         </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== CONVITE NORMAL (template atual) ========== -->
+  <div id="normal-invite" class="hidden">
+    <div class="min-h-screen flex items-center justify-center p-4 py-8">
+      <div class="max-w-lg w-full bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-8 animate-fade-in border border-rose-100">
+
+        <div class="text-center mb-6">
+          <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-br from-vinho to-rosa mb-4 shadow-lg">
+            <span class="text-4xl">💍</span>
+          </div>
+          <h1 class="font-titulo text-4xl text-vinho mb-2">Jefferson & Beatriz</h1>
+          <p class="text-sm text-slate-600">Convite Especial</p>
+          <button onclick="window.print()" class="mt-2 text-xs text-vinho hover:underline" aria-label="Imprimir convite">
+            🖨️ Imprimir convite
+          </button>
+        </div>
+
+        <div class="bg-gradient-to-r from-vinho/10 to-rosa/10 rounded-2xl p-5 mb-6 border border-vinho/20 animate-slide-in">
+          <h2 class="font-titulo text-lg text-vinho mb-4 text-center">📅 Detalhes do Evento</h2>
+          <div class="grid gap-4 text-sm">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">⏰</span>
+                <div>
+                  <p class="font-medium text-slate-800">Horário</p>
+                  <p class="text-slate-600">Cerimônia: 08h00 DA MANHÃ (PONTUALMENTE)</p>
+                  <p class="text-slate-600">Não teremos recepção após a cerimônia.</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">📍</span>
+                <div>
+                  <p class="font-medium text-slate-800">Local</p>
+                  <p class="text-slate-600">Capela São Maximiliano</p>
+                  <p class="text-slate-600">Cascavel - PR</p>
+                </div>
+              </div>
+              <div class="mt-4 rounded-xl overflow-hidden border border-vinho/20 shadow-inner">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.0!2d-53.4558!3d-24.9578!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCapela+S%C3%A3o+Maximiliano+Cascavel+PR!5e0!3m2!1spt!2sbr!4v1"
+                  width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                  title="Localização da Capela São Maximiliano" class="w-full"></iframe>
+              </div>
+              <a href="https://www.google.com/maps/search/?api=1&query=Capela+São+Maximiliano+Cascavel+PR"
+                target="_blank" rel="noopener noreferrer"
+                class="mt-3 inline-block text-xs text-vinho underline font-bold">
+                Abrir no Google Maps →
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-vinho to-rosa rounded-2xl p-5 mb-6 shadow-lg">
+          <h3 class="font-titulo text-sm text-white mb-4 text-center">⏳ Contagem Regressiva</h3>
+          <div class="grid grid-cols-4 gap-3 text-center">
+            <div class="bg-white/20 backdrop-blur rounded-xl p-3">
+              <p class="text-3xl font-bold text-white" id="days">--</p>
+              <p class="text-[0.65rem] text-white/90">Dias</p>
+            </div>
+            <div class="bg-white/20 backdrop-blur rounded-xl p-3">
+              <p class="text-3xl font-bold text-white" id="hours">--</p>
+              <p class="text-[0.65rem] text-white/90">Horas</p>
+            </div>
+            <div class="bg-white/20 backdrop-blur rounded-xl p-3">
+              <p class="text-3xl font-bold text-white" id="minutes">--</p>
+              <p class="text-[0.65rem] text-white/90">Min</p>
+            </div>
+            <div class="bg-white/20 backdrop-blur rounded-xl p-3">
+              <p class="text-3xl font-bold text-white" id="seconds">--</p>
+              <p class="text-[0.65rem] text-white/90">Seg</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="rsvp-form" class="hidden">
+          <div class="bg-rose-50 rounded-2xl p-4 mb-6">
+            <p class="text-sm text-slate-700">
+              Olá, <strong id="guest-name" class="text-vinho"></strong><span id="partner-name-display"></span>!
+            </p>
+            <p class="text-sm text-slate-600 mt-1">
+              Por favor, confirme sua presença no nosso casamento até <strong>20 de Dezembro de 2026</strong>.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Você vai?</label>
+              <div class="flex gap-3">
+                <button onclick="selectRsvp('confirmado')" id="btn-confirmar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-vinho hover:text-vinho transition">
+                  ✅ Sim, vou!
+                </button>
+                <button onclick="selectRsvp('recusado')" id="btn-recusar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition">
+                  ❌ Não posso
+                </button>
+              </div>
+            </div>
+
+            <div id="plus-ones-section" class="hidden">
+              <label class="block text-sm font-medium text-slate-700 mb-2">Quantos acompanhantes?</label>
+              <select id="plus-ones" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa">
+                <option value="0">Nenhum acompanhante</option>
+                <option value="1">1 acompanhante</option>
+                <option value="2">2 acompanhantes</option>
+                <option value="3">3 acompanhantes</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Mensagem para o casal (opcional)</label>
+              <textarea id="message" rows="3" placeholder="Deixe uma mensagem carinhosa para nós..." class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa resize-none"></textarea>
+            </div>
+
+            <div class="bg-blue-50 rounded-xl p-3 border border-blue-100">
+              <p class="text-xs text-slate-700">
+                <strong>ℹ️ Informações adicionais:</strong> Estacionamento gratuito disponível no local.
+              </p>
+            </div>
+
+            <button onclick="submitRsvp()" id="submit-btn" class="w-full bg-vinho text-white py-3 rounded-xl hover:bg-vinho/90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+              Enviar confirmação
+            </button>
+          </div>
+        </div>
+
+        <div id="success" class="hidden text-center py-8">
+          <div class="text-5xl mb-4">💍</div>
+          <p class="text-green-600 font-medium text-lg mb-2">Confirmação enviada!</p>
+          <p class="text-sm text-slate-600 mb-4" id="success-message">
+            Obrigado por confirmar sua presença. Mal podemos esperar para te ver no nosso grande dia!
+          </p>
+          <div class="bg-rose-50 rounded-2xl p-4 mb-4 text-left">
+            <p class="text-sm font-medium text-vinho mb-2">📝 Lembre-se:</p>
+            <ul class="text-sm text-slate-600 space-y-1">
+              <li>• Chegue com 15 minutos de antecedência</li>
+              <li>• Estacionamento gratuito disponível</li>
+              <li>• Traje: Livre (proibido cores claras semelhantes ao branco)</li>
+            </ul>
+          </div>
+          <a href="index.html" class="inline-block bg-vinho text-white px-6 py-2 rounded-full text-sm hover:bg-vinho/90 transition">
+            Voltar ao site
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -314,207 +454,135 @@
     const SUPABASE_KEY = WEDDING_CONFIG.supabaseAnonKey || '';
     const supabaseClient = supabase.createClient(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_KEY || 'public-anon-placeholder');
 
-    // CONFIGURAÇÕES DO TELEGRAM (Preencha aqui para ativar)
-    const TELEGRAM_BOT_TOKEN = ''; // Ex: '123456:ABC-DEF...'
-    const TELEGRAM_CHAT_ID = '';   // Ex: '987654321'
+    const NTFY_TOPIC = 'casamento-jefferson-bia-notificacoes';
+    const TELEGRAM_BOT_TOKEN = '';
+    const TELEGRAM_CHAT_ID = '';
 
     let guestData = null;
     let selectedRsvp = null;
+    let isPadrinhos = false;
 
-    async function sendTelegramNotification(name, status, plusOnes, message) {
-      if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
-
-      const emoji = status === 'confirmado' ? '✅' : '❌';
-      const statusText = status === 'confirmado' ? 'CONFIRMOU presença!' : 'não poderá comparecer.';
-      
-      let text = `${emoji} *Novo RSVP Recebido!*\n\n`;
-      text += `👤 *Convidado:* ${name}\n`;
-      text += `📢 *Resposta:* ${statusText}\n`;
-      
-      if (status === 'confirmado') {
-        text += `👨‍👩‍👧‍👦 *Acompanhantes:* ${plusOnes}\n`;
-      }
-      
-      if (message && message.trim()) {
-        text += `\n💌 *Mensagem:* ${message.trim()}\n`;
-      }
-
-      try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: text,
-            parse_mode: 'Markdown'
-          })
-        });
-      } catch (err) {
-        console.error('Erro ao enviar notificação para o Telegram:', err);
-      }
-    }
-
-    // Log access to RSVP
-    async function logAccess(guestId, guestName) {
-      try {
-        const { error } = await supabaseClient.from('rsvp_access_logs').insert([{
-          guest_id: guestId,
-          access_time: new Date().toISOString(),
-        }]);
-        if (error) console.error('Error logging access:', error);
-      } catch (err) {
-        console.error('Error logging access:', err);
-      }
-    }
-
-    // Countdown Timer
+    // === Countdown ===
     function updateCountdown() {
       const weddingDate = new Date('2027-02-06T08:00:00');
-      const now = new Date();
-      const diff = weddingDate - now;
-
-      if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        const daysEl = document.getElementById('days');
-        const hoursEl = document.getElementById('hours');
-        const minutesEl = document.getElementById('minutes');
-        const secondsEl = document.getElementById('seconds');
-
-        if (daysEl) daysEl.textContent = days;
-        if (hoursEl) hoursEl.textContent = hours;
-        if (minutesEl) minutesEl.textContent = minutes;
-        if (secondsEl) secondsEl.textContent = seconds;
-      } else {
-        const daysEl = document.getElementById('days');
-        const hoursEl = document.getElementById('hours');
-        const minutesEl = document.getElementById('minutes');
-        const secondsEl = document.getElementById('seconds');
-
-        if (daysEl) daysEl.textContent = '0';
-        if (hoursEl) hoursEl.textContent = '0';
-        if (minutesEl) minutesEl.textContent = '0';
-        if (secondsEl) secondsEl.textContent = '0';
-      }
+      const diff = weddingDate - new Date();
+      const els = ['days','hours','minutes','seconds'];
+      const vals = diff > 0 ? [
+        Math.floor(diff / 864e5),
+        Math.floor((diff % 864e5) / 36e5),
+        Math.floor((diff % 36e5) / 6e4),
+        Math.floor((diff % 6e4) / 1e3)
+      ] : [0,0,0,0];
+      els.forEach((id, i) => { const el = document.getElementById(id); if (el) el.textContent = vals[i]; });
     }
-
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
+    // === Load Guest ===
     async function loadGuest() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
-
-      if (!token) {
-        showError();
-        return;
-      }
+      const token = new URLSearchParams(window.location.search).get('token');
+      if (!token) { showError(); return; }
 
       try {
         const { data, error } = await supabaseClient.rpc('get_guest_public_by_token', { p_invite_token: token });
-        
-        if (error || !data || data.length === 0) {
-          showError();
-          return;
-        }
+        if (error || !data || data.length === 0) { showError(); return; }
 
         guestData = data[0];
-        document.getElementById('guest-name').textContent = guestData.name;
-        
-        // Log access
+        isPadrinhos = guestData.is_vip === true;
+
         logAccess(guestData.id, guestData.name);
-        
-        if (guestData.partner_name) {
-          document.getElementById('partner-name-display').textContent = ' e ' + guestData.partner_name;
-        }
-        
-        if (guestData.rsvp_status === 'confirmado') {
-          showAlreadyConfirmed();
+
+        if (isPadrinhos) {
+          showPadrinhosInvite();
         } else {
-          showForm();
+          showNormalInvite();
         }
       } catch (err) {
         showError();
       }
     }
 
+    // === Padrinhos Flow ===
+    function showPadrinhosInvite() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('padrinhos-invite').classList.remove('hidden');
+      document.body.classList.add('padrinhos-bg');
+    }
+
+    function showPadrinhosForm() {
+      const section = document.getElementById('padrinhos-rsvp-section');
+      section.classList.remove('hidden');
+      document.getElementById('guest-name-padrinhos').textContent = guestData.name;
+      if (guestData.partner_name) {
+        document.getElementById('partner-name-display-padrinhos').textContent = ' e ' + guestData.partner_name;
+      }
+      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // === Normal Flow ===
+    function showNormalInvite() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('normal-invite').classList.remove('hidden');
+      document.getElementById('guest-name').textContent = guestData.name;
+      if (guestData.partner_name) {
+        document.getElementById('partner-name-display').textContent = ' e ' + guestData.partner_name;
+      }
+      if (guestData.rsvp_status === 'confirmado') {
+        showAlreadyConfirmed();
+      } else {
+        document.getElementById('rsvp-form').classList.remove('hidden');
+      }
+    }
+
+    function showAlreadyConfirmed() {
+      if (isPadrinhos) {
+        document.getElementById('padrinhos-rsvp-section').classList.add('hidden');
+        document.getElementById('success-padrinhos').classList.remove('hidden');
+      } else {
+        document.getElementById('rsvp-form').classList.add('hidden');
+        document.getElementById('success').classList.remove('hidden');
+        document.getElementById('success-message').textContent = 'Você já confirmou sua presença! Obrigado.';
+      }
+    }
+
+    // === Error ===
     function showError() {
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('error').classList.remove('hidden');
     }
 
-    function showForm() {
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('rsvp-form').classList.remove('hidden');
-    }
-
-    function showAlreadyConfirmed() {
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('success').classList.remove('hidden');
-      document.getElementById('success-message').textContent = 'Você já confirmou sua presença! Obrigado.';
-    }
-
+    // === RSVP Selection ===
     function selectRsvp(status) {
       selectedRsvp = status;
-      
-      const btnConfirmar = document.getElementById('btn-confirmar');
-      const btnRecusar = document.getElementById('btn-recusar');
-      const plusOnesSection = document.getElementById('plus-ones-section');
-      const submitBtn = document.getElementById('submit-btn');
+      const prefix = isPadrinhos ? '-p' : '';
+      const btnConfirmar = document.getElementById('btn-confirmar' + prefix);
+      const btnRecusar = document.getElementById('btn-recusar' + prefix);
+      const plusSection = document.getElementById('plus-ones-section' + prefix);
+      const submitBtn = document.getElementById('submit-btn' + prefix);
 
       btnConfirmar.classList.remove('border-vinho', 'text-vinho', 'bg-vinho/5');
       btnRecusar.classList.remove('border-red-500', 'text-red-500', 'bg-red-50');
 
       if (status === 'confirmado') {
         btnConfirmar.classList.add('border-vinho', 'text-vinho', 'bg-vinho/5');
-        if (!guestData.partner_name) {
-          plusOnesSection.classList.remove('hidden');
-        }
+        if (!guestData.partner_name && plusSection) plusSection.classList.remove('hidden');
       } else {
         btnRecusar.classList.add('border-red-500', 'text-red-500', 'bg-red-50');
-        plusOnesSection.classList.add('hidden');
+        if (plusSection) plusSection.classList.add('hidden');
       }
-
-      submitBtn.disabled = false;
+      if (submitBtn) submitBtn.disabled = false;
     }
 
-    // CONFIGURAÇÃO DE NOTIFICAÇÃO (ntfy.sh - Gratuito)
-    const NTFY_TOPIC = 'casamento-jefferson-bia-notificacoes';
-
-    async function sendPushNotification(name, status, plusOnes, message) {
-      const emoji = status === 'confirmado' ? '✅' : '❌';
-      const body = `Convidado: ${name}\nResposta: ${status === 'confirmado' ? 'Confirmado!' : 'Não vai'}\nAcompanhantes: ${plusOnes}\nRecado: ${message}`;
-      
-      try {
-        await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
-          method: 'POST',
-          body: body,
-          headers: {
-            'Title': `💍 Novo RSVP: ${name}`,
-            'Priority': 'high',
-            'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive'
-          }
-        });
-      } catch (err) {
-        console.error('Erro na notificação:', err);
-      }
-    }
-
+    // === Submit RSVP ===
     async function submitRsvp() {
-      if (!selectedRsvp) {
-        alert('Por favor, selecione se você vai ou não.');
-        return;
-      }
+      if (!selectedRsvp) { alert('Por favor, selecione se você vai ou não.'); return; }
 
-      const submitBtn = document.getElementById('submit-btn');
+      const prefix = isPadrinhos ? '-p' : '';
+      const submitBtn = document.getElementById('submit-btn' + prefix);
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando...';
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
+      const token = new URLSearchParams(window.location.search).get('token');
 
       try {
         const { error } = await supabaseClient.rpc('confirm_guest_rsvp', {
@@ -529,24 +597,68 @@
           return;
         }
 
-        // Enviar notificação Push (ntfy.sh)
-        const plusOnes = document.getElementById('plus-ones').value;
-        const message = document.getElementById('message').value;
+        const plusOnesEl = document.getElementById('plus-ones' + prefix);
+        const messageEl = document.getElementById('message' + prefix);
+        const plusOnes = plusOnesEl ? plusOnesEl.value : 0;
+        const message = messageEl ? messageEl.value : '';
         const fullName = guestData.partner_name ? `${guestData.name} & ${guestData.partner_name}` : guestData.name;
-        
+
         sendPushNotification(fullName, selectedRsvp, plusOnes, message);
 
-        document.getElementById('rsvp-form').classList.add('hidden');
-        document.getElementById('success').classList.remove('hidden');
-        
-        if (selectedRsvp === 'recusado') {
-          document.getElementById('success-message').textContent = 'Entendemos que você não poderá comparecer. Agradecemos por nos avisar!';
+        if (isPadrinhos) {
+          document.getElementById('padrinhos-rsvp-section').classList.add('hidden');
+          document.getElementById('success-padrinhos').classList.remove('hidden');
+          if (selectedRsvp === 'recusado') {
+            document.getElementById('success-message-p').textContent = 'Entendemos que você não poderá comparecer. Agradecemos por nos avisar!';
+          }
+        } else {
+          document.getElementById('rsvp-form').classList.add('hidden');
+          document.getElementById('success').classList.remove('hidden');
+          if (selectedRsvp === 'recusado') {
+            document.getElementById('success-message').textContent = 'Entendemos que você não poderá comparecer. Agradecemos por nos avisar!';
+          }
         }
       } catch (err) {
         alert('Erro ao enviar confirmação. Tente novamente.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Enviar confirmação';
       }
+    }
+
+    // === Notifications ===
+    async function logAccess(guestId) {
+      try {
+        await supabaseClient.from('rsvp_access_logs').insert([{
+          guest_id: guestId,
+          access_time: new Date().toISOString(),
+        }]);
+      } catch (err) { console.error('Error logging access:', err); }
+    }
+
+    async function sendPushNotification(name, status, plusOnes, message) {
+      const body = `Convidado: ${name}\nResposta: ${status === 'confirmado' ? 'Confirmado!' : 'Não vai'}\nAcompanhantes: ${plusOnes}\nRecado: ${message}`;
+      try {
+        await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
+          method: 'POST',
+          body,
+          headers: { 'Title': `💍 Novo RSVP: ${name}`, 'Priority': 'high', 'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive' }
+        });
+      } catch (err) { console.error('Erro na notificação:', err); }
+    }
+
+    async function sendTelegramNotification(name, status, plusOnes, message) {
+      if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+      const emoji = status === 'confirmado' ? '✅' : '❌';
+      let text = `${emoji} *Novo RSVP Recebido!*\n\n👤 *Convidado:* ${name}\n📢 *Resposta:* ${status === 'confirmado' ? 'CONFIRMOU presença!' : 'não poderá comparecer.'}\n`;
+      if (status === 'confirmado') text += `👨‍👩‍👧‍👦 *Acompanhantes:* ${plusOnes}\n`;
+      if (message?.trim()) text += `\n💌 *Mensagem:* ${message.trim()}\n`;
+      try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' })
+        });
+      } catch (err) { console.error('Erro Telegram:', err); }
     }
 
     window.onload = loadGuest;

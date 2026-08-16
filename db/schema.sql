@@ -256,13 +256,14 @@ create policy "guestbook_delete_admin" on public.guestbook
 -- ============================================================
 
 -- Retorna dados públicos de um convidado pelo token do convite.
+-- Inclui is_vip para permitir convites diferentes (padrinhos vs. convidados normais).
 drop function if exists public.get_guest_public_by_token(text);
 create or replace function public.get_guest_public_by_token(p_invite_token text)
-returns table (id uuid, name text, rsvp_status text, invite_token text)
+returns table (id uuid, name text, rsvp_status text, invite_token text, is_vip boolean)
 language sql security definer
 set search_path = public
 as $$
-  select g.id, g.name, g.rsvp_status, g.invite_token
+  select g.id, g.name, g.rsvp_status, g.invite_token, g.is_vip
   from public.guests g
   where g.invite_token = p_invite_token
   limit 1;
