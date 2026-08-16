@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Organização do Casamento — Jefferson & Beatriz</title>
   <meta name="description" content="Painel de organização do casamento de Jefferson & Beatriz" />
-  <meta name="theme-color" content="#663244" />
+  <meta name="theme-color" content="#c9a96e" />
   <link rel="manifest" href="/manifest.json" />
   <script src="./js/config.js"></script>
   <script src="./js/sanitize.js"></script>
@@ -21,10 +21,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-1: #f8f4ee;
-      --bg-2: #efe6da;
-      --surface: rgba(255, 255, 255, 0.82);
-      --line: rgba(102, 50, 68, 0.12);
+      --bg-1: #fafaf8;
+      --bg-2: #f5f3ef;
+      --surface: rgba(255, 255, 255, 0.92);
+      --line: rgba(26, 26, 46, 0.08);
     }
 
     .tab-content { display: none; }
@@ -32,11 +32,11 @@
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .dock-btn.active { background: #120a74; color: #fff; box-shadow: 0 12px 30px rgba(18, 10, 116, 0.22); }
+    .dock-btn.active { background: #1a1a2e; color: #fff; box-shadow: 0 12px 30px rgba(26, 26, 46, 0.22); }
 
-    .glass-card { background: var(--surface); backdrop-filter: blur(14px); border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(18, 10, 116, 0.10); }
+    .glass-card { background: var(--surface); backdrop-filter: blur(14px); border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(26, 26, 46, 0.10); }
 
-    .summary-card { background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 244, 0.88)); border: 1px solid var(--line); box-shadow: 0 14px 40px rgba(18, 10, 116, 0.08); }
+    .summary-card { background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 244, 0.88)); border: 1px solid var(--line); box-shadow: 0 14px 40px rgba(26, 26, 46, 0.08); }
 
     .gate-overlay { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(15, 23, 42, 0.72); backdrop-filter: blur(10px); }
 
@@ -44,11 +44,11 @@
     .gate-hidden { display: none !important; }
 
     .bg-orb { position: fixed; pointer-events: none; z-index: -1; filter: blur(2px); opacity: 0.75; }
-    .orb-a { width: 340px; height: 340px; top: -90px; right: -60px; border-radius: 45% 55% 60% 40% / 50% 35% 65% 50%; background: linear-gradient(160deg, rgba(233, 30, 99, 0.18), rgba(18, 10, 116, 0.06)); }
-    .orb-b { width: 260px; height: 260px; left: -40px; bottom: -50px; border-radius: 55% 45% 45% 55% / 45% 60% 40% 55%; background: linear-gradient(160deg, rgba(245, 230, 211, 0.9), rgba(18, 10, 116, 0.04)); }
+    .orb-a { width: 340px; height: 340px; top: -90px; right: -60px; border-radius: 45% 55% 60% 40% / 50% 35% 65% 50%; background: linear-gradient(160deg, rgba(201, 169, 110, 0.18), rgba(26, 26, 46, 0.06)); }
+    .orb-b { width: 260px; height: 260px; left: -40px; bottom: -50px; border-radius: 55% 45% 45% 55% / 45% 60% 40% 55%; background: linear-gradient(160deg, rgba(250, 250, 248, 0.9), rgba(26, 26, 46, 0.04)); }
 
     .stat-label { color: #6f6a60; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
-    .stat-value { font-size: 1.8rem; line-height: 1; color: #120a74; font-family: 'Playfair Display', serif; }
+    .stat-value { font-size: 1.8rem; line-height: 1; color: #1a1a2e; font-family: 'Playfair Display', serif; }
 
     .mini-pill { display: inline-flex; align-items: center; border-radius: 999px; border: 1px solid var(--line); background: #fff; padding: 0.35rem 0.7rem; font-size: 0.75rem; color: #6f6a60; transition: all 0.2s ease; }
 
@@ -85,17 +85,17 @@
     }
     /* FAB Styles */
     .fab-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; }
-    .fab-main { width: 60px; height: 60px; border-radius: 50%; background: #120a74; color: white; display: flex; items-center: center; justify-content: center; box-shadow: 0 10px 25px rgba(18, 10, 116, 0.4); cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .fab-main { width: 60px; height: 60px; border-radius: 50%; background: #1a1a2e; color: white; display: flex; items-center: center; justify-content: center; box-shadow: 0 10px 25px rgba(26, 26, 46, 0.4); cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .fab-main:hover { transform: scale(1.1) rotate(90deg); }
-    .fab-main.active { transform: scale(0.9) rotate(45deg); background: #e91e63; }
+    .fab-main.active { transform: scale(0.9) rotate(45deg); background: #c9a96e; }
     
     .fab-menu { display: none; flex-direction: column; gap: 0.75rem; margin-bottom: 0.5rem; pointer-events: none; }
     .fab-menu.active { display: flex; pointer-events: auto; animation: slideUp 0.3s ease-out forwards; }
     
     .fab-item { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; opacity: 0; transform: translateY(10px); }
     .fab-menu.active .fab-item { opacity: 1; transform: translateY(0); transition: all 0.3s ease-out; }
-    .fab-item span { background: white; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #120a74; }
-    .fab-icon { width: 44px; height: 44px; border-radius: 50%; background: white; color: #120a74; display: flex; items-center: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(18, 10, 116, 0.1); }
+    .fab-item span { background: white; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #1a1a2e; }
+    .fab-icon { width: 44px; height: 44px; border-radius: 50%; background: white; color: #1a1a2e; display: flex; items-center: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(26, 26, 46, 0.1); }
     
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -1054,7 +1054,7 @@
     async function toggleTask(id, status) { 
       const next = status === 'concluido' ? 'pendente' : 'concluido'; 
       await supabaseClient.from('tasks').update({ status: next }).eq('id', id); 
-      if (next === 'concluido') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#120a74', '#e91e63', '#f5e6d3'] });
+      if (next === 'concluido') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#1a1a2e', '#c9a96e', '#f5e6d3'] });
       fetchTasks(); 
     }
 
@@ -1095,7 +1095,7 @@
           labels: Object.keys(cats),
           datasets: [{
             data: Object.values(cats),
-            backgroundColor: ['#120a74', '#e91e63', '#C5A059', '#10b981', '#f59e0b'],
+            backgroundColor: ['#1a1a2e', '#c9a96e', '#C5A059', '#10b981', '#f59e0b'],
             borderWidth: 0
           }]
         },
@@ -1315,7 +1315,7 @@
         startY: 25,
         head: [['Nome', 'Telefone', 'Status', 'Dono']],
         body: rows,
-        headStyles: { fillColor: [18, 10, 116] }
+        headStyles: { fillColor: [26, 26, 46] }
       });
       doc.save("lista_convidados.pdf");
     }
@@ -1326,7 +1326,7 @@
       const link = `${window.location.origin}/rsvp.html?token=${token}`;
       const qrUrl = `https://quickchart.io/qr?size=250&text=${encodeURIComponent(link)}`;
 
-      doc.setTextColor(18, 10, 116);
+      doc.setTextColor(26, 26, 46);
       doc.setFontSize(26);
       doc.text("Jefferson & Bia", 105, 40, { align: 'center' });
       doc.setFontSize(14);
@@ -1345,7 +1345,7 @@
       img.src = qrUrl;
       img.onload = () => {
         doc.addImage(img, 'PNG', 75, 125, 60, 60);
-        doc.setTextColor(18, 10, 116);
+        doc.setTextColor(26, 26, 46);
         doc.setFontSize(10);
         doc.text(link, 105, 195, { align: 'center' });
         doc.save(`Convite_${name.replace(/\s+/g, '_')}.pdf`);
@@ -1425,13 +1425,13 @@
       const ctx = document.getElementById('categoryChart').getContext('2d');
       if (categoryChart) categoryChart.destroy();
       const cats = {}; dashboardState.expenses.forEach(e => { const c = e.category || 'Outros'; cats[c] = (cats[c] || 0) + parseFloat(e.amount); });
-      categoryChart = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(cats), datasets: [{ data: Object.values(cats), backgroundColor: ['#663244', '#e91e63', '#f5e6d3', '#475569'] }] }, options: { maintainAspectRatio: false } });
+      categoryChart = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(cats), datasets: [{ data: Object.values(cats), backgroundColor: ['#c9a96e', '#c9a96e', '#f5e6d3', '#475569'] }] }, options: { maintainAspectRatio: false } });
     }
     function updateExpenseChart() {
       const ctx = document.getElementById('expenseChart').getContext('2d');
       if (expenseChart) expenseChart.destroy();
       const monthly = {}; dashboardState.expenses.forEach(e => { const m = new Date(e.created_at).toLocaleDateString('pt-BR', { month: 'short' }); monthly[m] = (monthly[m] || 0) + parseFloat(e.amount); });
-      expenseChart = new Chart(ctx, { type: 'bar', data: { labels: Object.keys(monthly), datasets: [{ data: Object.values(monthly), backgroundColor: '#663244' }] }, options: { maintainAspectRatio: false } });
+      expenseChart = new Chart(ctx, { type: 'bar', data: { labels: Object.keys(monthly), datasets: [{ data: Object.values(monthly), backgroundColor: '#c9a96e' }] }, options: { maintainAspectRatio: false } });
     }
 
     async function updateAnalytics() {
@@ -1478,8 +1478,8 @@
             datasets: [{
               label: 'Acessos',
               data: accessByDay,
-              borderColor: '#120a74',
-              backgroundColor: 'rgba(18, 10, 116, 0.1)',
+              borderColor: '#1a1a2e',
+              backgroundColor: 'rgba(26, 26, 46, 0.1)',
               tension: 0.3,
               fill: true
             }]
@@ -1504,7 +1504,7 @@
             labels: Object.keys(inviterCounts),
             datasets: [{
               data: Object.values(inviterCounts),
-              backgroundColor: ['#120a74', '#e91e63', '#94a3b8']
+              backgroundColor: ['#1a1a2e', '#c9a96e', '#94a3b8']
             }]
           },
           options: { maintainAspectRatio: false }
@@ -1620,15 +1620,15 @@
           <title>Roteiro do Casamento - ${now}</title>
           <style>
             body { font-family: 'Georgia', serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a; }
-            .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #120a74; padding-bottom: 20px; }
-            .header h1 { font-family: 'Playfair Display', serif; color: #120a74; margin: 0 0 8px; font-size: 2.5rem; }
-            .header p { color: #663244; margin: 0; font-size: 1.1rem; }
+            .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #1a1a2e; padding-bottom: 20px; }
+            .header h1 { font-family: 'Playfair Display', serif; color: #1a1a2e; margin: 0 0 8px; font-size: 2.5rem; }
+            .header p { color: #c9a96e; margin: 0; font-size: 1.1rem; }
             .meta { text-align: center; margin-bottom: 30px; color: #666; font-size: 0.9rem; }
             .timeline { position: relative; padding-left: 30px; }
-            .timeline::before { content: ''; position: absolute; left: 14px; top: 0; bottom: 0; width: 2px; background: #120a74; }
+            .timeline::before { content: ''; position: absolute; left: 14px; top: 0; bottom: 0; width: 2px; background: #1a1a2e; }
             .event { position: relative; padding-left: 40px; margin-bottom: 24px; page-break-inside: avoid; }
-            .event::before { content: ''; position: absolute; left: 4px; top: 4px; width: 20px; height: 20px; background: #120a74; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px #120a74; }
-            .event-time { font-weight: bold; color: #120a74; font-size: 1.1rem; margin-bottom: 4px; }
+            .event::before { content: ''; position: absolute; left: 4px; top: 4px; width: 20px; height: 20px; background: #1a1a2e; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px #1a1a2e; }
+            .event-time { font-weight: bold; color: #1a1a2e; font-size: 1.1rem; margin-bottom: 4px; }
             .event-desc { color: #333; font-size: 1rem; line-height: 1.5; }
             @media print { body { padding: 0; } .no-print { display: none; } }
           </style>

@@ -4,8 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        rosa: "#e91e63",
-        vinho: "#120a74",
+        vinho: "#1a1a2e",
+        dourado: "#c9a96e",
+        rosa: "#c9a96e",
       },
     },
   },

@@ -7,9 +7,10 @@ if (typeof tailwind !== 'undefined' && tailwind.config) {
     theme: {
       extend: {
         colors: {
-          rosa: '#e91e63',
-          vinho: '#120a74',
-          champagne: '#f5e6d3',
+          vinho: '#1a1a2e',
+          dourado: '#c9a96e',
+          rosa: '#c9a96e',
+          champagne: '#fafaf8',
         },
         fontFamily: {
           titulo: ['"Cormorant Garamond"', 'serif'],
