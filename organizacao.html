@@ -572,6 +572,10 @@
           <option value="recusado">Recusado</option>
         </select>
         <select id="editGuestOwner" class="w-full p-3 rounded-xl border border-slate-200 bg-white"><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option></select>
+        <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-amber-50 transition-colors">
+          <input type="checkbox" id="editGuestVip" class="w-5 h-5 accent-amber-500 rounded" />
+          <span class="text-sm font-medium text-slate-700">⭐ Padrinho/Madrinha (convite especial)</span>
+        </label>
       </div>
       <div class="mt-8 flex gap-3"><button onclick="toggleEditModal(false)" class="flex-1 py-3 rounded-xl border">Cancelar</button><button onclick="saveGuestEdit()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold">Salvar</button></div>
     </div>
@@ -1210,12 +1214,13 @@
       if (window.lucide) lucide.createIcons();
     }
     function toggleEditModal(s) { document.getElementById('editGuestModal').classList.toggle('hidden', !s); }
-    function editGuest(id, name, phone, owner, status) { 
+    function editGuest(id, name, phone, owner, status, isVip) { 
       document.getElementById('editGuestId').value = id; 
       document.getElementById('editGuestName').value = name; 
       document.getElementById('editGuestPhone').value = phone; 
       document.getElementById('editGuestOwner').value = owner; 
       document.getElementById('editGuestStatus').value = status || 'aguardando';
+      document.getElementById('editGuestVip').checked = !!isVip;
       toggleEditModal(true); 
     }
     async function saveGuestEdit() {
@@ -1224,7 +1229,8 @@
         name: document.getElementById('editGuestName').value, 
         phone: document.getElementById('editGuestPhone').value, 
         invited_by: document.getElementById('editGuestOwner').value,
-        rsvp_status: document.getElementById('editGuestStatus').value
+        rsvp_status: document.getElementById('editGuestStatus').value,
+        is_vip: document.getElementById('editGuestVip').checked
       };
       await supabaseClient.from('guests').update(payload).eq('id', id); 
       await logAudit('guests', id, 'UPDATE', null, payload);
