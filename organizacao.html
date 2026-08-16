@@ -519,37 +519,37 @@
   </div>
 
   <!-- Bottom Bar (Mobile App Style) -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 px-2 py-3 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-    <div class="flex items-center justify-around overflow-x-auto gap-1">
-      <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Início</span>
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 py-2 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+    <div class="flex items-center overflow-x-auto no-scrollbar gap-1 px-2">
+      <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Início</span>
       </button>
-      <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="check-square" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Tarefas</span>
+      <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="check-square" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Tarefas</span>
       </button>
-      <button onclick="switchTab('guests')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Convidados</span>
+      <button onclick="switchTab('guests')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="users" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Convidados</span>
       </button>
-      <button onclick="switchTab('expenses')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Finanças</span>
+      <button onclick="switchTab('expenses')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Finanças</span>
       </button>
-      <button onclick="switchTab('analytics')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="bar-chart-2" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Analytics</span>
+      <button onclick="switchTab('analytics')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="bar-chart-2" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Analytics</span>
       </button>
-      <button onclick="switchTab('suppliers')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="truck" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Fornecedores</span>
+      <button onclick="switchTab('suppliers')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="truck" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Fornecedores</span>
       </button>
-      <button onclick="switchTab('timeline')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="calendar" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Cronograma</span>
+      <button onclick="switchTab('timeline')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="calendar" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Cronograma</span>
       </button>
-      <button onclick="switchTab('docs')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="file-text" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Documentos</span>
+      <button onclick="switchTab('docs')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="file-text" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Docs</span>
       </button>
-      <button onclick="switchTab('audit')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="scroll" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Log</span>
+      <button onclick="switchTab('audit')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="scroll" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Log</span>
       </button>
-      <button onclick="switchTab('notes')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
-        <i data-lucide="sticky-note" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Mural</span>
+      <button onclick="switchTab('notes')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="sticky-note" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Mural</span>
       </button>
     </div>
   </nav>
