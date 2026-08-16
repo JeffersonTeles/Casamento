@@ -39,7 +39,7 @@ async function sendPushNotification(name, status, plusOnes, message) {
     await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
       method: 'POST',
       body,
-      headers: { 'Title': `💍 Novo RSVP: ${name}`, 'Priority': 'high', 'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive' }
+        headers: { 'Title': `Novo RSVP: ${name}`, 'Priority': 'high', 'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive' }
     });
   } catch (err) { console.error('Erro notificação:', err); }
 }

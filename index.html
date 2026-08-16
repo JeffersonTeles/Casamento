@@ -7,9 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="description"
-    content="Site oficial do casamento de Jefferson & Beatriz. Veja data, local, lista de presentes e confirme sua presença." />
+    content="Jefferson & Beatriz se casam! 06/02/2027 em Cascavel - PR. Confirme sua presença, veja o local e saiba tudo sobre o grande dia." />
   <meta name="theme-color" content="#1a1a2e" />
   <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
   <link rel="apple-touch-icon" href="/icon-192.png" />
   <meta name="keywords" content="casamento, Jefferson, Beatriz, convite, lista de presentes, rsvp, lua de mel" />
   <meta name="author" content="Jefferson & Beatriz" />
@@ -18,7 +19,7 @@
 
   <meta property="og:title" content="Casamento Jefferson & Beatriz" />
   <meta property="og:description"
-    content="Todas as informações sobre o nosso grande dia: data, local, presentes e confirmação de presença." />
+    content="06/02/2027 - Cascavel, PR. Convite oficial: confirme presença, veja o local e saiba tudo sobre o casamento." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://casamento-ten-rho.vercel.app/" />
   <meta property="og:image" content="https://casamento-ten-rho.vercel.app/img/foto1.jpg" />
@@ -30,7 +31,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Casamento Jefferson & Beatriz" />
   <meta name="twitter:description"
-    content="Todas as informações sobre o nosso grande dia: data, local, presentes e confirmação de presença." />
+    content="06/02/2027 - Cascavel, PR. Convite oficial: confirme presença, veja o local e saiba tudo sobre o casamento." />
   <meta name="twitter:image" content="https://casamento-ten-rho.vercel.app/img/foto1.jpg" />
 
   <!-- Google Analytics -->
@@ -163,6 +164,7 @@
       <div class="flex items-center gap-5 text-xs font-semibold overflow-x-auto no-scrollbar whitespace-nowrap py-1 w-full md:w-auto justify-center">
         <a href="#sobre" class="text-[#1a1a2e]/60 hover:text-[#1a1a2e] transition-colors">Sobre</a>
         <a href="#contagem" class="text-[#1a1a2e]/60 hover:text-[#1a1a2e] transition-colors">Contagem</a>
+        <a href="#presentes" class="text-[#1a1a2e]/60 hover:text-[#1a1a2e] transition-colors">Presentes</a>
         <a href="faq.html" class="text-[#1a1a2e]/60 hover:text-[#1a1a2e] transition-colors">Dúvidas</a>
         
         <a href="#rsvp" class="bg-[#1a1a2e] text-white px-5 py-2 rounded-full shadow-sm hover:bg-[#1a1a2e]/90 transition-all">RSVP</a>
@@ -209,11 +211,13 @@
         </div>
 
         <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl reveal-up delay-300">
-          <a href="#rsvp" class="flex items-center justify-center gap-2 rounded-2xl bg-vinho px-6 py-4 text-sm font-bold text-white shadow-xl shadow-vinho/30 hover:scale-[1.02] transition-all">
-            💍 Confirmar Presença
+          <a href="#rsvp" class="flex items-center justify-center gap-2 rounded-2xl bg-[#1a1a2e] px-6 py-4 text-sm font-bold text-white shadow-xl shadow-[#1a1a2e]/30 hover:scale-[1.02] transition-all">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Confirmar Presença
           </a>
-          <button onclick="addToGoogleCalendar()" class="flex items-center justify-center gap-2 rounded-2xl bg-slate-50 border-2 border-slate-100 px-6 py-4 text-sm font-bold text-vinho hover:scale-[1.02] transition-all">
-            📅 Adicionar ao Calendário
+          <button onclick="addToGoogleCalendar()" class="flex items-center justify-center gap-2 rounded-2xl bg-slate-50 border-2 border-slate-100 px-6 py-4 text-sm font-bold text-[#1a1a2e] hover:scale-[1.02] transition-all">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Adicionar ao Calendário
           </button>
         </div>
       </div>
@@ -254,14 +258,16 @@
               rel="noopener noreferrer"
               class="inline-flex items-center gap-2 bg-[#1a1a2e] text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/90 transition-all"
             >
-              🗺️ Ver no Google Maps
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Google Maps
             </a>
-            <a href="https://maps.app.goo.gl/TBtd7eAjcBzWDuGq7"
+            <a href="https://www.waze.com/ul?q=Capela+São+Maximiliano+Cascavel+PR"
               target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center gap-2 bg-white border border-[#1a1a2e]/15 text-vinho px-5 py-2.5 rounded-full text-xs font-bold hover:bg-slate-50 transition-all"
             >
-              🧭 Como Chegar
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.5 16.5h-2.1l-.9-1.8H10.5l-.9 1.8H7.5l3-6h3l3 6z"/></svg>
+              Waze
             </a>
           </div>
         </div>
@@ -325,48 +331,24 @@
 
     
     <section id="presentes" class="max-w-5xl mx-auto px-4 py-16 reveal">
-      <div class="text-center mb-10">
-        <h2 class="font-titulo text-4xl text-vinho">Presentes</h2>
-        <p class="text-zinc-600 mt-2 italic">Sua presença já é o maior presente. Mas se quiser nos presentear...</p>
+      <div class="text-center mb-8">
+        <h2 class="font-titulo text-4xl text-[#1a1a2e]">Presentes</h2>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-        <!-- Ideias -->
-        <div class="premium-glass p-6 rounded-[2rem]">
-          <p class="text-xs font-bold uppercase tracking-widest text-vinho/80 mb-4">Algumas ideias</p>
-          <ul class="space-y-3 text-sm text-zinc-600">
-            <li class="flex items-start gap-2">
-              <span class="text-[#c9a96e] mt-0.5">✦</span>
-              <span>Ajuda na lua de mel</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-[#c9a96e] mt-0.5">✦</span>
-              <span>Utensílios para a cozinha</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-[#c9a96e] mt-0.5">✦</span>
-              <span>Toalhas e lençóis</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-[#c9a96e] mt-0.5">✦</span>
-              <span>Quadros para decorar a casa</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- PIX -->
-        <div class="premium-glass p-6 rounded-[2rem] text-center flex flex-col items-center justify-center">
-          <p class="text-xs font-bold uppercase tracking-widest text-vinho/80 mb-4">PIX</p>
-          
-          <img src="https://quickchart.io/qr?size=160&text=44999277915&margin=1" alt="QR Code PIX" class="w-40 h-40 rounded-xl mb-3" />
-          
-          <p class="text-[0.65rem] text-vinho/60 uppercase font-bold tracking-tight mb-1">Telefone</p>
-          <p class="text-lg font-mono text-vinho font-bold tracking-tighter blur-sm select-none cursor-pointer hover:blur-none transition-all" onclick="this.classList.toggle('blur-none')">(44) 99927-7915</p>
-          
-          <button onclick="navigator.clipboard.writeText('44999277915').then(() => this.innerText = 'Copiado! ✓')" class="mt-3 bg-[#1a1a2e] text-white px-5 py-2 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/90 transition-all">
-            Copiar Chave
-          </button>
-        </div>
+      <div class="premium-glass p-8 rounded-[2rem] text-center max-w-lg mx-auto">
+        <p class="text-sm text-zinc-600 leading-relaxed mb-6 italic">
+          Sua presença é o maior presente que podemos receber.<br/>
+          Se quiser nos homenagear com um mimo, nosso PIX está disponível.
+        </p>
+        
+        <img src="https://quickchart.io/qr?size=160&text=44999277915&margin=1" alt="QR Code PIX" class="w-40 h-40 rounded-xl mx-auto mb-3" />
+        
+        <p class="text-[0.65rem] text-[#1a1a2e]/50 uppercase font-bold tracking-tight mb-1">Telefone</p>
+        <p class="text-lg font-mono text-[#1a1a2e] font-bold tracking-tighter blur-sm select-none cursor-pointer hover:blur-none transition-all" onclick="this.classList.toggle('blur-none')">(44) 99927-7915</p>
+        
+        <button onclick="navigator.clipboard.writeText('44999277915').then(() => this.innerText = 'Copiado!')" class="mt-4 bg-[#1a1a2e] text-white px-5 py-2 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/90 transition-all">
+          Copiar Chave
+        </button>
       </div>
     </section>
 

@@ -184,8 +184,10 @@
 
   <!-- ========== ERRO ========== -->
   <div id="error" class="error-section hidden min-h-screen flex items-center justify-center p-4">
-    <div class="text-center max-w-sm">
-      <div class="text-6xl mb-4">😕</div>
+      <div class="text-center max-w-sm">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 mb-4">
+          <svg class="w-8 h-8 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
       <p class="text-red-600 font-medium text-lg mb-2">Convite não encontrado</p>
       <p class="text-sm text-slate-500">Verifique se o link está correto ou entre em contato com o casal.</p>
     </div>
@@ -482,7 +484,6 @@
           return;
         }
 
-        const plusOnes = document.getElementById('plus-ones').value;
         const message = document.getElementById('message').value;
         const fullName = guestData.partner_name ? `${guestData.name} & ${guestData.partner_name}` : guestData.name;
 
