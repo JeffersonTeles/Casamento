@@ -5,25 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Convite — Jefferson & Beatriz</title>
   <script src="./js/config.js"></script>
+  <script src="./js/sanitize.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            rosa: '#e91e63',
-            vinho: '#120a74',
-            champagne: '#f5e6d3',
-          },
-          fontFamily: {
-            titulo: ['"Cormorant Garamond"', 'serif'],
-            corpo: ['"Montserrat"', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+  <script src="./js/shared.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -382,12 +367,7 @@
   </div>
 
   <script>
-    const WEDDING_CONFIG = window.WEDDING_CONFIG || {};
-    const SUPABASE_URL = WEDDING_CONFIG.supabaseUrl || '';
-    const SUPABASE_KEY = WEDDING_CONFIG.supabaseAnonKey || '';
-    const supabaseClient = supabase.createClient(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_KEY || 'public-anon-placeholder');
-
-    const NTFY_TOPIC = 'casamento-jefferson-bia-notificacoes';
+    // Usa shared.js para Supabase client e NTFY_TOPIC
     let guestData = null;
     let selectedRsvp = null;
 
@@ -488,9 +468,11 @@
       const token = new URLSearchParams(window.location.search).get('token');
 
       try {
+        const plusOnes = parseInt(document.getElementById('plus-ones').value) || 0;
         const { error } = await supabaseClient.rpc('confirm_guest_rsvp', {
           p_invite_token: token,
-          p_rsvp_status: selectedRsvp
+          p_rsvp_status: selectedRsvp,
+          p_plus_ones: plusOnes
         });
 
         if (error) {
@@ -517,27 +499,6 @@
         submitBtn.disabled = false;
         submitBtn.textContent = 'Enviar confirmação';
       }
-    }
-
-    // === Notifications ===
-    async function logAccess(guestId) {
-      try {
-        await supabaseClient.from('rsvp_access_logs').insert([{
-          guest_id: guestId,
-          access_time: new Date().toISOString(),
-        }]);
-      } catch (err) { console.error('Error logging access:', err); }
-    }
-
-    async function sendPushNotification(name, status, plusOnes, message) {
-      const body = `Convidado: ${name}\nResposta: ${status === 'confirmado' ? 'Confirmado!' : 'Não vai'}\nAcompanhantes: ${plusOnes}\nRecado: ${message}`;
-      try {
-        await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
-          method: 'POST',
-          body,
-          headers: { 'Title': `💍 Novo RSVP: ${name}`, 'Priority': 'high', 'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive' }
-        });
-      } catch (err) { console.error('Erro notificação:', err); }
     }
 
     window.onload = loadGuest;

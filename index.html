@@ -43,23 +43,10 @@
   </script>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            rosa: '#e91e63',
-            vinho: '#120a74',
-            champagne: '#f5e6d3',
-          },
-          fontFamily: {
-            titulo: ['"Cormorant Garamond"', 'serif'],
-            corpo: ['"Montserrat"', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/sanitize.js"></script>
+  <script src="./js/shared.js"></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
@@ -166,6 +153,7 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./js/config.js"></script>
+<script src="./js/sanitize.js"></script>
 </head>
 
 <body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 overflow-x-hidden">
@@ -401,10 +389,8 @@
   </script>
 <script>
 
-    const WEDDING_CONFIG = window.WEDDING_CONFIG || {};
-    const SUPABASE_URL = WEDDING_CONFIG.supabaseUrl || '';
-    const SUPABASE_KEY = WEDDING_CONFIG.supabaseAnonKey || '';
-    const supabaseClientGuest = window.supabase ? window.supabase.createClient(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_KEY || 'public-anon-placeholder') : null;
+    // Usa shared.js para Supabase client
+    const supabaseClientGuest = supabaseClient;
 
     // Reveal animations on scroll (Cinematic)
     const revealObserver = new IntersectionObserver((entries) => {
@@ -438,9 +424,9 @@
 
       feed.innerHTML = data.map(m => `
         <div class="premium-glass p-5 rounded-2xl msg-card animate-fade-in mb-4">
-          <p class="text-sm text-zinc-800 leading-relaxed font-medium italic">"${m.message}"</p>
+          <p class="text-sm text-zinc-800 leading-relaxed font-medium italic">"${sanitizeHTML(m.message)}"</p>
           <div class="flex justify-between items-center mt-3">
-            <span class="text-xs font-bold text-vinho uppercase tracking-widest">- ${m.name}</span>
+            <span class="text-xs font-bold text-vinho uppercase tracking-widest">- ${sanitizeHTML(m.name)}</span>
             <span class="text-xs font-medium text-zinc-700">${new Date(m.created_at).toLocaleDateString("pt-BR")}</span>
           </div>
         </div>

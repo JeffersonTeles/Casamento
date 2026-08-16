@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#663244" />
   <link rel="manifest" href="/manifest.json" />
   <script src="./js/config.js"></script>
+  <script src="./js/sanitize.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,23 +17,7 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            rosa: '#e91e63',
-            vinho: '#120a74',
-            champagne: '#f5e6d3',
-          },
-          fontFamily: {
-            titulo: ['"Cormorant Garamond"', 'serif'],
-            corpo: ['"Montserrat"', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+  <script src="./js/shared.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -535,20 +520,35 @@
 
   <!-- Bottom Bar (Mobile App Style) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 px-2 py-3 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-    <div class="flex items-center justify-around">
-      <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
+    <div class="flex items-center justify-around overflow-x-auto gap-1">
+      <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
         <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Início</span>
       </button>
-      <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
+      <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
         <i data-lucide="check-square" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Tarefas</span>
       </button>
-      <button onclick="switchTab('guests')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
+      <button onclick="switchTab('guests')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
         <i data-lucide="users" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Convidados</span>
       </button>
-      <button onclick="switchTab('expenses')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
+      <button onclick="switchTab('expenses')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
         <i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Finanças</span>
       </button>
-      <button onclick="switchTab('notes')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho">
+      <button onclick="switchTab('analytics')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
+        <i data-lucide="bar-chart-2" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Analytics</span>
+      </button>
+      <button onclick="switchTab('suppliers')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
+        <i data-lucide="truck" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Fornecedores</span>
+      </button>
+      <button onclick="switchTab('timeline')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
+        <i data-lucide="calendar" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Cronograma</span>
+      </button>
+      <button onclick="switchTab('docs')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
+        <i data-lucide="file-text" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Documentos</span>
+      </button>
+      <button onclick="switchTab('audit')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
+        <i data-lucide="scroll" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Log</span>
+      </button>
+      <button onclick="switchTab('notes')" class="flex flex-col items-center gap-1 text-slate-700 focus:text-vinho active:text-vinho shrink-0">
         <i data-lucide="sticky-note" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-tighter">Mural</span>
       </button>
     </div>
@@ -603,12 +603,8 @@
   </div>
 
   <script>
-    const WEDDING_CONFIG = window.WEDDING_CONFIG || {};
-    const SUPABASE_URL = WEDDING_CONFIG.supabaseUrl || '';
-    const SUPABASE_KEY = WEDDING_CONFIG.supabaseAnonKey || '';
+    // Usa shared.js para Supabase client
     const ADMIN_EMAILS = (WEDDING_CONFIG.adminEmails || []).map(e => String(e).trim().toLowerCase());
-
-    const supabaseClient = supabase.createClient(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_KEY || 'public-anon-placeholder');
 
     const ORG_NOTES_TABLE_NAME = 'planner_notes';
 
@@ -1006,8 +1002,8 @@
       if (!grid) return;
       grid.innerHTML = (data || []).map(m => `
         <div class="relative group aspect-square bg-slate-100 rounded-lg overflow-hidden border">
-          <img src="${m.url}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x100?text=Link'"/>
-          <button onclick="deleteMood('${m.id}')" class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-2 h-2"></i></button>
+          <img src="${sanitizeAttr(m.url)}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x100?text=Link'"/>
+          <button onclick="deleteMood('${sanitizeAttr(m.id)}')" class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-2 h-2"></i></button>
         </div>
       `).join('');
       if (window.lucide) lucide.createIcons();
@@ -1040,9 +1036,9 @@
         if (t.owner === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
         else if (t.owner === 'Bia' || t.owner === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
 
-        let ownerTag = t.owner ? `<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 uppercase ml-2 text-slate-700">${t.owner}</span>` : '';
+        let ownerTag = t.owner ? `<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 uppercase ml-2 text-slate-700">${sanitizeHTML(t.owner)}</span>` : '';
         const dateStr = t.due_date ? `<span class="text-xs font-medium text-slate-700 ml-auto">${new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>` : '';
-        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${t.id}', '${t.status}')" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${t.title} ${ownerTag}</span></div>${dateStr}</div><div class="flex gap-2">${t.due_date ? `<button onclick="addToPersonalCalendar('${t.title}', '${t.due_date}')" class="p-1 hover:bg-blue-50 rounded" title="Agendar"><i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-500"></i></button>` : ''}<button onclick="deleteTask('${t.id}')" class="p-1 hover:bg-red-50 rounded">🗑️</button></div></div>`;
+        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${sanitizeAttr(t.id)}', '${sanitizeAttr(t.status)}')" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${sanitizeHTML(t.title)} ${ownerTag}</span></div>${dateStr}</div><div class="flex gap-2">${t.due_date ? `<button onclick="addToPersonalCalendar('${sanitizeAttr(t.title)}', '${sanitizeAttr(t.due_date)}')" class="p-1 hover:bg-blue-50 rounded" title="Agendar"><i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-500"></i></button>` : ''}<button onclick="deleteTask('${sanitizeAttr(t.id)}')" class="p-1 hover:bg-red-50 rounded">🗑️</button></div></div>`;
       }).join('');
     }
     function filterTasks(f) {
@@ -1211,9 +1207,9 @@
         if (g.invited_by === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
         else if (g.invited_by === 'Bia' || g.invited_by === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
 
-        const thankBtn = g.rsvp_status === 'confirmado' ? `<button onclick="shareThankYou('${g.name}')" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> Agradecer</button>` : '';
+        const thankBtn = g.rsvp_status === 'confirmado' ? `<button onclick="shareThankYou('${sanitizeAttr(g.name)}')" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> Agradecer</button>` : '';
 
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${g.name} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${g.invited_by} • ${g.rsvp_status}${g.partner_name ? ' • 💑 ' + g.partner_name : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button onclick="previewInvite('${g.invite_token}')" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button onclick="shareInviteWhatsApp('${g.name}', '${g.invite_token}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="editGuest('${g.id}', '${g.name.replace(/'/g, "\\'")}', '${g.phone||''}', '${g.invited_by}', '${g.rsvp_status}', ${g.is_vip}, '${(g.partner_name||'').replace(/'/g, "\\'")}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${g.id}')">🗑️</button></div></div>`;
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button onclick="previewInvite('${sanitizeAttr(g.invite_token)}')" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button onclick="shareInviteWhatsApp('${sanitizeAttr(g.name)}', '${sanitizeAttr(g.invite_token)}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="editGuest('${sanitizeAttr(g.id)}', '${sanitizeAttr(g.name)}', '${sanitizeAttr(g.phone||'')}', '${sanitizeAttr(g.invited_by)}', '${sanitizeAttr(g.rsvp_status)}', ${g.is_vip}, '${sanitizeAttr(g.partner_name||'')}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${sanitizeAttr(g.id)}')" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
       if (window.lucide) lucide.createIcons();
@@ -1380,7 +1376,7 @@
 
     async function fetchExpenses() { const { data } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false }); dashboardState.expenses = data || []; renderExpenses(); updateExpenseStats(); }
     function renderExpenses() {
-      document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${e.item}</p><p class="text-xs font-medium text-slate-700 uppercase">${e.category || 'Sem categoria'}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button onclick="deleteExpense('${e.id}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join('');
+      document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${sanitizeHTML(e.item)}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(e.category || 'Sem categoria')}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button onclick="deleteExpense('${sanitizeAttr(e.id)}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join('');
     }
     async function deleteExpense(id) { 
       if (confirm('Remover este gasto?')) { 
@@ -1683,7 +1679,14 @@
         `;
       }).join('');
     }
-    function initRealtime() { supabaseClient.channel('db-changes').on('postgres_changes', { event: '*', schema: 'public' }, () => { fetchTasks(); fetchGuests(); fetchExpenses(); fetchTimeline(); }).subscribe(); }
+    function initRealtime() {
+      const tables = { tasks: fetchTasks, guests: fetchGuests, expenses: fetchExpenses, timeline_events: fetchTimeline };
+      const channel = supabaseClient.channel('db-changes');
+      Object.keys(tables).forEach(table => {
+        channel.on('postgres_changes', { event: '*', schema: 'public', table }, tables[table]);
+      });
+      channel.subscribe();
+    }
     function previewInvite(token) {
       window.open(`${window.location.origin}/index.html?token=${token}`, '_blank');
     }
@@ -1706,18 +1709,18 @@
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4">
             <div>
               <div class="flex justify-between items-start mb-2">
-                <h4 class="font-bold text-vinho">${s.name}</h4>
-                <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase ${color}">${s.status || 'Pendente'}</span>
+                <h4 class="font-bold text-vinho">${sanitizeHTML(s.name)}</h4>
+                <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase ${color}">${sanitizeHTML(s.status || 'Pendente')}</span>
               </div>
-              <p class="text-xs font-medium text-slate-700 uppercase tracking-widest font-semibold">${s.category || 'Fornecedor'}</p>
+              <p class="text-xs font-medium text-slate-700 uppercase tracking-widest font-semibold">${sanitizeHTML(s.category || 'Fornecedor')}</p>
               <div class="flex flex-wrap gap-3 mt-3">
-                ${s.contact ? `<p class="text-xs text-slate-700 flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3"></i> ${s.contact}</p>` : ''}
-                ${s.map_link ? `<a href="${s.map_link}" target="_blank" class="text-xs text-blue-500 font-bold flex items-center gap-1 hover:underline"><i data-lucide="map-pin" class="w-3 h-3"></i> Mapa</a>` : ''}
+                ${s.contact ? `<p class="text-xs text-slate-700 flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3"></i> ${sanitizeHTML(s.contact)}</p>` : ''}
+                ${s.map_link ? `<a href="${sanitizeAttr(s.map_link)}" target="_blank" class="text-xs text-blue-500 font-bold flex items-center gap-1 hover:underline"><i data-lucide="map-pin" class="w-3 h-3"></i> Mapa</a>` : ''}
               </div>
             </div>
             <div class="flex justify-between items-center border-t pt-3 mt-auto">
               <span class="text-lg font-bold text-vinho">R$ ${Number(s.value).toLocaleString('pt-BR')}</span>
-              <button onclick="deleteSupplier('${s.id}')" class="p-2 text-red-400 hover:text-red-600 transition-colors">🗑️</button>
+              <button onclick="deleteSupplier('${sanitizeAttr(s.id)}')" class="p-2 text-red-400 hover:text-red-600 transition-colors">🗑️</button>
             </div>
           </div>
         `;

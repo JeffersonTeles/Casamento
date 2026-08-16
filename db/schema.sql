@@ -18,6 +18,7 @@ create table if not exists public.guests (
   "group" text,
   partner_id uuid references public.guests(id),
   partner_name text,
+  plus_ones integer default 0,
   is_vip boolean default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -277,14 +278,14 @@ grant execute on function public.get_guest_public_by_token(text) to anon, authen
 
 -- Confirma/atualiza o RSVP de um convidado via token.
 drop function if exists public.confirm_guest_rsvp(text, text);
-create or replace function public.confirm_guest_rsvp(p_invite_token text, p_rsvp_status text)
+create or replace function public.confirm_guest_rsvp(p_invite_token text, p_rsvp_status text, p_plus_ones integer default 0)
 returns boolean
 language plpgsql security definer
 set search_path = public
 as $$
 begin
   update public.guests
-  set rsvp_status = p_rsvp_status, updated_at = now()
+  set rsvp_status = p_rsvp_status, plus_ones = p_plus_ones, updated_at = now()
   where invite_token = p_invite_token;
   return found;
 end;

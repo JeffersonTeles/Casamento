@@ -1,8 +1,14 @@
-const CACHE_NAME = 'casamento-v2';
+const CACHE_NAME = 'casamento-v3';
 const ASSETS = [
   '/',
   '/index.html',
+  '/rsvp.html',
+  '/faq.html',
+  '/gifts.html',
+  '/organizacao.html',
   '/css/estilos.css',
+  '/js/shared.js',
+  '/js/sanitize.js',
   '/manifest.json'
 ];
 
