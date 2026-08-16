@@ -47,6 +47,8 @@
   <script src="./js/config.js"></script>
   <script src="./js/sanitize.js"></script>
   <script src="./js/shared.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
@@ -150,10 +152,6 @@
       .reveal-up { transform: translateY(15px); }
     }
   </style>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./js/config.js"></script>
-<script src="./js/sanitize.js"></script>
 </head>
 
 <body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 overflow-x-hidden">
@@ -185,7 +183,7 @@
       </div>
     </div>
 
-    <section class="max-w-5xl mx-auto px-4 pt-8 pb-12 grid md:grid-cols-2 gap-8 reveal-up">
+    <section id="sobre" class="max-w-5xl mx-auto px-4 pt-8 pb-12 grid md:grid-cols-2 gap-8 reveal-up">
       <div class="flex flex-col justify-center order-2 md:order-1">
         <p class="uppercase tracking-[0.35em] text-[0.65rem] text-vinho/80 mb-2">
           Save the date
@@ -466,13 +464,10 @@
     async function checkWelcome() {
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get('token');
-      if (token) {
-        const { data, error } = await supabase.from('guests').select('*').single(); // fallback direto se RPC não disponível
-        // Usa o RPC get_guest_public_by_token (definido no db/schema.sql)
-        const { data: guestData, error: rpcError } = await supabase.rpc('get_guest_public_by_token', { p_invite_token: token });
-        const guest = guestData || data;
-        if (guest && guest.name) {
-          document.getElementById('guest-name-welcome').textContent = `Olá, ${guest.name.split(' ')[0]}`;
+      if (token && supabaseClientGuest) {
+        const { data: guestData, error: rpcError } = await supabaseClientGuest.rpc('get_guest_public_by_token', { p_invite_token: token });
+        if (!rpcError && guestData && guestData.name) {
+          document.getElementById('guest-name-welcome').textContent = `Olá, ${guestData.name.split(' ')[0]}`;
           document.getElementById('welcome-message').classList.remove('hidden');
         }
       }
