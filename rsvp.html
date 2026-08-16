@@ -26,218 +26,297 @@
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: linear-gradient(180deg, #f5e6d3 0%, #ffffff 100%);
-      margin: 0;
-    }
-
-    /* === TEMA NORMAL === */
-    .invite-normal body,
-    body { }
-
-    /* === TEMA PADRINHOS — Convite Impresso Digital === */
-    .padrinhos-bg {
       background-color: #faf7f2;
       background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
       min-height: 100vh;
+      font-family: 'Montserrat', sans-serif;
+      color: #1e293b;
     }
 
-    .padrinhos-card {
+    /* === CARD DO CONVITE === */
+    .invite-card {
       background: #fffcf7;
-      border: 1px solid rgba(18, 10, 116, 0.08);
+      border: 1px solid rgba(18, 10, 116, 0.07);
       box-shadow:
-        0 1px 3px rgba(18, 10, 116, 0.04),
-        0 8px 30px rgba(18, 10, 116, 0.06);
+        0 1px 2px rgba(18, 10, 116, 0.03),
+        0 4px 16px rgba(18, 10, 116, 0.05),
+        0 12px 40px rgba(18, 10, 116, 0.04);
       position: relative;
       overflow: hidden;
     }
-
-    .padrinhos-card::before {
+    .invite-card::before {
       content: '';
       position: absolute;
-      inset: 6px;
-      border: 1px solid rgba(18, 10, 116, 0.06);
+      inset: 8px;
+      border: 1px solid rgba(18, 10, 116, 0.05);
       border-radius: inherit;
       pointer-events: none;
     }
 
-    /* Folhas decorativas */
-    .leaf-top, .leaf-bottom {
+    /* === FOLHAS === */
+    .leaf-svg {
       position: absolute;
-      width: 100%;
       pointer-events: none;
-      opacity: 0.18;
+      z-index: 1;
     }
-    .leaf-top { top: 0; }
-    .leaf-bottom { bottom: 0; transform: rotate(180deg); }
+    .leaf-top { top: -10px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 360px; opacity: 0.15; }
+    .leaf-bottom { bottom: -10px; left: 50%; transform: translateX(-50%) rotate(180deg); width: 80%; max-width: 360px; opacity: 0.15; }
+    .leaf-left { top: 50%; left: -20px; transform: translateY(-50%) rotate(-90deg); width: 60%; max-width: 280px; opacity: 0.08; }
+    .leaf-right { top: 50%; right: -20px; transform: translateY(-50%) rotate(90deg); width: 60%; max-width: 280px; opacity: 0.08; }
 
-    /* Linha decorativa */
-    .divider-line {
-      width: 60px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #120a74, transparent);
+    /* === DIVIDER === */
+    .divider-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
       margin: 0 auto;
+      width: fit-content;
+    }
+    .divider-ornament::before,
+    .divider-ornament::after {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(18,10,116,0.3), transparent);
     }
 
-    /* Animação de entrada suave */
+    /* === ANIMAÇÕES === */
     @keyframes inviteReveal {
-      from { opacity: 0; transform: translateY(24px) scale(0.98); }
+      from { opacity: 0; transform: translateY(30px) scale(0.97); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .invite-animate {
-      animation: inviteReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    @keyframes leafFade {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 0.15; transform: scale(1); }
     }
-
+    @keyframes textReveal {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      50% { transform: scale(1.03); }
     }
+
+    .invite-animate { animation: inviteReveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .leaf-animate { animation: leafFade 2s ease-out forwards; }
+    .text-animate { opacity: 0; animation: textReveal 0.8s ease-out forwards; }
+    .text-delay-1 { animation-delay: 0.3s; }
+    .text-delay-2 { animation-delay: 0.6s; }
+    .text-delay-3 { animation-delay: 0.9s; }
+    .text-delay-4 { animation-delay: 1.2s; }
+    .text-delay-5 { animation-delay: 1.5s; }
     .animate-fade-in { animation: fadeIn 0.6s ease-out; }
-    .animate-slide-in { animation: slideIn 0.5s ease-out; }
-    .animate-pulse-slow { animation: pulse 2s infinite; }
+    .animate-pulse-slow { animation: pulse 3s infinite; }
 
-    button { transition: all 0.3s ease; }
-    button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(18, 10, 116, 0.2); }
-    button:focus { outline: 3px solid #e91e63; outline-offset: 2px; }
-    input, select, textarea { transition: all 0.3s ease; }
+    /* === BOTÃO === */
+    .btn-invite {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #120a74;
+      color: white;
+      padding: 14px 40px;
+      border-radius: 9999px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 4px 20px rgba(18, 10, 116, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-invite::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    .btn-invite:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(18, 10, 116, 0.35);
+    }
+    .btn-invite:active { transform: scale(0.97); }
+
+    /* === FORMULÁRIO RSVP === */
+    .rsvp-form-section {
+      transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    input, select, textarea {
+      transition: all 0.3s ease;
+      font-family: 'Montserrat', sans-serif;
+    }
     input:focus, select:focus, textarea:focus {
-      transform: scale(1.02);
-      box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.2);
+      outline: none;
+      border-color: #120a74;
+      box-shadow: 0 0 0 3px rgba(18, 10, 116, 0.08);
     }
+    button { transition: all 0.3s ease; }
+    button:focus { outline: 3px solid rgba(233, 30, 99, 0.3); outline-offset: 2px; }
 
+    /* === PRINT === */
     @media print {
-      body { background: white !important; color: black !important; }
-      .bg-white\/90 { background: white !important; box-shadow: none !important; }
-      button, #loading, #error { display: none !important; }
-      #rsvp-form, #success { display: block !important; }
+      body { background: white !important; }
+      .btn-invite, .rsvp-form-section, .loading-section, .error-section { display: none !important; }
     }
 
+    /* === MOBILE === */
     @media (max-width: 640px) {
-      .padrinhos-card { margin: 8px; border-radius: 20px; }
+      .invite-card { margin: 12px; border-radius: 20px; padding: 32px 24px !important; }
+      .leaf-left, .leaf-right { display: none; }
     }
   </style>
-  <meta name="description" content="Participe do nosso grande dia! Convite de casamento de Jefferson & Beatriz com RSVP.">
+  <meta name="description" content="Convite de casamento de Jefferson & Beatriz — Confirme sua presença.">
 </head>
-<body class="font-corpo text-slate-800 min-h-screen">
+<body>
 
-  <!-- ========== LOADING (compartilhado) ========== -->
-  <div id="loading" class="min-h-screen flex items-center justify-center">
+  <!-- ========== LOADING ========== -->
+  <div id="loading" class="loading-section min-h-screen flex items-center justify-center">
     <div class="text-center">
       <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-vinho"></div>
-      <p class="mt-4 text-sm text-slate-600">Carregando seu convite...</p>
+      <p class="mt-4 text-sm text-slate-500 tracking-wider">Carregando seu convite...</p>
     </div>
   </div>
 
-  <!-- ========== ERRO (compartilhado) ========== -->
-  <div id="error" class="hidden min-h-screen flex items-center justify-center p-4">
+  <!-- ========== ERRO ========== -->
+  <div id="error" class="error-section hidden min-h-screen flex items-center justify-center p-4">
     <div class="text-center max-w-sm">
       <div class="text-6xl mb-4">😕</div>
       <p class="text-red-600 font-medium text-lg mb-2">Convite não encontrado</p>
-      <p class="text-sm text-slate-600">Verifique se o link está correto ou entre em contato com o casal.</p>
+      <p class="text-sm text-slate-500">Verifique se o link está correto ou entre em contato com o casal.</p>
     </div>
   </div>
 
-  <!-- ========== CONVITE PADRINHOS (template especial) ========== -->
-  <div id="padrinhos-invite" class="hidden padrinhos-bg">
-    <div class="max-w-lg mx-auto px-4 py-10 md:py-16">
-      <div class="padrinhos-card rounded-2xl p-8 md:p-12 invite-animate relative">
+  <!-- ========== CONVITE ========== -->
+  <div id="invite-container" class="hidden min-h-screen flex items-center justify-center p-4 py-8 md:py-12">
+    <div class="invite-card max-w-lg w-full rounded-3xl p-8 md:p-12 invite-animate relative">
 
-        <!-- Folha topo -->
-        <svg class="leaf-top" viewBox="0 0 400 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M200 70 C180 40, 120 20, 60 30 C90 15, 140 5, 200 10 C260 5, 310 15, 340 30 C280 20, 220 40, 200 70Z" fill="#120a74"/>
-          <path d="M200 70 C190 50, 150 35, 100 40 C130 28, 165 20, 200 22 C235 20, 270 28, 300 40 C250 35, 210 50, 200 70Z" fill="#120a74" opacity="0.5"/>
-          <line x1="200" y1="70" x2="200" y2="10" stroke="#120a74" stroke-width="0.8" opacity="0.4"/>
-          <path d="M200 50 C185 42, 140 38, 105 42" stroke="#120a74" stroke-width="0.5" fill="none" opacity="0.3"/>
-          <path d="M200 50 C215 42, 260 38, 295 42" stroke="#120a74" stroke-width="0.5" fill="none" opacity="0.3"/>
-        </svg>
+      <!-- Folhas decorativas -->
+      <svg class="leaf-svg leaf-top leaf-animate" viewBox="0 0 400 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M200 80 C175 45, 110 20, 50 32 C85 14, 140 3, 200 8 C260 3, 315 14, 350 32 C290 20, 225 45, 200 80Z" fill="#120a74"/>
+        <path d="M200 80 C185 55, 145 38, 90 44 C125 30, 162 20, 200 22 C238 20, 275 30, 310 44 C255 38, 215 55, 200 80Z" fill="#120a74" opacity="0.4"/>
+        <line x1="200" y1="80" x2="200" y2="8" stroke="#120a74" stroke-width="0.6" opacity="0.3"/>
+      </svg>
 
-        <!-- Folha base -->
-        <svg class="leaf-bottom" viewBox="0 0 400 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M200 70 C180 40, 120 20, 60 30 C90 15, 140 5, 200 10 C260 5, 310 15, 340 30 C280 20, 220 40, 200 70Z" fill="#120a74"/>
-          <path d="M200 70 C190 50, 150 35, 100 40 C130 28, 165 20, 200 22 C235 20, 270 28, 300 40 C250 35, 210 50, 200 70Z" fill="#120a74" opacity="0.5"/>
-        </svg>
+      <svg class="leaf-svg leaf-bottom leaf-animate" style="animation-delay: 0.3s" viewBox="0 0 400 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M200 80 C175 45, 110 20, 50 32 C85 14, 140 3, 200 8 C260 3, 315 14, 350 32 C290 20, 225 45, 200 80Z" fill="#120a74"/>
+        <path d="M200 80 C185 55, 145 38, 90 44 C125 30, 162 20, 200 22 C238 20, 275 30, 310 44 C255 38, 215 55, 200 80Z" fill="#120a74" opacity="0.4"/>
+      </svg>
 
-        <!-- Ilustração: Alianças -->
-        <div class="text-center mb-6 pt-4">
-          <svg width="72" height="48" viewBox="0 0 72 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4">
-            <ellipse cx="26" cy="28" rx="18" ry="16" stroke="#120a74" stroke-width="1.5" fill="none"/>
-            <ellipse cx="46" cy="28" rx="18" ry="16" stroke="#120a74" stroke-width="1.5" fill="none"/>
-            <ellipse cx="26" cy="28" rx="18" ry="16" stroke="#120a74" stroke-width="0.5" fill="none" stroke-dasharray="2 3" opacity="0.3"/>
-            <ellipse cx="46" cy="28" rx="18" ry="16" stroke="#120a74" stroke-width="0.5" fill="none" stroke-dasharray="2 3" opacity="0.3"/>
-            <path d="M26 12 L26 8 L30 10" stroke="#120a74" stroke-width="1" fill="none" opacity="0.5"/>
-            <path d="M46 12 L46 8 L50 10" stroke="#120a74" stroke-width="1" fill="none" opacity="0.5"/>
+      <svg class="leaf-svg leaf-left leaf-animate" style="animation-delay: 0.6s" viewBox="0 0 400 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M200 80 C175 45, 110 20, 50 32 C85 14, 140 3, 200 8 C260 3, 315 14, 350 32 C290 20, 225 45, 200 80Z" fill="#120a74"/>
+      </svg>
+
+      <svg class="leaf-svg leaf-right leaf-animate" style="animation-delay: 0.6s" viewBox="0 0 400 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M200 80 C175 45, 110 20, 50 32 C85 14, 140 3, 200 8 C260 3, 315 14, 350 32 C290 20, 225 45, 200 80Z" fill="#120a74"/>
+      </svg>
+
+      <!-- Conteúdo do convite -->
+      <div class="relative z-10">
+
+        <!-- Alianças -->
+        <div class="text-center mb-8 text-animate text-delay-1">
+          <svg width="80" height="52" viewBox="0 0 80 52" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto">
+            <ellipse cx="28" cy="30" rx="20" ry="18" stroke="#120a74" stroke-width="1.5" fill="none"/>
+            <ellipse cx="52" cy="30" rx="20" ry="18" stroke="#120a74" stroke-width="1.5" fill="none"/>
+            <ellipse cx="28" cy="30" rx="20" ry="18" stroke="#120a74" stroke-width="0.4" fill="none" stroke-dasharray="2 4" opacity="0.25"/>
+            <ellipse cx="52" cy="30" rx="20" ry="18" stroke="#120a74" stroke-width="0.4" fill="none" stroke-dasharray="2 4" opacity="0.25"/>
           </svg>
         </div>
 
-        <!-- Texto de abertura -->
-        <p class="text-center font-titulo text-base md:text-lg text-slate-600 italic leading-relaxed mb-6 px-4">
-          Amigos especiais todos temos,<br>
-          mas você é mais que especial.<br>
-          E nós não poderíamos viver um momento tão<br>
-          único sem você ao nosso lado.
-        </p>
-
-        <div class="divider-line mb-8"></div>
-
-        <!-- Pergunta principal -->
-        <h1 class="text-center font-titulo text-3xl md:text-4xl text-vinho leading-tight mb-2">
-          Você aceita ser nosso
-        </h1>
-        <h2 class="text-center font-titulo text-4xl md:text-5xl font-bold text-vinho tracking-wide mb-8">
-          PADRINHO?
-        </h2>
-
-        <div class="divider-line mb-8"></div>
-
-        <!-- Detalhes do evento -->
-        <div class="text-center space-y-3 mb-8">
-          <p class="font-titulo text-xl md:text-2xl text-vinho">06 · 02 · 2027</p>
-          <p class="text-sm text-slate-600 font-medium tracking-wider uppercase">Sábado, às 08h00</p>
+        <!-- Saudação -->
+        <div class="text-center mb-6 text-animate text-delay-2">
+          <p class="font-titulo text-lg md:text-xl text-slate-500 italic">Com alegria convidamos você para celebrar o nosso amor</p>
         </div>
 
-        <div class="text-center mb-8">
-          <p class="text-sm text-slate-700 font-medium">Capela São Maximiliano</p>
+        <div class="divider-ornament my-6 text-animate text-delay-2">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0L7.5 4.5L12 6L7.5 7.5L6 12L4.5 7.5L0 6L4.5 4.5Z" fill="#120a74" opacity="0.2"/></svg>
+        </div>
+
+        <!-- Nomes do casal -->
+        <h1 class="text-center font-titulo text-4xl md:text-5xl lg:text-6xl text-vinho leading-tight mb-3 text-animate text-delay-3">
+          Jefferson & Beatriz
+        </h1>
+
+        <div class="divider-ornament my-6 text-animate text-delay-3">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0L7.5 4.5L12 6L7.5 7.5L6 12L4.5 7.5L0 6L4.5 4.5Z" fill="#120a74" opacity="0.2"/></svg>
+        </div>
+
+        <!-- Nome do convidado -->
+        <div class="text-center mb-8 text-animate text-delay-4">
+          <p class="font-titulo text-base md:text-lg text-slate-500 tracking-wide">
+            Convite para
+          </p>
+          <p id="guest-display" class="font-titulo text-2xl md:text-3xl text-vinho font-semibold mt-1"></p>
+        </div>
+
+        <!-- Pergunta -->
+        <div class="text-center mb-10 text-animate text-delay-4">
+          <p id="invite-question" class="font-titulo text-xl md:text-2xl text-slate-600 italic leading-relaxed"></p>
+        </div>
+
+        <!-- Data -->
+        <div class="text-center mb-8 text-animate text-delay-5">
+          <p class="font-titulo text-3xl md:text-4xl text-vinho font-semibold tracking-wide">06 · 02 · 2027</p>
+          <p class="text-xs md:text-sm text-slate-500 mt-2 tracking-[0.2em] uppercase font-medium">Sábado, às 08h00</p>
+        </div>
+
+        <!-- Local -->
+        <div class="text-center mb-10 text-animate text-delay-5">
+          <p class="text-sm md:text-base text-slate-700 font-medium">Capela São Maximiliano</p>
           <p class="text-xs text-slate-500 mt-1">Cascavel — PR</p>
           <a href="https://www.google.com/maps/search/?api=1&query=Capela+São+Maximiliano+Cascavel+PR"
             target="_blank" rel="noopener noreferrer"
-            class="inline-block mt-2 text-xs text-vinho/70 underline hover:text-vinho transition-colors">
+            class="inline-block mt-2 text-xs text-vinho/60 underline hover:text-vinho transition-colors">
             Ver no Google Maps
           </a>
         </div>
 
         <!-- Botão confirmar -->
-        <div class="text-center">
-          <button onclick="showPadrinhosForm()" id="padrinhos-rsvp-btn"
-            class="inline-block bg-vinho text-white px-8 py-3 rounded-full text-sm font-semibold tracking-wider hover:bg-vinho/90 transition-all shadow-lg shadow-vinho/20 hover:shadow-vinho/30">
-            CONFIRMAR PRESENÇA
+        <div class="text-center text-animate text-delay-5">
+          <button onclick="showRsvpForm()" class="btn-invite">
+            Confirmar Presença
           </button>
         </div>
 
-        <!-- Rodapé do convite -->
-        <div class="mt-10 pt-6 border-t border-vinho/10 text-center">
-          <p class="font-titulo text-lg text-vinho">Jefferson & Beatriz</p>
-          <p class="text-[0.65rem] text-slate-500 mt-1 tracking-wider uppercase">06 de Fevereiro de 2027</p>
+        <!-- Rodapé -->
+        <div class="mt-12 pt-6 border-t border-vinho/8 text-center text-animate text-delay-5">
+          <p class="text-[0.65rem] text-slate-400 tracking-[0.25em] uppercase">06 de Fevereiro de 2027</p>
         </div>
+
       </div>
     </div>
+  </div>
 
-    <!-- Formulário RSVP (aparece abaixo do convite) -->
-    <div id="padrinhos-rsvp-section" class="hidden max-w-lg mx-auto px-4 pb-12">
-      <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 animate-fade-in border border-rose-100">
-        <div class="text-center mb-5">
-          <p class="text-sm text-slate-700">
-            Olá, <strong id="guest-name-padrinhos" class="text-vinho"></strong><span id="partner-name-display-padrinhos"></span>!
+  <!-- ========== FORMULÁRIO RSVP ========== -->
+  <div id="rsvp-section" class="hidden rsvp-form-section pb-12">
+    <div class="max-w-lg mx-auto px-4">
+      <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 animate-fade-in border border-vinho/5">
+
+        <div class="text-center mb-6">
+          <p class="text-sm text-slate-600">
+            Olá, <strong id="rsvp-guest-name" class="text-vinho"></strong>!
           </p>
-          <p class="text-sm text-slate-600 mt-1">
+          <p class="text-xs text-slate-500 mt-1">
             Confirme sua presença até <strong>20 de Dezembro de 2026</strong>.
           </p>
         </div>
@@ -246,18 +325,18 @@
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-2">Você vai?</label>
             <div class="flex gap-3">
-              <button onclick="selectRsvp('confirmado')" id="btn-confirmar-p" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-vinho hover:text-vinho transition">
-                ✅ Sim, vou!
+              <button onclick="selectRsvp('confirmado')" id="btn-confirmar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-vinho hover:text-vinho transition font-medium">
+                Sim, vou!
               </button>
-              <button onclick="selectRsvp('recusado')" id="btn-recusar-p" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition">
-                ❌ Não posso
+              <button onclick="selectRsvp('recusado')" id="btn-recusar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition font-medium">
+                Não posso
               </button>
             </div>
           </div>
 
-          <div id="plus-ones-section-p" class="hidden">
+          <div id="plus-ones-section" class="hidden">
             <label class="block text-sm font-medium text-slate-700 mb-2">Quantos acompanhantes?</label>
-            <select id="plus-ones-p" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa">
+            <select id="plus-ones" class="w-full p-3 rounded-xl border border-slate-200 bg-white">
               <option value="0">Nenhum acompanhante</option>
               <option value="1">1 acompanhante</option>
               <option value="2">2 acompanhantes</option>
@@ -267,26 +346,28 @@
 
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-2">Mensagem para o casal (opcional)</label>
-            <textarea id="message-p" rows="3" placeholder="Deixe uma mensagem carinhosa para nós..." class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa resize-none"></textarea>
+            <textarea id="message" rows="3" placeholder="Deixe uma mensagem carinhosa..." class="w-full p-3 rounded-xl border border-slate-200 resize-none"></textarea>
           </div>
 
-          <button onclick="submitRsvp()" id="submit-btn-p" class="w-full bg-vinho text-white py-3 rounded-xl hover:bg-vinho/90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          <button onclick="submitRsvp()" id="submit-btn" class="w-full bg-vinho text-white py-3 rounded-xl hover:bg-vinho/90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
             Enviar confirmação
           </button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Sucesso (padrinhos) -->
-    <div id="success-padrinhos" class="hidden max-w-lg mx-auto px-4 pb-12">
-      <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 text-center animate-fade-in border border-rose-100">
+  <!-- ========== SUCESSO ========== -->
+  <div id="success-section" class="hidden pb-12">
+    <div class="max-w-lg mx-auto px-4">
+      <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 text-center animate-fade-in border border-vinho/5">
         <div class="text-5xl mb-4">💍</div>
         <p class="text-green-600 font-medium text-lg mb-2">Confirmação enviada!</p>
-        <p class="text-sm text-slate-600 mb-4" id="success-message-p">
+        <p class="text-sm text-slate-600 mb-4" id="success-message">
           Obrigado por confirmar sua presença. Mal podemos esperar para te ver no nosso grande dia!
         </p>
-        <div class="bg-rose-50 rounded-2xl p-4 mb-4 text-left">
-          <p class="text-sm font-medium text-vinho mb-2">📝 Lembre-se:</p>
+        <div class="bg-vinho/5 rounded-2xl p-4 mb-4 text-left">
+          <p class="text-sm font-medium text-vinho mb-2">Lembre-se:</p>
           <ul class="text-sm text-slate-600 space-y-1">
             <li>• Chegue com 15 minutos de antecedência</li>
             <li>• Estacionamento gratuito disponível</li>
@@ -300,154 +381,6 @@
     </div>
   </div>
 
-  <!-- ========== CONVITE NORMAL (template atual) ========== -->
-  <div id="normal-invite" class="hidden">
-    <div class="min-h-screen flex items-center justify-center p-4 py-8">
-      <div class="max-w-lg w-full bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-8 animate-fade-in border border-rose-100">
-
-        <div class="text-center mb-6">
-          <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-br from-vinho to-rosa mb-4 shadow-lg">
-            <span class="text-4xl">💍</span>
-          </div>
-          <h1 class="font-titulo text-4xl text-vinho mb-2">Jefferson & Beatriz</h1>
-          <p class="text-sm text-slate-600">Convite Especial</p>
-          <button onclick="window.print()" class="mt-2 text-xs text-vinho hover:underline" aria-label="Imprimir convite">
-            🖨️ Imprimir convite
-          </button>
-        </div>
-
-        <div class="bg-gradient-to-r from-vinho/10 to-rosa/10 rounded-2xl p-5 mb-6 border border-vinho/20 animate-slide-in">
-          <h2 class="font-titulo text-lg text-vinho mb-4 text-center">📅 Detalhes do Evento</h2>
-          <div class="grid gap-4 text-sm">
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-              <div class="flex items-center gap-3">
-                <span class="text-2xl">⏰</span>
-                <div>
-                  <p class="font-medium text-slate-800">Horário</p>
-                  <p class="text-slate-600">Cerimônia: 08h00 DA MANHÃ (PONTUALMENTE)</p>
-                  <p class="text-slate-600">Não teremos recepção após a cerimônia.</p>
-                </div>
-              </div>
-            </div>
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-              <div class="flex items-center gap-3">
-                <span class="text-2xl">📍</span>
-                <div>
-                  <p class="font-medium text-slate-800">Local</p>
-                  <p class="text-slate-600">Capela São Maximiliano</p>
-                  <p class="text-slate-600">Cascavel - PR</p>
-                </div>
-              </div>
-              <div class="mt-4 rounded-xl overflow-hidden border border-vinho/20 shadow-inner">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.0!2d-53.4558!3d-24.9578!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCapela+S%C3%A3o+Maximiliano+Cascavel+PR!5e0!3m2!1spt!2sbr!4v1"
-                  width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
-                  title="Localização da Capela São Maximiliano" class="w-full"></iframe>
-              </div>
-              <a href="https://www.google.com/maps/search/?api=1&query=Capela+São+Maximiliano+Cascavel+PR"
-                target="_blank" rel="noopener noreferrer"
-                class="mt-3 inline-block text-xs text-vinho underline font-bold">
-                Abrir no Google Maps →
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-gradient-to-br from-vinho to-rosa rounded-2xl p-5 mb-6 shadow-lg">
-          <h3 class="font-titulo text-sm text-white mb-4 text-center">⏳ Contagem Regressiva</h3>
-          <div class="grid grid-cols-4 gap-3 text-center">
-            <div class="bg-white/20 backdrop-blur rounded-xl p-3">
-              <p class="text-3xl font-bold text-white" id="days">--</p>
-              <p class="text-[0.65rem] text-white/90">Dias</p>
-            </div>
-            <div class="bg-white/20 backdrop-blur rounded-xl p-3">
-              <p class="text-3xl font-bold text-white" id="hours">--</p>
-              <p class="text-[0.65rem] text-white/90">Horas</p>
-            </div>
-            <div class="bg-white/20 backdrop-blur rounded-xl p-3">
-              <p class="text-3xl font-bold text-white" id="minutes">--</p>
-              <p class="text-[0.65rem] text-white/90">Min</p>
-            </div>
-            <div class="bg-white/20 backdrop-blur rounded-xl p-3">
-              <p class="text-3xl font-bold text-white" id="seconds">--</p>
-              <p class="text-[0.65rem] text-white/90">Seg</p>
-            </div>
-          </div>
-        </div>
-
-        <div id="rsvp-form" class="hidden">
-          <div class="bg-rose-50 rounded-2xl p-4 mb-6">
-            <p class="text-sm text-slate-700">
-              Olá, <strong id="guest-name" class="text-vinho"></strong><span id="partner-name-display"></span>!
-            </p>
-            <p class="text-sm text-slate-600 mt-1">
-              Por favor, confirme sua presença no nosso casamento até <strong>20 de Dezembro de 2026</strong>.
-            </p>
-          </div>
-
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">Você vai?</label>
-              <div class="flex gap-3">
-                <button onclick="selectRsvp('confirmado')" id="btn-confirmar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-vinho hover:text-vinho transition">
-                  ✅ Sim, vou!
-                </button>
-                <button onclick="selectRsvp('recusado')" id="btn-recusar" class="flex-1 py-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-red-500 hover:text-red-500 transition">
-                  ❌ Não posso
-                </button>
-              </div>
-            </div>
-
-            <div id="plus-ones-section" class="hidden">
-              <label class="block text-sm font-medium text-slate-700 mb-2">Quantos acompanhantes?</label>
-              <select id="plus-ones" class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa">
-                <option value="0">Nenhum acompanhante</option>
-                <option value="1">1 acompanhante</option>
-                <option value="2">2 acompanhantes</option>
-                <option value="3">3 acompanhantes</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">Mensagem para o casal (opcional)</label>
-              <textarea id="message" rows="3" placeholder="Deixe uma mensagem carinhosa para nós..." class="w-full p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa resize-none"></textarea>
-            </div>
-
-            <div class="bg-blue-50 rounded-xl p-3 border border-blue-100">
-              <p class="text-xs text-slate-700">
-                <strong>ℹ️ Informações adicionais:</strong> Estacionamento gratuito disponível no local.
-              </p>
-            </div>
-
-            <button onclick="submitRsvp()" id="submit-btn" class="w-full bg-vinho text-white py-3 rounded-xl hover:bg-vinho/90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-              Enviar confirmação
-            </button>
-          </div>
-        </div>
-
-        <div id="success" class="hidden text-center py-8">
-          <div class="text-5xl mb-4">💍</div>
-          <p class="text-green-600 font-medium text-lg mb-2">Confirmação enviada!</p>
-          <p class="text-sm text-slate-600 mb-4" id="success-message">
-            Obrigado por confirmar sua presença. Mal podemos esperar para te ver no nosso grande dia!
-          </p>
-          <div class="bg-rose-50 rounded-2xl p-4 mb-4 text-left">
-            <p class="text-sm font-medium text-vinho mb-2">📝 Lembre-se:</p>
-            <ul class="text-sm text-slate-600 space-y-1">
-              <li>• Chegue com 15 minutos de antecedência</li>
-              <li>• Estacionamento gratuito disponível</li>
-              <li>• Traje: Livre (proibido cores claras semelhantes ao branco)</li>
-            </ul>
-          </div>
-          <a href="index.html" class="inline-block bg-vinho text-white px-6 py-2 rounded-full text-sm hover:bg-vinho/90 transition">
-            Voltar ao site
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
     const WEDDING_CONFIG = window.WEDDING_CONFIG || {};
     const SUPABASE_URL = WEDDING_CONFIG.supabaseUrl || '';
@@ -455,28 +388,8 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_KEY || 'public-anon-placeholder');
 
     const NTFY_TOPIC = 'casamento-jefferson-bia-notificacoes';
-    const TELEGRAM_BOT_TOKEN = '';
-    const TELEGRAM_CHAT_ID = '';
-
     let guestData = null;
     let selectedRsvp = null;
-    let isPadrinhos = false;
-
-    // === Countdown ===
-    function updateCountdown() {
-      const weddingDate = new Date('2027-02-06T08:00:00');
-      const diff = weddingDate - new Date();
-      const els = ['days','hours','minutes','seconds'];
-      const vals = diff > 0 ? [
-        Math.floor(diff / 864e5),
-        Math.floor((diff % 864e5) / 36e5),
-        Math.floor((diff % 36e5) / 6e4),
-        Math.floor((diff % 6e4) / 1e3)
-      ] : [0,0,0,0];
-      els.forEach((id, i) => { const el = document.getElementById(id); if (el) el.textContent = vals[i]; });
-    }
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
 
     // === Load Guest ===
     async function loadGuest() {
@@ -488,97 +401,87 @@
         if (error || !data || data.length === 0) { showError(); return; }
 
         guestData = data[0];
-        isPadrinhos = guestData.is_vip === true;
 
-        logAccess(guestData.id, guestData.name);
-
-        if (isPadrinhos) {
-          showPadrinhosInvite();
+        // Preencher nomes
+        const guestDisplay = document.getElementById('guest-display');
+        if (guestData.partner_name) {
+          guestDisplay.textContent = guestData.name + ' & ' + guestData.partner_name;
         } else {
-          showNormalInvite();
+          guestDisplay.textContent = guestData.name;
+        }
+
+        // Pergunta baseada em is_vip
+        const question = document.getElementById('invite-question');
+        if (guestData.is_vip) {
+          question.innerHTML = 'Vocês aceitam ser nossos<br><strong class="font-titulo text-2xl md:text-3xl text-vinho not-italic">Padrinhos</strong>?';
+        } else {
+          question.innerHTML = 'Vocês aceitam celebrar<br><strong class="font-titulo text-2xl md:text-3xl text-vinho not-italic">connosco</strong>?';
+        }
+
+        logAccess(guestData.id);
+
+        if (guestData.rsvp_status === 'confirmado') {
+          showAlreadyConfirmed();
+        } else {
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('invite-container').classList.remove('hidden');
         }
       } catch (err) {
         showError();
       }
     }
 
-    // === Padrinhos Flow ===
-    function showPadrinhosInvite() {
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('padrinhos-invite').classList.remove('hidden');
-      document.body.classList.add('padrinhos-bg');
-    }
-
-    function showPadrinhosForm() {
-      const section = document.getElementById('padrinhos-rsvp-section');
-      section.classList.remove('hidden');
-      document.getElementById('guest-name-padrinhos').textContent = guestData.name;
-      if (guestData.partner_name) {
-        document.getElementById('partner-name-display-padrinhos').textContent = ' e ' + guestData.partner_name;
-      }
-      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    // === Normal Flow ===
-    function showNormalInvite() {
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('normal-invite').classList.remove('hidden');
-      document.getElementById('guest-name').textContent = guestData.name;
-      if (guestData.partner_name) {
-        document.getElementById('partner-name-display').textContent = ' e ' + guestData.partner_name;
-      }
-      if (guestData.rsvp_status === 'confirmado') {
-        showAlreadyConfirmed();
-      } else {
-        document.getElementById('rsvp-form').classList.remove('hidden');
-      }
-    }
-
-    function showAlreadyConfirmed() {
-      if (isPadrinhos) {
-        document.getElementById('padrinhos-rsvp-section').classList.add('hidden');
-        document.getElementById('success-padrinhos').classList.remove('hidden');
-      } else {
-        document.getElementById('rsvp-form').classList.add('hidden');
-        document.getElementById('success').classList.remove('hidden');
-        document.getElementById('success-message').textContent = 'Você já confirmou sua presença! Obrigado.';
-      }
-    }
-
-    // === Error ===
     function showError() {
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('error').classList.remove('hidden');
     }
 
-    // === RSVP Selection ===
+    function showRsvpForm() {
+      document.getElementById('invite-container').classList.add('hidden');
+      document.getElementById('rsvp-section').classList.remove('hidden');
+      document.getElementById('rsvp-guest-name').textContent =
+        guestData.partner_name ? guestData.name + ' & ' + guestData.partner_name : guestData.name;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showAlreadyConfirmed() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('invite-container').classList.remove('hidden');
+      document.getElementById('invite-container').innerHTML = `
+        <div class="invite-card max-w-lg w-full rounded-3xl p-8 md:p-12 invite-animate relative text-center">
+          <div class="text-5xl mb-4">💍</div>
+          <p class="text-green-600 font-medium text-lg mb-2">Presença já confirmada!</p>
+          <p class="text-sm text-slate-600 mb-6">Obrigado por confirmar sua presença. Mal podemos esperar para te ver no nosso grande dia!</p>
+          <a href="index.html" class="inline-block bg-vinho text-white px-6 py-2 rounded-full text-sm hover:bg-vinho/90 transition">
+            Voltar ao site
+          </a>
+        </div>`;
+    }
+
+    // === RSVP ===
     function selectRsvp(status) {
       selectedRsvp = status;
-      const prefix = isPadrinhos ? '-p' : '';
-      const btnConfirmar = document.getElementById('btn-confirmar' + prefix);
-      const btnRecusar = document.getElementById('btn-recusar' + prefix);
-      const plusSection = document.getElementById('plus-ones-section' + prefix);
-      const submitBtn = document.getElementById('submit-btn' + prefix);
+      const btnConfirmar = document.getElementById('btn-confirmar');
+      const btnRecusar = document.getElementById('btn-recusar');
+      const plusSection = document.getElementById('plus-ones-section');
 
       btnConfirmar.classList.remove('border-vinho', 'text-vinho', 'bg-vinho/5');
       btnRecusar.classList.remove('border-red-500', 'text-red-500', 'bg-red-50');
 
       if (status === 'confirmado') {
         btnConfirmar.classList.add('border-vinho', 'text-vinho', 'bg-vinho/5');
-        if (!guestData.partner_name && plusSection) plusSection.classList.remove('hidden');
+        if (!guestData.partner_name) plusSection.classList.remove('hidden');
       } else {
         btnRecusar.classList.add('border-red-500', 'text-red-500', 'bg-red-50');
-        if (plusSection) plusSection.classList.add('hidden');
+        plusSection.classList.add('hidden');
       }
-      if (submitBtn) submitBtn.disabled = false;
+      document.getElementById('submit-btn').disabled = false;
     }
 
-    // === Submit RSVP ===
     async function submitRsvp() {
       if (!selectedRsvp) { alert('Por favor, selecione se você vai ou não.'); return; }
 
-      const prefix = isPadrinhos ? '-p' : '';
-      const submitBtn = document.getElementById('submit-btn' + prefix);
+      const submitBtn = document.getElementById('submit-btn');
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando...';
 
@@ -597,26 +500,17 @@
           return;
         }
 
-        const plusOnesEl = document.getElementById('plus-ones' + prefix);
-        const messageEl = document.getElementById('message' + prefix);
-        const plusOnes = plusOnesEl ? plusOnesEl.value : 0;
-        const message = messageEl ? messageEl.value : '';
+        const plusOnes = document.getElementById('plus-ones').value;
+        const message = document.getElementById('message').value;
         const fullName = guestData.partner_name ? `${guestData.name} & ${guestData.partner_name}` : guestData.name;
 
         sendPushNotification(fullName, selectedRsvp, plusOnes, message);
 
-        if (isPadrinhos) {
-          document.getElementById('padrinhos-rsvp-section').classList.add('hidden');
-          document.getElementById('success-padrinhos').classList.remove('hidden');
-          if (selectedRsvp === 'recusado') {
-            document.getElementById('success-message-p').textContent = 'Entendemos que você não poderá comparecer. Agradecemos por nos avisar!';
-          }
-        } else {
-          document.getElementById('rsvp-form').classList.add('hidden');
-          document.getElementById('success').classList.remove('hidden');
-          if (selectedRsvp === 'recusado') {
-            document.getElementById('success-message').textContent = 'Entendemos que você não poderá comparecer. Agradecemos por nos avisar!';
-          }
+        document.getElementById('rsvp-section').classList.add('hidden');
+        document.getElementById('success-section').classList.remove('hidden');
+
+        if (selectedRsvp === 'recusado') {
+          document.getElementById('success-message').textContent = 'Entendemos que você não poderá comparecer. Agradecemos por nos avisar!';
         }
       } catch (err) {
         alert('Erro ao enviar confirmação. Tente novamente.');
@@ -643,22 +537,7 @@
           body,
           headers: { 'Title': `💍 Novo RSVP: ${name}`, 'Priority': 'high', 'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive' }
         });
-      } catch (err) { console.error('Erro na notificação:', err); }
-    }
-
-    async function sendTelegramNotification(name, status, plusOnes, message) {
-      if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
-      const emoji = status === 'confirmado' ? '✅' : '❌';
-      let text = `${emoji} *Novo RSVP Recebido!*\n\n👤 *Convidado:* ${name}\n📢 *Resposta:* ${status === 'confirmado' ? 'CONFIRMOU presença!' : 'não poderá comparecer.'}\n`;
-      if (status === 'confirmado') text += `👨‍👩‍👧‍👦 *Acompanhantes:* ${plusOnes}\n`;
-      if (message?.trim()) text += `\n💌 *Mensagem:* ${message.trim()}\n`;
-      try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' })
-        });
-      } catch (err) { console.error('Erro Telegram:', err); }
+      } catch (err) { console.error('Erro notificação:', err); }
     }
 
     window.onload = loadGuest;

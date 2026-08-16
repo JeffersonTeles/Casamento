@@ -17,6 +17,8 @@ create table if not exists public.guests (
   invited_by text,
   "group" text,
   partner_id uuid references public.guests(id),
+  partner_name text,
+  is_vip boolean default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -256,15 +258,17 @@ create policy "guestbook_delete_admin" on public.guestbook
 -- ============================================================
 
 -- Retorna dados públicos de um convidado pelo token do convite.
--- Inclui is_vip para permitir convites diferentes (padrinhos vs. convidados normais).
+-- Inclui is_vip, partner_name e partner_token para convites personalizados.
 drop function if exists public.get_guest_public_by_token(text);
 create or replace function public.get_guest_public_by_token(p_invite_token text)
-returns table (id uuid, name text, rsvp_status text, invite_token text, is_vip boolean)
+returns table (id uuid, name text, rsvp_status text, invite_token text, is_vip boolean, partner_name text, partner_token text)
 language sql security definer
 set search_path = public
 as $$
-  select g.id, g.name, g.rsvp_status, g.invite_token, g.is_vip
+  select g.id, g.name, g.rsvp_status, g.invite_token, g.is_vip,
+         g.partner_name, p.invite_token as partner_token
   from public.guests g
+  left join public.guests p on g.partner_id = p.id
   where g.invite_token = p_invite_token
   limit 1;
 $$;
