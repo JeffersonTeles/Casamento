@@ -464,7 +464,7 @@
           <div class="divider-line"></div>
         </div>
 
-        <p class="greeting" id="guest-greeting">Voce esta convidado(a) para celebrar o nosso amor</p>
+        <p class="greeting" id="guest-greeting">Você está convidado(a) para celebrar o nosso amor</p>
 
         <div class="divider">
           <div class="divider-line"></div>
@@ -475,16 +475,16 @@
         <div class="details">
           <div>
             <p class="detail-label">Data</p>
-            <p class="detail-value">Sabado,<br/><span class="detail-accent">06 de Fevereiro</span><br/>de 2027</p>
+            <p class="detail-value">Sábado,<br/><span class="detail-accent">06 de Fevereiro</span><br/>de 2027</p>
           </div>
           <div>
-            <p class="detail-label">Horario</p>
+            <p class="detail-label">Horário</p>
             <p class="detail-value"><span class="detail-accent">08h00</span></p>
           </div>
         </div>
 
         <div class="venue">
-          <p class="venue-name">Capela Sao Maximiliano</p>
+          <p class="venue-name">Capela São Maximiliano</p>
           <p class="venue-address">Rua Siqueira Campos, 1234<br/>Bairro Country — Cascavel, PR</p>
           <div class="venue-maps">
             <a href="https://www.google.com/maps/search/?api=1&query=Capela+S%C3%A3o+Maximiliano+Cascavel+PR" target="_blank" rel="noopener noreferrer" class="map-btn">Google Maps</a>
@@ -501,13 +501,13 @@
         </div>
 
         <div id="rsvp-initial">
-          <button class="rsvp-trigger" onclick="showRSVPForm()">Confirmar Presenca</button>
+          <button class="rsvp-trigger" onclick="showRSVPForm()">Confirmar Presença</button>
         </div>
 
         <div class="rsvp-form" id="rsvp-form">
           <div class="rsvp-options">
             <button type="button" class="rsvp-opt" data-status="confirmado" onclick="selectOpt(this)">Vou Comparecer</button>
-            <button type="button" class="rsvp-opt" data-status="recusado" onclick="selectOpt(this)">Nao Poderei</button>
+            <button type="button" class="rsvp-opt" data-status="recusado" onclick="selectOpt(this)">Não Poderei</button>
           </div>
           <div class="plus-ones" id="plus-ones-group">
             <div class="field">
@@ -520,7 +520,7 @@
             </div>
           </div>
           <div class="field">
-            <label class="field-label" for="rsvp-dietary">Restricao Alimentar</label>
+            <label class="field-label" for="rsvp-dietary">Restrição Alimentar</label>
             <input type="text" class="field-input" id="rsvp-dietary" placeholder="Opcional" />
           </div>
           <div class="field">
@@ -558,13 +558,13 @@
         if (error || !data || data.length === 0) return;
         currentGuest = data[0];
         const firstName = currentGuest.name.split(' ')[0];
-        document.getElementById('guest-greeting').textContent = `${firstName}, voce esta convidado(a)`;
+        document.getElementById('guest-greeting').textContent = `${firstName}, você está convidado(a)`;
         if (currentGuest.rsvp_status === 'confirmado' || currentGuest.rsvp_status === 'recusado') {
           document.getElementById('rsvp-initial').style.display = 'none';
           document.getElementById('rsvp-form').classList.remove('active');
           document.getElementById('rsvp-success').classList.add('active');
           if (currentGuest.rsvp_status === 'recusado') {
-            document.getElementById('success-text').textContent = 'Sentimos muito. Estaremos pensando em voce!';
+            document.getElementById('success-text').textContent = 'Sentimos muito. Estaremos pensando em você!';
           }
         }
         await supabaseClient.from('rsvp_access_logs').insert([{
@@ -587,8 +587,8 @@
     }
 
     async function submitRSVP() {
-      if (!selectedStatus) { alert('Selecione se voce comparecera.'); return; }
-      if (!currentGuest) { alert('Erro: convidado nao identificado.'); return; }
+      if (!selectedStatus) { alert('Selecione se você comparecerá.'); return; }
+      if (!currentGuest) { alert('Erro: convidado não identificado.'); return; }
       if (!checkRsvpRateLimit(GUEST_TOKEN)) { alert('Aguarde antes de enviar novamente.'); return; }
       const btn = document.getElementById('submit-btn');
       btn.disabled = true; btn.textContent = 'Enviando...';

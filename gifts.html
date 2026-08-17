@@ -112,23 +112,22 @@
       </p>
     </section>
 
-    <section class="reveal active mt-12 mx-auto max-w-2xl">
-      <div class="premium-glass rounded-[2.5rem] p-8 md:p-12 text-center">
+    <section class="reveal active mt-12">
+      <div class="premium-glass rounded-[2.5rem] p-8 md:p-12 max-w-lg mx-auto" style="text-align:center">
         <p class="text-xs font-bold text-vinho uppercase tracking-widest mb-6">Chave PIX (Telefone)</p>
         
-        <div id="pix-container" class="relative group cursor-pointer flex flex-col items-center mx-auto" onclick="revealPix()">
-          <!-- Hidden QR Code placeholder -->
+        <div id="pix-container" class="cursor-pointer" onclick="revealPix()" style="display:flex;flex-direction:column;align-items:center">
           <div id="qr-placeholder" class="bg-slate-100 w-48 h-48 md:w-64 md:h-64 rounded-3xl flex flex-col items-center justify-center border border-dashed border-vinho/20 mb-6">
             <i data-lucide="lock" class="w-12 h-12 text-vinho/80 mb-3"></i>
             <p class="text-[10px] text-vinho/80 uppercase font-bold tracking-widest">Clique para revelar</p>
           </div>
           
           <div id="qr-real" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6 animate-fade-in">
-            <img id="qr-img" src="https://quickchart.io/qr?size=250&text=44999277915" alt="QR Code PIX" class="w-48 h-48 md:w-64 md:h-64" loading="lazy" width="250" height="250" />
+            <img id="qr-img" src="" alt="QR Code PIX" class="w-48 h-48 md:w-64 md:h-64" loading="lazy" width="250" height="250" />
           </div>
         </div>
 
-        <div class="space-y-3 w-full max-w-xs mx-auto">
+        <div class="space-y-3" style="max-width:280px;margin-left:auto;margin-right:auto">
           <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
             <p class="text-[0.65rem] text-vinho/80 uppercase font-bold tracking-tight mb-1">Telefone (Chave PIX)</p>
             <p id="pix-number" class="text-xl font-mono text-vinho font-bold tracking-tighter blur-sm select-none">00000000000</p>
@@ -143,7 +142,7 @@
         </div>
 
         <p class="mt-6 text-sm font-medium text-zinc-600 italic">
-          Agradecemos imensamente por todo o carinho e por fazer parte da nossa historia!
+          Agradecemos imensamente por todo o carinho e por fazer parte da nossa história!
         </p>
       </div>
     </section>
