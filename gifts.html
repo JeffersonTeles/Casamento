@@ -8,9 +8,15 @@
 
   <meta name="description"
     content="Lista de presentes do casamento de Jefferson & Beatriz. Contribua com o nosso enxoval através de PIX." />
+  <meta property="og:title" content="Presentes — Jefferson & Beatriz" />
+  <meta property="og:description" content="Sua presença é o maior presente. Se quiser nos homenagear, nosso PIX está disponível." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#1a1a2e" />
 
   <link rel="stylesheet" href="./css/output.css" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
   <style>
@@ -119,7 +125,7 @@
           </div>
           
           <div id="qr-real" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-8 inline-block animate-fade-in">
-            <img src="https://quickchart.io/qr?size=250&text=44999277915" alt="QR Code PIX" class="w-48 h-48 md:w-64 md:h-64" />
+            <img id="qr-img" src="https://quickchart.io/qr?size=250&text=44999277915" alt="QR Code PIX" class="w-48 h-48 md:w-64 md:h-64" loading="lazy" width="250" height="250" />
           </div>
         </div>
 
@@ -144,50 +150,45 @@
   </main>
 
   <footer class="mt-12 border-t border-slate-100 bg-white/60">
-    <div class="max-w-5xl mx-auto px-4 py-8 text-center text-sm text-zinc-600">
-      Com amor, Jefferson & Beatriz
+    <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[0.7rem] text-zinc-600">
+      <span>Com carinho, Jefferson &amp; Beatriz</span>
+      <span>Que esse seja apenas o começo de muitas comemorações.</span>
     </div>
   </footer>
 
   <script src="https://unpkg.com/lucide@0.344.0" integrity="sha256-fJc75Q6pL2naKY4BfgHo5qBo+LWZ7ghwQRgfFRyO8JI=" crossorigin="anonymous"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/shared.js"></script>
   <script>
     function revealPix() {
       document.getElementById('qr-placeholder').classList.add('hidden');
-      document.getElementById('qr-real').classList.remove('hidden');
+      const qrReal = document.getElementById('qr-real');
+      qrReal.classList.remove('hidden');
+      const pixKey = getPixKey();
+      document.getElementById('qr-img').src = `https://quickchart.io/qr?size=250&text=${encodeURIComponent(pixKey)}`;
       const pix = document.getElementById('pix-number');
-      pix.textContent = '44999277915';
+      pix.textContent = pixKey;
       pix.classList.remove('blur-sm', 'select-none');
       document.getElementById('btnPix').disabled = false;
     }
 
     const btnPix = document.getElementById('btnPix');
     if (btnPix) {
-      btnPix.addEventListener('click', () => {
-        navigator.clipboard.writeText('44999277915').catch(() => {});
+      btnPix.addEventListener('click', async () => {
+        const ok = await copyToClipboard(getPixKey());
         const original = btnPix.textContent;
-        btnPix.textContent = 'Chave copiada! ✓';
-        btnPix.classList.add('bg-green-600');
+        btnPix.textContent = ok ? 'Chave copiada! \u2713' : 'Falha ao copiar';
+        btnPix.classList.add(ok ? 'bg-green-600' : 'bg-red-600');
         setTimeout(() => {
           btnPix.textContent = original;
-          btnPix.classList.remove('bg-green-600');
-        }, 2000);
+          btnPix.classList.remove('bg-green-600', 'bg-red-600');
+        }, TOAST_DURATION_MS);
       });
     }
 
-    function reveal() {
-      var reveals = document.querySelectorAll(".reveal");
-      for (var i = 0; i < reveals.length; i++) {
-        var windowHeight = window.innerHeight;
-        var elementTop = reveals[i].getBoundingClientRect().top;
-        var elementVisible = 100;
-        if (elementTop < windowHeight - elementVisible) {
-          reveals[i].classList.add("active");
-        }
-      }
-    }
-    window.addEventListener("scroll", reveal, { passive: true });
+    function reveal() { initScrollReveal(); }
     window.addEventListener('load', () => {
-      reveal();
+      initScrollReveal();
       if (window.lucide) lucide.createIcons();
     });
   </script>

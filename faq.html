@@ -12,6 +12,10 @@
 
   <meta name="description"
     content="Dúvidas frequentes sobre o casamento de Jefferson & Beatriz: cerimônia, traje, acompanhantes e crianças." />
+  <meta property="og:title" content="Dúvidas — Jefferson & Beatriz" />
+  <meta property="og:description" content="Tire suas dúvidas sobre o nosso casamento: cerimônia, dress code, crianças e mais." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#1a1a2e" />
 
   <script type="application/ld+json">
   {
@@ -79,18 +83,6 @@
 
     details>div {
       animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-4px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     /* Melhor feedback visual */
@@ -201,11 +193,11 @@
     <section class="max-w-3xl mx-auto px-4 py-6">
       <div class="accordion-container">
         <div class="accordion-item active">
-          <button class="accordion-header" aria-label="Alternar visibilidade da dúvida" onclick="toggleAccordion(this)">
+          <button class="accordion-header" aria-expanded="true" aria-controls="faq-1" onclick="toggleAccordion(this)">
             <h3><span>📍</span> Onde será o evento?</h3>
             <i data-lucide="chevron-down" class="accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" id="faq-1" role="region" aria-labelledby="faq-btn-1">
             <p class="text-sm text-zinc-600 leading-relaxed">
               A cerimônia será celebrada na <strong>Capela São Maximiliano</strong>, em Cascavel - PR, às 08h00 DA MANHÃ (PONTUALMENTE). 
               Não teremos recepção após a celebração.
@@ -217,11 +209,11 @@
         </div>
 
         <div class="accordion-item">
-          <button class="accordion-header" aria-label="Alternar visibilidade da dúvida" onclick="toggleAccordion(this)">
+          <button class="accordion-header" aria-expanded="false" aria-controls="faq-2" onclick="toggleAccordion(this)">
             <h3><span>👔</span> Qual o traje sugerido?</h3>
             <i data-lucide="chevron-down" class="accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" id="faq-2" role="region">
             <p class="text-sm text-zinc-600">
               O traje é <strong>livre</strong>. Pedimos apenas que <strong>não usem cores claras semelhantes ao branco</strong>, para que possamos manter o destaque da noiva.
             </p>
@@ -229,11 +221,11 @@
         </div>
 
         <div class="accordion-item">
-          <button class="accordion-header" aria-label="Alternar visibilidade da dúvida" onclick="toggleAccordion(this)">
+          <button class="accordion-header" aria-expanded="false" aria-controls="faq-3" onclick="toggleAccordion(this)">
             <h3><span>👥</span> Posso levar acompanhantes?</h3>
             <i data-lucide="chevron-down" class="accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" id="faq-3" role="region">
             <p class="text-sm text-zinc-600 leading-relaxed">
               Nosso casamento é um evento íntimo para as pessoas que fazem parte da nossa história. Por favor, considere apenas os nomes confirmados no seu convite individual.
             </p>
@@ -241,11 +233,11 @@
         </div>
 
         <div class="accordion-item">
-          <button class="accordion-header" aria-label="Alternar visibilidade da dúvida" onclick="toggleAccordion(this)">
+          <button class="accordion-header" aria-expanded="false" aria-controls="faq-4" onclick="toggleAccordion(this)">
             <h3><span>🎁</span> Onde está a lista de presentes?</h3>
             <i data-lucide="chevron-down" class="accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" id="faq-4" role="region">
             <p class="text-sm text-zinc-600">
               Você pode acessar nossa lista completa clicando no menu "Presentes" ou <a href="gifts.html" class="text-vinho underline font-bold">clicando aqui</a>.
             </p>
@@ -253,11 +245,11 @@
         </div>
 
         <div class="accordion-item">
-          <button class="accordion-header" aria-label="Alternar visibilidade da dúvida" onclick="toggleAccordion(this)">
+          <button class="accordion-header" aria-expanded="false" aria-controls="faq-5" onclick="toggleAccordion(this)">
             <h3><span>👶</span> Terá espaço para crianças?</h3>
             <i data-lucide="chevron-down" class="accordion-icon"></i>
           </button>
-          <div class="accordion-content">
+          <div class="accordion-content" id="faq-5" role="region">
             <p class="text-sm text-zinc-600">
               Amamos os pequenos! No entanto, pedimos que apenas as crianças citadas nominalmente nos convites participem da cerimônia.
             </p>
@@ -277,8 +269,9 @@
   </main>
 
   <footer class="mt-4 border-t border-slate-100 bg-white/60">
-    <div class="max-w-5xl mx-auto px-4 py-5 text-center text-xs font-medium text-zinc-700">
-      Mal podemos esperar para celebrar esse dia com você.
+    <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[0.7rem] text-zinc-600">
+      <span>Com carinho, Jefferson &amp; Beatriz</span>
+      <span>Que esse seja apenas o começo de muitas comemorações.</span>
     </div>
   </footer>
 
@@ -290,10 +283,12 @@
       
       document.querySelectorAll(".accordion-item").forEach(i => {
         i.classList.remove("active");
+        i.querySelector(".accordion-header").setAttribute("aria-expanded", "false");
       });
       
       if (!isActive) {
         item.classList.add("active");
+        header.setAttribute("aria-expanded", "true");
       }
     }
     

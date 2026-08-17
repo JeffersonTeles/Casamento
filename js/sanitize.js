@@ -17,10 +17,3 @@ function sanitizeAttr(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
-
-function sanitizeURL(str) {
-  if (!str) return '';
-  const url = String(str).trim();
-  if (/^https?:\/\//i.test(url)) return url;
-  return '';
-}

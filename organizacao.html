@@ -5,15 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Organização do Casamento — Jefferson & Beatriz</title>
   <meta name="description" content="Painel de organização do casamento de Jefferson & Beatriz" />
+  <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#1a1a2e" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="./css/output.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" integrity="sha256-z1Kf6JgMvm8t0+OTDs+WNS7T09cSM7Z2Dk+Sf4m5S58=" crossorigin="anonymous"></script>
-  <script src="./js/config.js"></script>
-  <script src="./js/sanitize.js"></script>
-  <script src="./js/shared.js"></script>
-  <script src="https://unpkg.com/lucide@0.344.0" integrity="sha256-fJc75Q6pL2naKY4BfgHo5qBo+LWZ7ghwQRgfFRyO8JI=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4" integrity="sha256-SERKgtTty1vsDxll+qzd4Y2cF9swY9BCq62i9wXJ9Uo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" integrity="sha256-z1Kf6JgMvm8t0+OTDs+WNS7T09cSM7Z2Dk+Sf4m5S58=" crossorigin="anonymous" defer></script>
+  <script src="./js/config.js" defer></script>
+  <script src="./js/sanitize.js" defer></script>
+  <script src="./js/shared.js" defer></script>
+  <script src="https://unpkg.com/lucide@0.344.0" integrity="sha256-fJc75Q6pL2naKY4BfgHo5qBo+LWZ7ghwQRgfFRyO8JI=" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4" integrity="sha256-SERKgtTty1vsDxll+qzd4Y2cF9swY9BCq62i9wXJ9Uo=" crossorigin="anonymous" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -26,8 +29,6 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
     .dock-btn.active { background: #1a1a2e; color: #fff; box-shadow: 0 12px 30px rgba(26, 26, 46, 0.22); }
 
     .glass-card { background: var(--surface); backdrop-filter: blur(14px); border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(26, 26, 46, 0.10); }
@@ -39,7 +40,7 @@
     .gate-card { width: 100%; max-width: 420px; }
     .gate-hidden { display: none !important; }
 
-    .bg-orb { position: fixed; pointer-events: none; z-index: -1; filter: blur(2px); opacity: 0.75; }
+    .bg-orb { position: fixed; pointer-events: none; z-index: -1; filter: blur(2px); opacity: 0.75; will-change: transform; }
     .orb-a { width: 340px; height: 340px; top: -90px; right: -60px; border-radius: 45% 55% 60% 40% / 50% 35% 65% 50%; background: linear-gradient(160deg, rgba(201, 169, 110, 0.18), rgba(26, 26, 46, 0.06)); }
     .orb-b { width: 260px; height: 260px; left: -40px; bottom: -50px; border-radius: 55% 45% 45% 55% / 45% 60% 40% 55%; background: linear-gradient(160deg, rgba(250, 250, 248, 0.9), rgba(26, 26, 46, 0.04)); }
 
@@ -67,6 +68,19 @@
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .nav-scroll-wrapper { position: relative; }
+    .nav-scroll-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 40px;
+      background: linear-gradient(to left, rgba(255,253,249,0.95), transparent);
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+    .nav-scroll-wrapper.no-fade::after { opacity: 0; }
 
     /* Mobile Premium Fixes */
     @media (max-width: 768px) {
@@ -192,25 +206,27 @@
     </header>
 
     <nav class="glass-card rounded-[1.2rem] p-2 mb-6 sticky top-4 z-20 overflow-hidden shadow-sm" style="min-height: 60px;">
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth w-full">
-        <button onclick="switchTab('dashboard')" id="btn-dashboard" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-vinho text-white">Início</button>
-        <button onclick="switchTab('tasks')" id="btn-tasks" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Tarefas</button>
-        <button onclick="switchTab('guests')" id="btn-guests" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Convidados</button>
-        <button onclick="switchTab('expenses')" id="btn-expenses" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Financeiro</button>
-        <button onclick="switchTab('notes')" id="btn-notes" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Notas</button>
-        <button onclick="switchTab('analytics')" id="btn-analytics" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Analytics</button>
-        <button onclick="switchTab('suppliers')" id="btn-suppliers" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Fornecedores</button>
-        <button onclick="switchTab('timeline')" id="btn-timeline" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Cronograma</button>
-        <button onclick="switchTab('docs')" id="btn-docs" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Documentos</button>
-        <button onclick="switchTab('audit')" id="btn-audit" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Log</button>
+      <div class="nav-scroll-wrapper">
+        <div id="navTabsContainer" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth w-full" onscroll="checkNavScroll(this)">
+          <button onclick="switchTab('dashboard')" id="btn-dashboard" role="tab" aria-selected="true" aria-controls="dashboard" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-vinho text-white">Início</button>
+          <button onclick="switchTab('tasks')" id="btn-tasks" role="tab" aria-selected="false" aria-controls="tasks" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Tarefas</button>
+          <button onclick="switchTab('guests')" id="btn-guests" role="tab" aria-selected="false" aria-controls="guests" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Convidados</button>
+          <button onclick="switchTab('expenses')" id="btn-expenses" role="tab" aria-selected="false" aria-controls="expenses" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Financeiro</button>
+          <button onclick="switchTab('notes')" id="btn-notes" role="tab" aria-selected="false" aria-controls="notes" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Notas</button>
+          <button onclick="switchTab('analytics')" id="btn-analytics" role="tab" aria-selected="false" aria-controls="analytics" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Analytics</button>
+          <button onclick="switchTab('suppliers')" id="btn-suppliers" role="tab" aria-selected="false" aria-controls="suppliers" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Fornecedores</button>
+          <button onclick="switchTab('timeline')" id="btn-timeline" role="tab" aria-selected="false" aria-controls="timeline" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Cronograma</button>
+          <button onclick="switchTab('docs')" id="btn-docs" role="tab" aria-selected="false" aria-controls="docs" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Documentos</button>
+          <button onclick="switchTab('audit')" id="btn-audit" role="tab" aria-selected="false" aria-controls="audit" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Log</button>
+        </div>
       </div>
     </nav>
 
-    <div id="main-layout-grid" class="grid grid-cols-1 xl:grid-cols-[1.6fr_0.9fr] gap-6 items-start pb-24">
+    <div id="main-layout-grid" class="grid grid-cols-1 lg:grid-cols-[1.6fr_0.9fr] gap-6 items-start pb-24">
       <div id="primary-column" class="space-y-6">
         
         <!-- SEÇÃO DASHBOARD (INÍCIO) -->
-        <section id="dashboard" class="tab-content active space-y-6">
+        <section id="dashboard" role="tabpanel" aria-labelledby="btn-dashboard" class="tab-content active space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Coluna Esquerda: Tarefas e RSVP -->
             <div class="space-y-4">
@@ -267,15 +283,15 @@
         </section>
 
         <!-- SEÇÃO TAREFAS -->
-        <section id="tasks" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+        <section id="tasks" role="tabpanel" aria-labelledby="btn-tasks" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="check-circle-2"></i> Checklist</h2>
           <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto_auto] gap-2 mb-6">
-            <input type="text" id="newTask" placeholder="O que precisa ser feito?" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho" />
-            <input type="date" id="taskDue" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm" />
-            <select id="taskPriority" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm">
+            <input type="text" id="newTask" aria-label="Nova tarefa" placeholder="O que precisa ser feito?" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho" />
+            <input type="date" id="taskDue" aria-label="Data de vencimento" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm" />
+            <select id="taskPriority" aria-label="Prioridade" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm">
               <option value="media">Prioridade</option><option value="alta">🔴 Alta</option><option value="media">🟡 Média</option><option value="baixa">🔵 Baixa</option>
             </select>
-            <select id="taskOwner" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm">
+            <select id="taskOwner" aria-label="Responsável" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm">
               <option value="">Responsável</option><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
             </select>
             <button onclick="addTask()" class="bg-vinho text-white px-6 py-3 rounded-xl hover:bg-vinho/90 transition font-bold">Adicionar</button>
@@ -289,7 +305,7 @@
           <div id="taskList" class="space-y-3"></div>
         </section>
 
-        <section id="guests" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+        <section id="guests" role="tabpanel" aria-labelledby="btn-guests" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
             <h2 class="text-2xl font-titulo text-vinho flex items-center gap-2"><i data-lucide="users"></i> Convidados</h2>
             <div class="flex flex-wrap gap-2">
@@ -303,7 +319,7 @@
           <div class="mb-6 space-y-4">
             <div class="relative">
               <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-700"></i>
-              <input type="text" id="guestSearch" oninput="handleGuestSearch(this.value)" placeholder="Buscar por nome..." class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-vinho transition-all" />
+              <input type="text" id="guestSearch" oninput="handleGuestSearch(this.value)" aria-label="Buscar convidado" placeholder="Buscar por nome..." class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-vinho transition-all" />
             </div>
             <div class="flex flex-wrap gap-2">
               <button onclick="setGuestFilter('all')" id="guest-filter-all" class="mini-pill bg-vinho text-white">Todos</button>
@@ -319,11 +335,12 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-6">
-            <input type="text" id="guestName" placeholder="Nome" class="p-3 rounded-xl border border-slate-300" />
-            <input type="text" id="guestPhone" placeholder="Telefone" class="p-3 rounded-xl border border-slate-300" />
-            <input type="text" id="guestPartner" placeholder="Parceiro(a) no convite" class="p-3 rounded-xl border border-slate-300" />
-            <input type="text" id="guestDietary" placeholder="Restrição alimentar (opcional)" class="p-3 rounded-xl border border-slate-300" />
-            <select id="guestOwner" class="p-3 rounded-xl border border-slate-300 bg-white">
+            <input type="text" id="guestName" aria-label="Nome do convidado" placeholder="Nome" required class="p-3 rounded-xl border border-slate-300" />
+            <input type="tel" id="guestPhone" aria-label="Telefone" placeholder="Telefone" inputmode="tel" pattern="[\d\s\-\(\)]+" class="p-3 rounded-xl border border-slate-300" />
+            <input type="text" id="guestPartner" aria-label="Parceiro(a)" placeholder="Parceiro(a) no convite" class="p-3 rounded-xl border border-slate-300" />
+            <input type="text" id="guestDietary" aria-label="Restrição alimentar" placeholder="Restrição alimentar (opcional)" class="p-3 rounded-xl border border-slate-300" />
+            <select id="guestOwner" aria-label="Responsável" class="p-3 rounded-xl border border-slate-300 bg-white">
+              <option value="">Responsável</option>
               <option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
             </select>
             <button onclick="addGuest()" class="md:col-span-2 lg:col-span-4 bg-vinho text-white p-3 rounded-xl font-bold">Cadastrar</button>
@@ -332,18 +349,18 @@
         </section>
 
         <!-- SEÇÃO FINANCEIRO -->
-        <section id="expenses" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+        <section id="expenses" role="tabpanel" aria-labelledby="btn-expenses" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="banknote"></i> Financeiro</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
             <div class="summary-card p-4 rounded-xl relative">
               <p class="text-xs font-medium text-slate-700 uppercase tracking-wider">Orçamento Total</p>
               <div class="flex items-center gap-2 mt-1"><span class="text-lg font-bold text-vinho" id="stat-budget">R$ 0,00</span><button onclick="toggleBudgetEdit(true)" class="text-slate-700 text-xs">✏️</button></div>
-              <div id="budget-edit-container" class="hidden absolute inset-0 bg-white/95 rounded-xl flex items-center p-2 gap-1 z-10"><input type="number" id="budget-input" class="w-full p-2 border rounded-lg text-sm" placeholder="Total" /><button onclick="saveBudgetFromInput()" class="bg-vinho text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button></div>
+              <div id="budget-edit-container" class="hidden absolute inset-0 bg-white/95 rounded-xl flex items-center p-2 gap-1 z-10"><input type="number" id="budget-input" aria-label="Orçamento total" class="w-full p-2 border rounded-lg text-sm" placeholder="Total" /><button onclick="saveBudgetFromInput()" class="bg-vinho text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button></div>
             </div>
             <div class="summary-card p-4 rounded-xl relative">
               <p class="text-[10px] uppercase text-emerald-600 font-bold tracking-wider">Guardado (Em Conta)</p>
               <div class="flex items-center gap-2 mt-1"><span class="text-lg font-bold text-emerald-600" id="stat-savings">R$ 0,00</span><button onclick="toggleSavingsEdit(true)" class="text-emerald-300 text-xs">✏️</button></div>
-              <div id="savings-edit-container" class="hidden absolute inset-0 bg-emerald-50/95 rounded-xl flex items-center p-2 gap-1 z-10"><input type="number" id="savings-input" class="w-full p-2 border border-emerald-200 rounded-lg text-sm" placeholder="Valor guardado" /><button onclick="saveSavingsFromInput()" class="bg-emerald-600 text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button></div>
+              <div id="savings-edit-container" class="hidden absolute inset-0 bg-emerald-50/95 rounded-xl flex items-center p-2 gap-1 z-10"><input type="number" id="savings-input" aria-label="Valor guardado" class="w-full p-2 border border-emerald-200 rounded-lg text-sm" placeholder="Valor guardado" /><button onclick="saveSavingsFromInput()" class="bg-emerald-600 text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button></div>
             </div>
             <div class="summary-card p-4 rounded-xl"><p class="text-[10px] uppercase text-rose-500 font-bold tracking-wider">Total Gasto Real</p><p class="text-lg font-bold text-rose-600 mt-1" id="stat-total-spent">R$ 0,00</p></div>
             <div class="summary-card p-4 rounded-xl">
@@ -358,9 +375,9 @@
             <div class="space-y-4">
               <h3 class="text-sm font-bold text-slate-700 uppercase tracking-widest">Novo Lançamento Real</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <input type="text" id="expItem" placeholder="Ex: Entrada do Fotógrafo" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-                <input list="categories" id="expCategory" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-                <input type="number" id="expAmount" placeholder="Valor R$" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+                <input type="text" id="expItem" aria-label="Descrição do gasto" placeholder="Ex: Entrada do Fotógrafo" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+                <input list="categories" id="expCategory" aria-label="Categoria" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+                <input type="number" id="expAmount" aria-label="Valor" placeholder="Valor R$" class="p-3 border rounded-xl outline-none focus:border-vinho" />
                 <button onclick="addExpense()" class="bg-vinho text-white rounded-xl font-bold p-3 hover:opacity-90 transition-all">Lançar Gasto</button>
               </div>
               <div id="expenseList" class="space-y-2 max-h-[300px] overflow-y-auto no-scrollbar pr-1"></div>
@@ -384,9 +401,9 @@
         </section>
 
         <!-- SEÇÃO NOTAS -->
-        <section id="notes" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+        <section id="notes" role="tabpanel" aria-labelledby="btn-notes" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="sticky-note"></i> Mural do Casal</h2>
-          <textarea id="meetingNotes" class="w-full p-4 rounded-2xl border border-slate-300 min-h-[300px]" placeholder="Escreva aqui suas ideias, lembretes..."></textarea>
+          <textarea id="meetingNotes" aria-label="Notas do casal" class="w-full p-4 rounded-2xl border border-slate-300 min-h-[300px]" placeholder="Escreva aqui suas ideias, lembretes..."></textarea>
           <button id="saveNotesBtn" class="mt-4 w-full bg-vinho text-white py-4 rounded-xl font-bold text-lg shadow-lg">Salvar Notas</button>
           <p id="notesStatus" class="text-center mt-2 text-sm text-slate-600"></p>
 
@@ -394,7 +411,7 @@
             <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="image"></i> Moodboard & Inspirações</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                <input type="text" id="moodLink" placeholder="Cole link da imagem (Pinterest/Instagram)..." class="w-full p-2 text-xs border rounded-lg mb-2" />
+                <input type="text" id="moodLink" aria-label="Link da referência" placeholder="Cole link da imagem (Pinterest/Instagram)..." class="w-full p-2 text-xs border rounded-lg mb-2" />
                 <button onclick="addMoodLink()" class="w-full bg-slate-800 text-white py-2 rounded-lg text-xs font-bold">Adicionar Referência</button>
               </div>
               <div id="moodGrid" class="grid grid-cols-3 gap-2">
@@ -405,7 +422,7 @@
         </section>
 
         <!-- SEÇÃO ANALYTICS -->
-        <section id="analytics" class="tab-content glass-card p-5 rounded-[1.6rem]">
+        <section id="analytics" role="tabpanel" aria-labelledby="btn-analytics" class="tab-content glass-card p-5 rounded-[1.6rem]">
            <h2 class="text-2xl font-titulo text-vinho mb-6"><i data-lucide="bar-chart-2"></i> Analytics</h2>
            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
               <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
@@ -433,18 +450,18 @@
         </section>
 
         <!-- SEÇÃO FORNECEDORES -->
-        <section id="suppliers" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+        <section id="suppliers" role="tabpanel" aria-labelledby="btn-suppliers" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="store"></i> Fornecedores</h2>
           
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
             <div class="md:col-span-2 lg:col-span-1">
-              <input type="text" id="supplierName" placeholder="Nome do Fornecedor" class="w-full p-3 border rounded-xl outline-none focus:border-vinho" />
+              <input type="text" id="supplierName" aria-label="Nome do fornecedor" placeholder="Nome do Fornecedor" class="w-full p-3 border rounded-xl outline-none focus:border-vinho" />
             </div>
-            <input type="text" id="supplierContact" placeholder="Telefone ou Instagram" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-            <input type="text" id="supplierMap" placeholder="Link do Google Maps" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-            <input list="categories" id="supplierCategory" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-            <input type="number" id="supplierValue" placeholder="Valor total R$" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-            <select id="supplierStatus" class="p-3 border rounded-xl bg-white outline-none focus:border-vinho text-sm">
+            <input type="text" id="supplierContact" aria-label="Contato" placeholder="Telefone ou Instagram" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+            <input type="text" id="supplierMap" aria-label="Link do Google Maps" placeholder="Link do Google Maps" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+            <input list="categories" id="supplierCategory" aria-label="Categoria" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+            <input type="number" id="supplierValue" aria-label="Valor total" placeholder="Valor total R$" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+            <select id="supplierStatus" aria-label="Status do pagamento" class="p-3 border rounded-xl bg-white outline-none focus:border-vinho text-sm">
               <option value="Pendente">Pendente</option>
               <option value="Pago Parcial">Pago Parcial</option>
               <option value="Quitado">Quitado</option>
@@ -456,14 +473,14 @@
         </section>
 
         <!-- SEÇÃO CRONOGRAMA -->
-        <section id="timeline" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+        <section id="timeline" role="tabpanel" aria-labelledby="btn-timeline" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
             <h2 class="text-2xl font-titulo text-vinho flex items-center gap-2"><i data-lucide="clock"></i> Cronograma do Dia</h2>
             <button onclick="printTimeline()" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-full font-bold hover:bg-slate-700 transition"><i data-lucide="printer" class="w-3 h-3 inline mr-1"></i>Imprimir Roteiro</button>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-6">
-            <input type="time" id="tlTime" class="p-3 border rounded-xl bg-white text-sm" />
-            <input type="text" id="tlEvent" placeholder="O que vai acontecer?" class="p-3 border rounded-xl md:col-span-2" />
+            <input type="time" id="tlTime" aria-label="Horário" class="p-3 border rounded-xl bg-white text-sm" />
+            <input type="text" id="tlEvent" aria-label="Evento" placeholder="O que vai acontecer?" class="p-3 border rounded-xl md:col-span-2" />
             <button onclick="addTimelineEvent()" class="bg-vinho text-white rounded-xl font-bold">Adicionar</button>
           </div>
           <div class="relative border-l-2 border-vinho/20 ml-3 pl-4 space-y-4" id="timelineList">
@@ -472,38 +489,38 @@
         </section>
 
         <!-- SEÇÃO DOCUMENTOS -->
-        <section id="docs" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+        <section id="docs" role="tabpanel" aria-labelledby="btn-docs" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="folder-lock"></i> Checklist de Documentação</h2>
           <p class="text-sm font-medium text-slate-600 mb-6 italic">Gerencie os documentos necessários para o Civil e Religioso.</p>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="docsList">
             <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
-              <input type="checkbox" class="w-5 h-5 accent-vinho" />
-              <div class="flex-1"><p class="font-bold text-sm">Certidão de Nascimento (Noivos)</p><p class="text-xs font-medium text-slate-700">Atualizada 90 dias</p></div>
+              <input type="checkbox" id="doc-0" class="w-5 h-5 accent-vinho" onchange="saveDocCheckboxes()" />
+              <label for="doc-0" class="flex-1 cursor-pointer"><p class="font-bold text-sm">Certidão de Nascimento (Noivos)</p><p class="text-xs font-medium text-slate-700">Atualizada 90 dias</p></label>
             </div>
             <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
-              <input type="checkbox" class="w-5 h-5 accent-vinho" />
-              <div class="flex-1"><p class="font-bold text-sm">Comprovante de Residência</p><p class="text-xs font-medium text-slate-700">Jefferson & Bia</p></div>
+              <input type="checkbox" id="doc-1" class="w-5 h-5 accent-vinho" onchange="saveDocCheckboxes()" />
+              <label for="doc-1" class="flex-1 cursor-pointer"><p class="font-bold text-sm">Comprovante de Residência</p><p class="text-xs font-medium text-slate-700">Jefferson & Bia</p></label>
             </div>
             <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
-              <input type="checkbox" class="w-5 h-5 accent-vinho" />
-              <div class="flex-1"><p class="font-bold text-sm">Certificado de Batismo</p><p class="text-xs font-medium text-slate-700">Para o religioso</p></div>
+              <input type="checkbox" id="doc-2" class="w-5 h-5 accent-vinho" onchange="saveDocCheckboxes()" />
+              <label for="doc-2" class="flex-1 cursor-pointer"><p class="font-bold text-sm">Certificado de Batismo</p><p class="text-xs font-medium text-slate-700">Para o religioso</p></label>
             </div>
             <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
-              <input type="checkbox" class="w-5 h-5 accent-vinho" />
-              <div class="flex-1"><p class="font-bold text-sm">Cópia RG/CPF Padrinhos</p><p class="text-xs font-medium text-slate-700">Civil & Igreja</p></div>
+              <input type="checkbox" id="doc-3" class="w-5 h-5 accent-vinho" onchange="saveDocCheckboxes()" />
+              <label for="doc-3" class="flex-1 cursor-pointer"><p class="font-bold text-sm">Cópia RG/CPF Padrinhos</p><p class="text-xs font-medium text-slate-700">Civil & Igreja</p></label>
             </div>
           </div>
         </section>
 
         <!-- SEÇÃO AUDITORIA (LOG) -->
-        <section id="audit" class="tab-content glass-card p-5 rounded-[1.6rem]">
+        <section id="audit" role="tabpanel" aria-labelledby="btn-audit" class="tab-content glass-card p-5 rounded-[1.6rem]">
            <h2 class="text-2xl font-titulo text-vinho mb-4"><i data-lucide="history"></i> Log de Atividades</h2>
            <div id="auditLogs" class="space-y-2 max-h-[500px] overflow-y-auto pr-2"></div>
         </section>
       </div>
 
-      <aside id="secondary-column" class="hidden xl:block space-y-6 sticky top-24">
+      <aside id="secondary-column" class="hidden lg:block space-y-6 sticky top-24">
         <div class="glass-card p-6 rounded-3xl">
           <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="heart" class="text-dourado"></i> Resumo</h3>
           <div class="space-y-4">
@@ -511,42 +528,47 @@
             <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-amber-600">Vencem em 7 dias</span><strong id="dueSoonStat" class="text-amber-600 text-lg">0</strong></div>
             <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-600">RSVP Confirmados</span><strong id="stat-confirmed-aside" class="text-emerald-600 text-lg">0</strong></div>
           </div>
+          <div class="mt-4 pt-4 border-t border-slate-100">
+            <a href="gallery.html" target="_blank" class="flex items-center gap-2 text-xs font-bold text-vinho hover:text-vinho/80 transition-colors">
+              <i data-lucide="camera" class="w-4 h-4"></i> Abrir Galeria de Fotos
+            </a>
+          </div>
         </div>
       </aside>
     </div>
   </div>
 
   <!-- Bottom Bar (Mobile App Style) -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 py-2 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 py-2 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]" aria-label="Navegação principal">
     <div class="flex items-center overflow-x-auto no-scrollbar gap-1 px-2">
-      <button onclick="switchTab('dashboard')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('dashboard')" aria-label="Início" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Início</span>
       </button>
-      <button onclick="switchTab('tasks')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('tasks')" aria-label="Tarefas" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="check-square" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Tarefas</span>
       </button>
-      <button onclick="switchTab('guests')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('guests')" aria-label="Convidados" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="users" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Convidados</span>
       </button>
-      <button onclick="switchTab('expenses')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('expenses')" aria-label="Financeiro" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="wallet" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Finanças</span>
       </button>
-      <button onclick="switchTab('analytics')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('analytics')" aria-label="Analytics" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="bar-chart-2" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Analytics</span>
       </button>
-      <button onclick="switchTab('suppliers')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('suppliers')" aria-label="Fornecedores" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="truck" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Fornecedores</span>
       </button>
-      <button onclick="switchTab('timeline')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('timeline')" aria-label="Cronograma" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="calendar" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Cronograma</span>
       </button>
-      <button onclick="switchTab('docs')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('docs')" aria-label="Documentos" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="file-text" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Docs</span>
       </button>
-      <button onclick="switchTab('audit')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('audit')" aria-label="Log de atividades" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="scroll" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Log</span>
       </button>
-      <button onclick="switchTab('notes')" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+      <button onclick="switchTab('notes')" aria-label="Mural de notas" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="sticky-note" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Mural</span>
       </button>
     </div>
@@ -568,9 +590,9 @@
   </datalist>
 
   <!-- Modal de Edição de Convidado -->
-  <div id="editGuestModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden p-4">
+  <div id="editGuestModal" role="dialog" aria-modal="true" aria-labelledby="editGuestTitle" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden p-4">
     <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md p-8">
-      <h3 class="text-2xl font-titulo text-vinho mb-6">Editar Convidado</h3>
+      <h3 id="editGuestTitle" class="text-2xl font-titulo text-vinho mb-6">Editar Convidado</h3>
       <div class="space-y-4">
         <input type="hidden" id="editGuestId" />
         <input type="text" id="editGuestName" placeholder="Nome" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
@@ -596,7 +618,7 @@
   </div>
 
   <!-- Modal de Planejamento de Item (Budget) -->
-  <div id="plannerModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden p-4">
+  <div id="plannerModal" role="dialog" aria-modal="true" aria-labelledby="plannerModalTitle" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden p-4">
     <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md p-8">
       <h3 id="plannerModalTitle" class="text-2xl font-titulo text-vinho mb-6">Orçar Novo Item</h3>
       <div class="space-y-4">
@@ -621,7 +643,11 @@
       tasks: [], 
       guests: [], 
       expenses: [], 
-      budget: [],
+      budgetCategories: [],
+      budget: 0,
+      savings: 0,
+      cachedTimeline: [],
+      cachedGuestbookCount: 0,
       taskFilter: 'all', 
       guestFilter: 'all', 
       guestOwnerFilter: 'all',
@@ -641,6 +667,8 @@
       } else {
         modal.classList.remove('hidden');
         modal.classList.add('flex', 'items-center', 'justify-center');
+        const firstInput = modal.querySelector('input:not([type="hidden"])');
+        if (firstInput) firstInput.focus();
       }
     }
 
@@ -663,10 +691,12 @@
         const payload = { category: cat, planned_amount: parseFloat(amount) };
         
         if (id) {
-          await supabaseClient.from('budget_categories').update(payload).eq('id', id);
+          const { error } = await supabaseClient.from('budget_categories').update(payload).eq('id', id);
+          if (error) { console.error('Erro update budget:', error); showToast('Erro ao atualizar orçamento', 'error'); return; }
           showToast('Orçamento atualizado!', 'success');
         } else {
-          await supabaseClient.from('budget_categories').insert([payload]);
+          const { error } = await supabaseClient.from('budget_categories').insert([payload]);
+          if (error) { console.error('Erro insert budget:', error); showToast('Erro ao criar item orçado', 'error'); return; }
           showToast('Item orçado!', 'success');
         }
         
@@ -677,7 +707,8 @@
 
     async function deletePlannerItem(id) {
       if (confirm('Remover este item orçado?')) {
-        await supabaseClient.from('budget_categories').delete().eq('id', id);
+        const { error } = await supabaseClient.from('budget_categories').delete().eq('id', id);
+        if (error) { console.error('Erro delete budget:', error); showToast('Erro ao remover item', 'error'); return; }
         fetchBudget();
         showToast('Item removido', 'success');
       }
@@ -693,17 +724,19 @@
         expensesByCategory[c] = (expensesByCategory[c] || 0) + parseFloat(e.amount);
       });
 
-      list.innerHTML = dashboardState.budget.map(b => {
+      _budgetStore.clear();
+      list.innerHTML = dashboardState.budgetCategories.map(b => {
+        _budgetStore.set(b.id, b);
         const actual = expensesByCategory[b.category.toLowerCase().trim()] || 0;
         const diff = b.planned_amount - actual;
         const percent = Math.min(Math.round((actual / b.planned_amount) * 100), 100);
         return `
           <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2 group relative">
             <div class="flex justify-between items-center">
-              <span class="font-bold text-vinho">${b.category}</span>
+              <span class="font-bold text-vinho">${sanitizeHTML(b.category)}</span>
               <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onclick="editPlannerItem('${b.id}', '${b.category}', ${b.planned_amount})" class="text-slate-600 hover:text-vinho text-xs">✏️</button>
-                <button onclick="deletePlannerItem('${b.id}')" class="text-slate-300 hover:text-red-500 text-xs">✕</button>
+                <button data-action="budget-edit" data-id="${sanitizeAttr(b.id)}" class="text-slate-600 hover:text-vinho text-xs">✏️</button>
+                <button data-action="budget-delete" data-id="${sanitizeAttr(b.id)}" class="text-slate-300 hover:text-red-500 text-xs">✕</button>
               </div>
             </div>
             <div class="flex justify-between text-[10px] uppercase font-bold text-slate-700">
@@ -718,7 +751,97 @@
       }).join('');
     }
 
+    async function fetchBudget() {
+      const { data, error } = await supabaseClient.from('budget_categories').select('*').order('category', { ascending: true });
+      if (error) { console.error('Erro fetch budget:', error); return; }
+      dashboardState.budgetCategories = data || [];
+      renderBudgetPlanner();
+    }
+
+    function saveDocCheckboxes() {
+      const checks = {};
+      for (let i = 0; i < 4; i++) {
+        const el = document.getElementById('doc-' + i);
+        if (el) checks['doc-' + i] = el.checked;
+      }
+      localStorage.setItem('wedding_doc_checks', JSON.stringify(checks));
+    }
+    function loadDocCheckboxes() {
+      try {
+        const data = JSON.parse(localStorage.getItem('wedding_doc_checks') || '{}');
+        for (let i = 0; i < 4; i++) {
+          const el = document.getElementById('doc-' + i);
+          if (el && data['doc-' + i]) el.checked = true;
+        }
+      } catch (e) { console.warn('Falha ao carregar checkboxes:', e); }
+    }
+
+    function initEventDelegation() {
+      document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        const action = btn.dataset.action;
+        const id = btn.dataset.id;
+
+        if (action === 'guest-edit') {
+          const g = _guestStore.get(id);
+          if (g) editGuest(g.id, g.name, g.phone || '', g.invited_by, g.rsvp_status, g.is_vip, g.partner_name || '');
+        } else if (action === 'guest-delete') {
+          deleteGuest(id);
+        } else if (action === 'guest-preview') {
+          const g = _guestStore.get(id);
+          if (g) previewInvite(g.invite_token);
+        } else if (action === 'guest-copy') {
+          const g = _guestStore.get(id);
+          if (g) copyInviteLink(g.invite_token);
+        } else if (action === 'guest-whatsapp') {
+          const g = _guestStore.get(id);
+          if (g) shareInviteWhatsApp(g.name, g.invite_token);
+        } else if (action === 'guest-thank') {
+          const g = _guestStore.get(id);
+          if (g) shareThankYou(g.name);
+        } else if (action === 'task-delete') {
+          deleteTask(id);
+        } else if (action === 'task-calendar') {
+          const t = _taskStore.get(id);
+          if (t) addToPersonalCalendar(t.title, t.due_date);
+        } else if (action === 'task-toggle') {
+          const t = _taskStore.get(id);
+          if (t) toggleTask(t.id, t.status);
+        } else if (action === 'tl-edit') {
+          const ev = _timelineStore.get(id);
+          if (ev) editTimelineEvent(ev.id, ev.event_time, ev.description);
+        } else if (action === 'tl-delete') {
+          deleteTimelineEvent(id);
+        } else if (action === 'expense-delete') {
+          deleteExpense(id);
+        } else if (action === 'budget-edit') {
+          const b = _budgetStore.get(id);
+          if (b) editPlannerItem(b.id, b.category, b.planned_amount);
+        } else if (action === 'budget-delete') {
+          deletePlannerItem(id);
+        } else if (action === 'supplier-edit') {
+          const s = _supplierStore.get(id);
+          if (s) editSupplier(s.id, s.name, s.contact || '', s.map_link || '', s.category || '', s.value || 0, s.status || 'Pendente');
+        } else if (action === 'supplier-delete') {
+          deleteSupplier(id);
+        } else if (action === 'mood-delete') {
+          deleteMood(id);
+        }
+      });
+    }
+
+    let _currentTab = 'dashboard';
     let _guestSearchTimer;
+
+    // Safe data stores for event delegation (XSS prevention)
+    const _guestStore = new Map();
+    const _taskStore = new Map();
+    const _timelineStore = new Map();
+    const _expenseStore = new Map();
+    const _budgetStore = new Map();
+    const _supplierStore = new Map();
+    const _moodStore = new Map();
     function handleGuestSearch(q) {
       clearTimeout(_guestSearchTimer);
       _guestSearchTimer = setTimeout(() => {
@@ -754,12 +877,16 @@
     }
     let allGuests = [], allSuppliers = [];
     let expenseChart, categoryChart, accessChart, inviterChart, rsvpChart, dashDonutChart;
-    let isAnalyticsLoading = false, isExpenseChartLoading = false;
 
     async function initApp() {
       try {
         await Promise.all([fetchSettings(), fetchTasks(), fetchGuests(), fetchExpenses(), fetchLogs(), loadNotesFromSupabase(), fetchTimeline(), fetchBudget()]);
-        initRealtime(); updateOverviewStats(); updateDashboardSummary(); switchTab('dashboard');
+        loadDocCheckboxes();
+        initEventDelegation();
+        initRealtime(); updateOverviewStats(); updateDashboardSummary();
+        const hashTab = location.hash.slice(1);
+        const validTabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline', 'docs'];
+        switchTab(validTabs.includes(hashTab) ? hashTab : 'dashboard');
         if (window.lucide) lucide.createIcons();
       } catch (err) { console.error("Erro setup:", err); }
     }
@@ -771,7 +898,11 @@
     }
 
     async function logout() {
-      await supabaseClient.auth.signOut();
+      try {
+        await supabaseClient.auth.signOut();
+      } catch (err) {
+        console.error('Erro logout:', err);
+      }
       window.location.reload();
     }
 
@@ -857,10 +988,21 @@
         const passInput = document.getElementById('accessPassword');
         const isHidden = passInput.type === 'password';
         passInput.type = isHidden ? 'text' : 'password';
+        togglePassBtn.setAttribute('aria-label', isHidden ? 'Ocultar senha' : 'Mostrar senha');
         togglePassBtn.querySelector('i').setAttribute('data-lucide', isHidden ? 'eye-off' : 'eye');
         if (window.lucide) lucide.createIcons();
       });
     }
+
+    // Escape key closes modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const editModal = document.getElementById('editGuestModal');
+        const plannerModal = document.getElementById('plannerModal');
+        if (editModal && !editModal.classList.contains('hidden')) toggleEditModal(false);
+        if (plannerModal && !plannerModal.classList.contains('hidden')) togglePlannerModal(false);
+      }
+    });
 
     // Redefinição de senha (envia link de reset por e-mail)
     const forgotPassBtn = document.getElementById('forgotPass');
@@ -975,17 +1117,29 @@
     });
 
     function switchTab(tabId) {
+      if (tabId === _currentTab) return;
       const tabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline', 'docs'];
       tabs.forEach(t => {
         const content = document.getElementById(t);
         const btn = document.getElementById(`btn-${t}`);
         if (content) content.classList.remove('active');
-        if (btn) { btn.classList.remove('bg-vinho', 'text-white'); btn.classList.add('bg-white', 'text-slate-600'); }
+        if (btn) {
+          btn.classList.remove('bg-vinho', 'text-white');
+          btn.classList.add('bg-white', 'text-slate-600');
+          btn.setAttribute('aria-selected', 'false');
+        }
       });
       const active = document.getElementById(tabId);
       const activeBtn = document.getElementById(`btn-${tabId}`);
       if (active) active.classList.add('active');
-      if (activeBtn) { activeBtn.classList.remove('bg-white', 'text-slate-600'); activeBtn.classList.add('bg-vinho', 'text-white'); }
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-slate-600');
+        activeBtn.classList.add('bg-vinho', 'text-white');
+        activeBtn.setAttribute('aria-selected', 'true');
+        activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+      _currentTab = tabId;
+      history.replaceState(null, '', '#' + tabId);
       if (tabId === 'dashboard') updateDashboardSummary();
       if (tabId === 'analytics') updateAnalytics();
       if (tabId === 'suppliers') fetchSuppliers();
@@ -993,13 +1147,31 @@
       if (window.lucide) lucide.createIcons();
     }
 
+    window.addEventListener('hashchange', () => {
+      const hash = location.hash.slice(1);
+      const validTabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline', 'docs'];
+      if (validTabs.includes(hash) && hash !== _currentTab) {
+        switchTab(hash);
+      }
+    });
+
+    function checkNavScroll(el) {
+      const wrapper = el.closest('.nav-scroll-wrapper');
+      if (!wrapper) return;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        wrapper.classList.add('no-fade');
+      } else {
+        wrapper.classList.remove('no-fade');
+      }
+    }
+
     // CALENDAR INTEGRATION FOR TASKS
     function addToPersonalCalendar(title, date) {
       if (!date) return;
       const d = new Date(date + 'T08:00:00');
-      const start = d.toISOString().replace(/-|:|\.\d\d\d/g, "");
-      const end = d.toISOString().replace(/-|:|\.\d\d\d/g, "");
-      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('CASAMENTO: ' + title)}&dates=${start}/${end}&details=Lembrete de tarefa do painel de organização.`;
+      const end = new Date(d.getTime() + 60 * 60 * 1000);
+      const fmt = (dt) => dt.toISOString().replace(/-|:|\.\d\d\d/g, "");
+      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('CASAMENTO: ' + title)}&dates=${fmt(d)}/${fmt(end)}&details=Lembrete de tarefa do painel de organização.`;
       window.open(url, '_blank');
     }
 
@@ -1016,22 +1188,27 @@
       const { data } = await supabaseClient.from('moodboard').select('*').order('created_at', { ascending: false });
       const grid = document.getElementById('moodGrid');
       if (!grid) return;
-      grid.innerHTML = (data || []).map(m => `
+      _moodStore.clear();
+      grid.innerHTML = (data || []).map(m => {
+        _moodStore.set(m.id, m);
+        return `
         <div class="relative group aspect-square bg-slate-100 rounded-lg overflow-hidden border">
-          <img src="${sanitizeAttr(m.url)}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x100?text=Link'"/>
-          <button onclick="deleteMood('${sanitizeAttr(m.id)}')" class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-2 h-2"></i></button>
+          <img src="${sanitizeAttr(m.url)}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/100x100?text=Link'"/>
+          <button data-action="mood-delete" data-id="${sanitizeAttr(m.id)}" class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-2 h-2"></i></button>
         </div>
-      `).join('');
+      `}).join('');
       if (window.lucide) lucide.createIcons();
     }
     async function deleteMood(id) { 
-      await supabaseClient.from('moodboard').delete().eq('id', id); 
+      const { error } = await supabaseClient.from('moodboard').delete().eq('id', id); 
+      if (error) { console.error('Erro delete mood:', error); showToast('Erro ao remover', 'error'); return; }
       await logAudit('moodboard', id, 'DELETE');
       fetchMoodLinks(); 
     }
 
     async function fetchTasks() {
-      const { data } = await supabaseClient.from('tasks').select('*').order('due_date', { ascending: true, nullsFirst: false });
+      const { data, error } = await supabaseClient.from('tasks').select('*').order('due_date', { ascending: true, nullsFirst: false });
+      if (error) { console.error('Erro fetch tasks:', error); return; }
       dashboardState.tasks = data || [];
       renderTasks();
     }
@@ -1045,12 +1222,13 @@
         return t.owner === dashboardState.taskFilter;
       });
       const now = new Date(); now.setHours(0,0,0,0);
+      _taskStore.clear();
       list.innerHTML = filtered.map(t => {
+        _taskStore.set(t.id, t);
         const isDone = t.status === 'concluido';
         const dueDate = t.due_date ? new Date(t.due_date + 'T12:00:00') : null;
         const isOverdue = !isDone && dueDate && dueDate < now;
 
-        // Cor por responsável
         let borderClass = 'border-slate-200';
         if (t.owner === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
         else if (t.owner === 'Bia' || t.owner === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
@@ -1058,7 +1236,7 @@
         let ownerTag = t.owner ? `<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 uppercase ml-2 text-slate-700">${sanitizeHTML(t.owner)}</span>` : '';
         const prioBadge = t.priority === 'alta' ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 text-red-600 ml-1">ALTA</span>' : t.priority === 'baixa' ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-600 ml-1">BAIXA</span>' : '';
         const dateStr = t.due_date ? `<span class="text-xs font-medium text-slate-700 ml-auto">${new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>` : '';
-        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${sanitizeAttr(t.id)}', '${sanitizeAttr(t.status)}')" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${sanitizeHTML(t.title)} ${ownerTag}${prioBadge}</span></div>${dateStr}</div><div class="flex gap-2">${t.due_date ? `<button onclick="addToPersonalCalendar('${sanitizeAttr(t.title)}', '${sanitizeAttr(t.due_date)}')" class="p-1 hover:bg-blue-50 rounded" title="Agendar"><i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-500"></i></button>` : ''}<button onclick="deleteTask('${sanitizeAttr(t.id)}')" class="p-1 hover:bg-red-50 rounded">🗑️</button></div></div>`;
+        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} data-action="task-toggle" data-id="${sanitizeAttr(t.id)}" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${sanitizeHTML(t.title)} ${ownerTag}${prioBadge}</span></div>${dateStr}</div><div class="flex gap-2">${t.due_date ? `<button data-action="task-calendar" data-id="${sanitizeAttr(t.id)}" class="p-1 hover:bg-blue-50 rounded" title="Agendar"><i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-500"></i></button>` : ''}<button data-action="task-delete" data-id="${sanitizeAttr(t.id)}" class="p-1 hover:bg-red-50 rounded">🗑️</button></div></div>`;
       }).join('');
     }
     function filterTasks(f) {
@@ -1091,7 +1269,8 @@
 
     async function toggleTask(id, status) { 
       const next = status === 'concluido' ? 'pendente' : 'concluido'; 
-      await supabaseClient.from('tasks').update({ status: next }).eq('id', id); 
+      const { error } = await supabaseClient.from('tasks').update({ status: next }).eq('id', id); 
+      if (error) { console.error('Erro toggle task:', error); showToast('Erro ao atualizar tarefa', 'error'); return; }
       if (next === 'concluido') { await lazyLoad(LAZY.confetti); confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#1a1a2e', '#c9a96e', '#f5e6d3'] }); }
       fetchTasks(); 
     }
@@ -1114,7 +1293,7 @@
       document.getElementById('dash-rsvp-no').textContent = no;
 
       // Financeiro
-      const budget = dashboardState.budget || 50000;
+      const budget = dashboardState.budget || getBudgetDefault();
       const spent = dashboardState.expenses.reduce((s, e) => s + parseFloat(e.amount), 0);
       const percent = Math.min(Math.round((spent / budget) * 100), 100);
       document.getElementById('dash-spent').textContent = `R$ ${spent.toLocaleString('pt-BR')}`;
@@ -1144,14 +1323,18 @@
         }
       });
 
-      // Evento
-      const { data: timeline } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
+      // Evento (usa cache)
+      const timeline = dashboardState.cachedTimeline;
       const nextEvent = timeline && timeline[0] ? `<p class="text-sm font-bold text-vinho">${timeline[0].event_time.substring(0,5)}</p><p class="text-xs text-slate-700">${timeline[0].description}</p>` : '<p class="text-xs font-medium text-slate-700 text-center">Nenhum evento no cronograma.</p>';
       document.getElementById('dash-next-event').innerHTML = nextEvent;
 
-      // Mural de Mensagens (Count)
-      const { count } = await supabaseClient.from('guestbook').select('*', { count: 'exact', head: true });
-      document.getElementById('dash-msg-count').textContent = count || 0;
+      // Mural de Mensagens (Count - usa cache, atualiza a cada 30s)
+      if (!dashboardState._guestbookTs || Date.now() - dashboardState._guestbookTs > 30000) {
+        const { count } = await supabaseClient.from('guestbook').select('*', { count: 'exact', head: true });
+        dashboardState.cachedGuestbookCount = count || 0;
+        dashboardState._guestbookTs = Date.now();
+      }
+      document.getElementById('dash-msg-count').textContent = dashboardState.cachedGuestbookCount;
     }
 
     // AUTO-SAVE NOTES
@@ -1161,14 +1344,16 @@
       document.getElementById('notesStatus').textContent = 'Digitando...';
       notesTimeout = setTimeout(async () => {
         const notes = document.getElementById('meetingNotes').value;
-        await supabaseClient.from(ORG_NOTES_TABLE_NAME).upsert([{ id: 'global', notes }]);
+        const { error } = await supabaseClient.from(ORG_NOTES_TABLE_NAME).upsert([{ id: 'global', notes }]);
+        if (error) { console.error('Erro save notes:', error); document.getElementById('notesStatus').textContent = 'Erro ao salvar'; return; }
         document.getElementById('notesStatus').textContent = '✓ Salvo automaticamente';
         setTimeout(() => { document.getElementById('notesStatus').textContent = ''; }, 2000);
       }, 1500);
     });
     async function deleteTask(id) { 
       if (confirm('Deletar?')) { 
-        await supabaseClient.from('tasks').delete().eq('id', id); 
+        const { error } = await supabaseClient.from('tasks').delete().eq('id', id); 
+        if (error) { console.error('Erro delete task:', error); showToast('Erro ao deletar tarefa', 'error'); return; }
         await logAudit('tasks', id, 'DELETE');
         fetchTasks(); 
       } 
@@ -1190,7 +1375,8 @@
     }
 
     async function fetchGuests() { 
-      const { data } = await supabaseClient.from('guests').select('*').order('name', { ascending: true }); 
+      const { data, error } = await supabaseClient.from('guests').select('*').order('name', { ascending: true }); 
+      if (error) { console.error('Erro fetch guests:', error); return; }
       allGuests = data || []; 
       renderGuestList(); 
     }
@@ -1216,25 +1402,18 @@
 
       let filtered = allGuests;
 
-      // Search Filter
       if (dashboardState.guestSearch) {
         filtered = filtered.filter(g => g.name.toLowerCase().includes(dashboardState.guestSearch));
       }
-
-      // Status Filter
       if (dashboardState.guestFilter !== 'all') {
         filtered = filtered.filter(g => g.rsvp_status === dashboardState.guestFilter);
       }
-
-      // Owner Filter
       if (dashboardState.guestOwnerFilter !== 'all') {
         filtered = filtered.filter(g => {
           if (dashboardState.guestOwnerFilter === 'Bia') return g.invited_by === 'Bia' || g.invited_by === 'Beatriz';
           return g.invited_by === dashboardState.guestOwnerFilter;
         });
       }
-
-      // VIP Filter
       if (dashboardState.vipOnly) {
         filtered = filtered.filter(g => g.is_vip);
       }
@@ -1244,15 +1423,16 @@
         return;
       }
 
+      _guestStore.clear();
       list.innerHTML = filtered.map(g => {
-        // Cor por responsável
+        _guestStore.set(g.id, g);
         let borderClass = 'border-slate-200';
         if (g.invited_by === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
         else if (g.invited_by === 'Bia' || g.invited_by === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
 
-        const thankBtn = g.rsvp_status === 'confirmado' ? `<button onclick="shareThankYou('${sanitizeAttr(g.name)}')" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> Agradecer</button>` : '';
+        const thankBtn = g.rsvp_status === 'confirmado' ? `<button data-action="guest-thank" data-id="${sanitizeAttr(g.id)}" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> Agradecer</button>` : '';
 
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}${g.dietary ? ' • 🍽️ ' + sanitizeHTML(g.dietary) : ''}${g.plus_ones > 0 ? ' • 👥 +' + g.plus_ones : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button onclick="previewInvite('${sanitizeAttr(g.invite_token)}')" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button onclick="copyInviteLink('${sanitizeAttr(g.invite_token)}')" class="bg-slate-100 text-slate-700 text-[10px] px-3 py-1 rounded-full">Copiar</button><button onclick="shareInviteWhatsApp('${sanitizeAttr(g.name)}', '${sanitizeAttr(g.invite_token)}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="editGuest('${sanitizeAttr(g.id)}', '${sanitizeAttr(g.name)}', '${sanitizeAttr(g.phone||'')}', '${sanitizeAttr(g.invited_by)}', '${sanitizeAttr(g.rsvp_status)}', ${g.is_vip}, '${sanitizeAttr(g.partner_name||'')}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${sanitizeAttr(g.id)}')" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}${g.dietary ? ' • 🍽️ ' + sanitizeHTML(g.dietary) : ''}${g.plus_ones > 0 ? ' • 👥 +' + g.plus_ones : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button data-action="guest-preview" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button data-action="guest-copy" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-[10px] px-3 py-1 rounded-full">Copiar</button><button data-action="guest-whatsapp" data-id="${sanitizeAttr(g.id)}" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button data-action="guest-edit" data-id="${sanitizeAttr(g.id)}" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button data-action="guest-delete" data-id="${sanitizeAttr(g.id)}" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
       if (window.lucide) lucide.createIcons();
@@ -1262,6 +1442,7 @@
       if (s) {
         modal.classList.remove('hidden');
         modal.classList.add('flex', 'items-center', 'justify-center');
+        document.getElementById('editGuestName').focus();
       } else {
         modal.classList.add('hidden');
         modal.classList.remove('flex', 'items-center', 'justify-center');
@@ -1287,13 +1468,15 @@
         is_vip: document.getElementById('editGuestVip').checked,
         partner_name: document.getElementById('editGuestPartner').value.trim() || null
       };
-      await supabaseClient.from('guests').update(payload).eq('id', id); 
+      const { error } = await supabaseClient.from('guests').update(payload).eq('id', id); 
+      if (error) { console.error('Erro update guest:', error); showToast('Erro ao salvar convidado', 'error'); return; }
       await logAudit('guests', id, 'UPDATE', null, payload);
       toggleEditModal(false); fetchGuests();
     }
     async function deleteGuest(id) { 
       if (confirm('Remover?')) { 
-        await supabaseClient.from('guests').delete().eq('id', id); 
+        const { error } = await supabaseClient.from('guests').delete().eq('id', id); 
+        if (error) { console.error('Erro delete guest:', error); showToast('Erro ao remover convidado', 'error'); return; }
         await logAudit('guests', id, 'DELETE');
         fetchGuests(); 
       } 
@@ -1319,7 +1502,7 @@
         if (error) throw error;
         if (data?.id) await logAudit('guests', data.id, 'INSERT', null, { name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name, dietary });
         nameEl.value = ''; phoneEl.value = ''; partnerEl.value = ''; dietaryEl.value = '';
-        if (document.getElementById('guestOwner')) document.getElementById('guestOwner').value = '';
+        document.getElementById('guestOwner').value = '';
         fetchGuests();
       } catch (err) {
         console.error(err);
@@ -1398,13 +1581,18 @@
       if (confirmedAside) confirmedAside.textContent = confirmed;
     }
 
-    async function fetchExpenses() { const { data } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false }); dashboardState.expenses = data || []; renderExpenses(); updateExpenseStats(); }
+    async function fetchExpenses() { const { data, error } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false }); if (error) { console.error('Erro fetch expenses:', error); return; } dashboardState.expenses = data || []; renderExpenses(); updateExpenseStats(); }
     function renderExpenses() {
-      document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${sanitizeHTML(e.item)}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(e.category || 'Sem categoria')}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button onclick="deleteExpense('${sanitizeAttr(e.id)}')" class="text-red-500 text-sm">🗑️</button></div></div>`).join('');
+      _expenseStore.clear();
+      document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => {
+        _expenseStore.set(e.id, e);
+        return `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${sanitizeHTML(e.item)}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(e.category || 'Sem categoria')}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button data-action="expense-delete" data-id="${sanitizeAttr(e.id)}" class="text-red-500 text-sm">🗑️</button></div></div>`;
+      }).join('');
     }
     async function deleteExpense(id) { 
       if (confirm('Remover este gasto?')) { 
-        await supabaseClient.from('expenses').delete().eq('id', id); 
+        const { error } = await supabaseClient.from('expenses').delete().eq('id', id); 
+        if (error) { console.error('Erro delete expense:', error); showToast('Erro ao remover gasto', 'error'); return; }
         await logAudit('expenses', id, 'DELETE');
         fetchExpenses(); 
       } 
@@ -1419,17 +1607,19 @@
     }
     // SETTINGS (budget/savings via Supabase)
     async function fetchSettings() {
-      const { data } = await supabaseClient.from('settings').select('*');
+      const { data, error } = await supabaseClient.from('settings').select('*');
+      if (error) { console.error('Erro fetch settings:', error); return; }
       if (data) {
         data.forEach(s => {
-          if (s.key === 'weddingBudget') dashboardState.budget = parseFloat(s.value) || 50000;
+          if (s.key === 'weddingBudget') dashboardState.budget = parseFloat(s.value) || getBudgetDefault();
           if (s.key === 'weddingSavings') dashboardState.savings = parseFloat(s.value) || 0;
         });
       }
-      if (!dashboardState.budget) dashboardState.budget = 50000;
+      if (!dashboardState.budget) dashboardState.budget = getBudgetDefault();
     }
     async function saveSetting(key, value) {
-      await supabaseClient.from('settings').upsert([{ key, value: String(value) }]);
+      const { error } = await supabaseClient.from('settings').upsert([{ key, value: String(value) }]);
+      if (error) { console.error('Erro save setting:', error); showToast('Erro ao salvar configuração', 'error'); }
     }
 
     function toggleBudgetEdit(s) { document.getElementById('budget-edit-container').classList.toggle('hidden', !s); }
@@ -1586,8 +1776,10 @@
 
     // TELA DE CRONOGRAMA
     async function fetchTimeline() {
-      const { data } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
-      renderTimeline(data || []);
+      const { data, error } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
+      if (error) { console.error('Erro fetch timeline:', error); return; }
+      dashboardState.cachedTimeline = data || [];
+      renderTimeline(dashboardState.cachedTimeline);
     }
 
     function renderTimeline(events) {
@@ -1597,7 +1789,10 @@
         list.innerHTML = '<p class="text-sm text-slate-600 italic">Nenhum evento no cronograma ainda.</p>';
         return;
       }
-      list.innerHTML = events.map(ev => `
+      _timelineStore.clear();
+      list.innerHTML = events.map(ev => {
+        _timelineStore.set(ev.id, ev);
+        return `
         <div class="relative group">
           <div class="absolute -left-[1.35rem] top-1 w-3 h-3 bg-vinho rounded-full"></div>
           <div class="flex justify-between items-start">
@@ -1605,34 +1800,55 @@
               <p class="font-bold text-vinho text-sm">${ev.event_time.substring(0, 5)}</p>
               <p class="text-slate-700">${sanitizeHTML(ev.description)}</p>
             </div>
-            <button onclick="deleteTimelineEvent('${ev.id}')" class="opacity-0 group-hover:opacity-100 transition-opacity text-red-400 text-xs">Excluir</button>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button data-action="tl-edit" data-id="${sanitizeAttr(ev.id)}" class="text-slate-600 hover:text-vinho text-xs">✏️</button>
+              <button data-action="tl-delete" data-id="${sanitizeAttr(ev.id)}" class="text-red-400 hover:text-red-600 text-xs">✕</button>
+            </div>
           </div>
         </div>
-      `).join('');
+      `}).join('');
+    }
+
+    let _editingTimelineId = null;
+    function editTimelineEvent(id, time, desc) {
+      _editingTimelineId = id;
+      document.getElementById('tlTime').value = time;
+      document.getElementById('tlEvent').value = desc;
+      document.getElementById('tlEvent').focus();
+      showToast('Editando evento...', 'success');
     }
 
     async function addTimelineEvent() {
       const time = document.getElementById('tlTime').value;
       const desc = document.getElementById('tlEvent').value;
       if (!time || !desc) { showToast('Preencha hora e descrição!', 'error'); return; }
-      // Check for conflicts
-      const { data: existing } = await supabaseClient.from('timeline').select('event_time, description').order('event_time');
-      if (existing) {
-        const conflict = existing.find(e => e.event_time === time);
-        if (conflict) { showToast(`Conflito! Já existe evento às ${time}: ${conflict.description}`, 'error'); return; }
+
+      if (_editingTimelineId) {
+        const { error } = await supabaseClient.from('timeline').update({ event_time: time, description: desc }).eq('id', _editingTimelineId);
+        if (!error) {
+          await logAudit('timeline', _editingTimelineId, 'UPDATE', null, { event_time: time, description: desc });
+          showToast('Evento atualizado!', 'success');
+        }
+        _editingTimelineId = null;
+      } else {
+        const { data: existing } = await supabaseClient.from('timeline').select('event_time, description').order('event_time');
+        if (existing) {
+          const conflict = existing.find(e => e.event_time === time);
+          if (conflict) { showToast(`Conflito! Já existe evento às ${time}: ${conflict.description}`, 'error'); return; }
+        }
+        const { data, error } = await supabaseClient.from('timeline').insert([{ event_time: time, description: desc }]).select('id').single();
+        if (!error && data?.id) await logAudit('timeline', data.id, 'INSERT', null, { event_time: time, description: desc });
+        if (!error) showToast('Evento adicionado!', 'success');
       }
-      const { data, error } = await supabaseClient.from('timeline').insert([{ event_time: time, description: desc }]).select('id').single();
-      if (!error && data?.id) await logAudit('timeline', data.id, 'INSERT', null, { event_time: time, description: desc });
-      if (!error) { 
-        document.getElementById('tlEvent').value = '';
-        showToast('Evento adicionado!', 'success');
-        fetchTimeline(); 
-      }
+      document.getElementById('tlEvent').value = '';
+      document.getElementById('tlTime').value = '';
+      fetchTimeline();
     }
 
     async function deleteTimelineEvent(id) {
       if (confirm('Excluir este horário?')) {
-        await supabaseClient.from('timeline').delete().eq('id', id);
+        const { error } = await supabaseClient.from('timeline').delete().eq('id', id);
+        if (error) { console.error('Erro delete timeline:', error); showToast('Erro ao excluir evento', 'error'); return; }
         await logAudit('timeline', id, 'DELETE');
         fetchTimeline();
       }
@@ -1691,7 +1907,8 @@
     }
 
     async function fetchLogs() { 
-      const { data } = await supabaseClient.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(20); 
+      const { data, error } = await supabaseClient.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(20); 
+      if (error) { console.error('Erro fetch logs:', error); return; }
       const list = document.getElementById('auditLogs');
       if (!list) return;
       if (!data || data.length === 0) {
@@ -1724,26 +1941,23 @@
     function previewInvite(token) {
       window.open(`${window.location.origin}/convite.html?token=${token}`, '_blank');
     }
-    function copyInviteLink(token) {
+    async function copyInviteLink(token) {
       const link = `${window.location.origin}/convite.html?token=${token}`;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(link).then(() => showToast('Link copiado!', 'success'));
-      } else {
-        const ta = document.createElement('textarea');
-        ta.value = link; ta.style.position = 'fixed'; ta.style.left = '-9999px';
-        document.body.appendChild(ta); ta.select();
-        try { document.execCommand('copy'); showToast('Link copiado!', 'success'); } catch {}
-        document.body.removeChild(ta);
-      }
+      const ok = await copyToClipboard(link);
+      if (ok) showToastGlobal('Link copiado!', 'success');
+      else showToastGlobal('Falha ao copiar link', 'error');
     }
 
     async function fetchSuppliers() { 
-      const { data } = await supabaseClient.from('suppliers').select('*').order('name', { ascending: true }); 
+      const { data, error } = await supabaseClient.from('suppliers').select('*').order('name', { ascending: true }); 
+      if (error) { console.error('Erro fetch suppliers:', error); return; }
       allSuppliers = data || [];
       const list = document.getElementById('supplierList');
       if (!list) return;
       
+      _supplierStore.clear();
       list.innerHTML = allSuppliers.map(s => {
+        _supplierStore.set(s.id, s);
         const statusColors = {
           'Quitado': 'bg-emerald-100 text-emerald-700',
           'Pago Parcial': 'bg-blue-100 text-blue-700',
@@ -1768,7 +1982,8 @@
               <span class="text-lg font-bold text-vinho">R$ ${Number(s.value).toLocaleString('pt-BR')}</span>
               <div class="flex items-center gap-2">
                 <span class="text-xs">${s.rating ? '⭐'.repeat(s.rating) : ''}</span>
-                <button onclick="deleteSupplier('${sanitizeAttr(s.id)}')" class="p-2 text-red-400 hover:text-red-600 transition-colors">🗑️</button>
+                <button data-action="supplier-edit" data-id="${sanitizeAttr(s.id)}" class="text-slate-600 hover:text-vinho text-xs">✏️</button>
+                <button data-action="supplier-delete" data-id="${sanitizeAttr(s.id)}" class="text-red-400 hover:text-red-600 text-xs">✕</button>
               </div>
             </div>
           </div>
@@ -1780,11 +1995,25 @@
 
     async function deleteSupplier(id) { 
       if (confirm('Remover este fornecedor?')) { 
-        await supabaseClient.from('suppliers').delete().eq('id', id); 
+        const { error } = await supabaseClient.from('suppliers').delete().eq('id', id); 
+        if (error) { console.error('Erro delete supplier:', error); showToast('Erro ao remover fornecedor', 'error'); return; }
         await logAudit('suppliers', id, 'DELETE');
         fetchSuppliers(); 
         showToast('Fornecedor removido', 'success');
       } 
+    }
+
+    let _editingSupplierId = null;
+    function editSupplier(id, name, contact, map_link, category, value, status) {
+      _editingSupplierId = id;
+      document.getElementById('supplierName').value = name;
+      document.getElementById('supplierContact').value = contact;
+      document.getElementById('supplierMap').value = map_link;
+      document.getElementById('supplierCategory').value = category;
+      document.getElementById('supplierValue').value = value;
+      document.getElementById('supplierStatus').value = status;
+      document.getElementById('supplierName').focus();
+      showToast('Editando fornecedor...', 'success');
     }
 
     async function addSupplier() { 
@@ -1795,44 +2024,35 @@
       const val = document.getElementById('supplierValue').value;
       const status = document.getElementById('supplierStatus').value;
 
-      if (name) { 
-        const { data, error } = await supabaseClient.from('suppliers').insert([{ 
-          name, 
-          contact, 
-          map_link,
-          category: cat, 
-          value: parseFloat(val) || 0,
-          status: status
-        }]).select('id').single(); 
-        
-        if (!error && data?.id) await logAudit('suppliers', data.id, 'INSERT', null, { name, contact, map_link, category: cat, value: parseFloat(val) || 0, status });
-        
+      if (!name) { showToast('Informe o nome do fornecedor!', 'error'); return; }
+
+      const payload = { name, contact, map_link, category: cat, value: parseFloat(val) || 0, status };
+
+      if (_editingSupplierId) {
+        const { error } = await supabaseClient.from('suppliers').update(payload).eq('id', _editingSupplierId);
         if (!error) {
-          document.getElementById('supplierName').value = '';
-          document.getElementById('supplierContact').value = '';
-          document.getElementById('supplierMap').value = '';
-          document.getElementById('supplierValue').value = '';
-          document.getElementById('supplierCategory').value = '';
-          document.getElementById('supplierStatus').value = 'ativo';
-          fetchSuppliers(); 
-          showToast('Fornecedor salvo!', 'success');
-        } else {
-          showToast('Erro ao salvar fornecedor', 'error');
+          await logAudit('suppliers', _editingSupplierId, 'UPDATE', null, payload);
+          showToast('Fornecedor atualizado!', 'success');
         }
-      } 
+        _editingSupplierId = null;
+      } else {
+        const { data, error } = await supabaseClient.from('suppliers').insert([payload]).select('id').single();
+        if (!error && data?.id) await logAudit('suppliers', data.id, 'INSERT', null, payload);
+        if (!error) showToast('Fornecedor salvo!', 'success');
+        else showToast('Erro ao salvar fornecedor', 'error');
+      }
+
+      document.getElementById('supplierName').value = '';
+      document.getElementById('supplierContact').value = '';
+      document.getElementById('supplierMap').value = '';
+      document.getElementById('supplierValue').value = '';
+      document.getElementById('supplierCategory').value = '';
+      document.getElementById('supplierStatus').value = 'Pendente';
+      fetchSuppliers();
     }
     
     function showToast(message, type = 'success') {
-      const toast = document.createElement('div');
-      toast.className = `fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-white text-sm font-bold shadow-2xl z-[200] transition-all duration-500 transform translate-y-10 opacity-0`;
-      toast.style.backgroundColor = type === 'success' ? '#10b981' : '#ef4444';
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      setTimeout(() => { toast.classList.remove('translate-y-10', 'opacity-0'); }, 100);
-      setTimeout(() => { 
-        toast.classList.add('translate-y-10', 'opacity-0');
-        setTimeout(() => toast.remove(), 500);
-      }, 3000);
+      showToastGlobal(message, type);
     }
     </script>
       <!-- FAB (Floating Action Button) -->
@@ -1849,6 +2069,10 @@
         <div class="fab-item" onclick="quickAction('task')">
           <span>Nova Tarefa</span>
           <div class="fab-icon"><i data-lucide="check-square"></i></div>
+        </div>
+        <div class="fab-item" onclick="quickAction('gallery')">
+          <span>Galeria</span>
+          <div class="fab-icon"><i data-lucide="camera"></i></div>
         </div>
       </div>
       <div id="fab-main" class="fab-main" onclick="toggleFab()">
@@ -1870,6 +2094,7 @@
           case 'guest': switchTab('guests'); break;
           case 'expense': switchTab('expenses'); break;
           case 'task': switchTab('tasks'); break;
+          case 'gallery': window.open('gallery.html', '_blank'); return;
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }

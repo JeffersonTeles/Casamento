@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Galeria — Jefferson & Beatriz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Envie suas fotos do casamento de Jefferson & Beatriz! Escaneie o QR code e compartilhe seus melhores momentos." />
+  <meta property="og:title" content="Galeria do Casamento — Jefferson & Beatriz" />
+  <meta property="og:description" content="Compartilhe suas fotos do nosso casamento!" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="stylesheet" href="./css/output.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    body { background-color: #fafaf8; }
+    .premium-glass {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    }
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    @media (max-width: 640px) {
+      .font-titulo { font-size: 2.25rem !important; line-height: 1.1 !important; }
+    }
+    .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+    @media (min-width: 640px) { .photo-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; } }
+    .photo-item { aspect-ratio: 1; overflow: hidden; border-radius: 0.5rem; position: relative; cursor: pointer; }
+    .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .photo-item:hover img { transform: scale(1.05); }
+    .photo-overlay {
+      position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.92);
+      display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .photo-overlay.active { display: flex; }
+    .photo-overlay img { max-width: 100%; max-height: 85vh; border-radius: 0.5rem; object-fit: contain; }
+    .upload-zone {
+      border: 2px dashed rgba(26, 26, 46, 0.2); border-radius: 1.5rem;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: #1a1a2e; background: rgba(26, 26, 46, 0.03);
+    }
+    .upload-zone.dragover { transform: scale(1.02); }
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px);
+      padding: 0.75rem 1.5rem; border-radius: 999px; color: white; font-size: 0.875rem;
+      font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 300;
+      opacity: 0; transition: all 0.3s; pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #10b981; }
+    .toast.error { background: #ef4444; }
+    #photoInput { display: none; }
+    .loading-spinner {
+      width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+
+<body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 min-h-screen">
+  <header class="w-full bg-white/80 backdrop-blur border-b border-white/60 sticky top-0 z-20">
+    <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-vinho text-white text-sm">J&B</span>
+        <span class="font-titulo text-lg text-vinho">Jefferson &amp; Beatriz</span>
+      </a>
+      <a href="index.html" class="text-xs font-medium text-vinho hover:underline">Voltar ao início</a>
+    </nav>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <section class="reveal active text-center mb-8">
+      <h1 class="font-titulo text-4xl text-vinho">Galeria</h1>
+      <p class="mt-4 text-sm text-zinc-600 leading-relaxed">
+        Envie suas fotos do nosso casamento! Clique no botão abaixo ou arraste uma foto para o quadro.
+      </p>
+    </section>
+
+    <!-- Upload Zone -->
+    <section class="reveal active mb-10">
+      <div id="uploadZone" class="upload-zone p-8 md:p-12 text-center" onclick="document.getElementById('photoInput').click()">
+        <div id="uploadContent">
+          <svg class="w-12 h-12 mx-auto text-vinho/40 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
+          </svg>
+          <p class="text-sm font-bold text-vinho/70 mb-1">Toque para enviar foto</p>
+          <p class="text-xs text-zinc-500">JPG, PNG ou HEIC — máx. 10MB</p>
+        </div>
+        <div id="uploadProgress" class="hidden">
+          <div class="loading-spinner mx-auto mb-3"></div>
+          <p class="text-sm font-bold text-vinho/70">Enviando...</p>
+        </div>
+      </div>
+      <input type="file" id="photoInput" accept="image/*" capture="environment" multiple />
+    </section>
+
+    <!-- Photo Count -->
+    <section class="reveal active mb-4 flex items-center justify-between">
+      <p class="text-xs font-bold text-vinho/60 uppercase tracking-widest" id="photoCount">Carregando fotos...</p>
+      <button onclick="loadPhotos()" class="text-xs font-bold text-vinho hover:text-vinho/80 transition-colors">Atualizar</button>
+    </section>
+
+    <!-- Photo Grid -->
+    <section class="reveal active">
+      <div id="photoGrid" class="photo-grid"></div>
+      <p id="emptyState" class="hidden text-center py-16 text-zinc-500 text-sm italic">
+        Nenhuma foto ainda. Seja o primeiro a compartilhar!
+      </p>
+    </section>
+  </main>
+
+  <footer class="mt-12 border-t border-slate-100 bg-white/60">
+    <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[0.7rem] text-zinc-600">
+      <span>Com carinho, Jefferson &amp; Beatriz</span>
+      <span>Que esse seja apenas o começo de muitas comemorações.</span>
+    </div>
+  </footer>
+
+  <!-- Photo Lightbox -->
+  <div id="photoOverlay" class="photo-overlay" onclick="closeLightbox()">
+    <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white/80 hover:text-white text-2xl z-10">&times;</button>
+    <img id="lightboxImg" src="" alt="Foto ampliada" />
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="./js/config.js" defer></script>
+  <script src="./js/sanitize.js" defer></script>
+  <script src="./js/shared.js" defer></script>
+  <script>
+    const BUCKET_NAME = 'wedding-photos';
+    let db = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const config = window.WEDDING_CONFIG || {};
+      if (typeof supabase !== 'undefined' && config.supabaseUrl && config.supabaseAnonKey) {
+        db = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+        loadPhotos();
+      }
+
+      const zone = document.getElementById('uploadZone');
+      const input = document.getElementById('photoInput');
+
+      zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+      });
+      input.addEventListener('change', (e) => { if (e.target.files.length) handleFiles(e.target.files); });
+    });
+
+    async function handleFiles(files) {
+      if (!db) { showToastGlobal('Erro de conexão. Tente novamente.', 'error'); return; }
+      const zone = document.getElementById('uploadZone');
+      const content = document.getElementById('uploadContent');
+      const progress = document.getElementById('uploadProgress');
+
+      for (const file of files) {
+        if (file.size > MAX_FILE_SIZE) { showToastGlobal('Arquivo muito grande (máx. 10MB)', 'error'); continue; }
+        if (!file.type.startsWith('image/')) { showToastGlobal('Apenas imagens são aceitas', 'error'); continue; }
+
+        content.classList.add('hidden');
+        progress.classList.remove('hidden');
+
+        const ext = file.name.split('.').pop() || 'jpg';
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+        const { error: uploadError } = await db.storage.from(BUCKET_NAME).upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          showToastGlobal('Erro ao enviar foto. Tente novamente.', 'error');
+        } else {
+          const { data: urlData } = db.storage.from(BUCKET_NAME).getPublicUrl(fileName);
+          if (urlData?.publicUrl) {
+            const { error: dbError } = await db.from('wedding_photos').insert([{
+              url: urlData.publicUrl,
+              file_name: file.name,
+              storage_path: fileName,
+              uploaded_at: new Date().toISOString()
+            }]);
+            if (dbError) {
+              console.error('DB insert error:', dbError);
+              showToastGlobal('Foto enviada, mas houve erro ao registrar. Tente atualizar.', 'error');
+            }
+          }
+          showToastGlobal('Foto enviada com sucesso!', 'success');
+        }
+      }
+
+      content.classList.remove('hidden');
+      progress.classList.add('hidden');
+      document.getElementById('photoInput').value = '';
+      loadPhotos();
+    }
+
+    async function loadPhotos() {
+      if (!db) return;
+      const { data, error } = await db.from('wedding_photos')
+        .select('*')
+        .order('uploaded_at', { ascending: false });
+
+      if (error) { console.error('Load error:', error); return; }
+
+      const grid = document.getElementById('photoGrid');
+      const empty = document.getElementById('emptyState');
+      const count = document.getElementById('photoCount');
+
+      if (!data || data.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+        count.textContent = '0 fotos';
+        return;
+      }
+
+      empty.classList.add('hidden');
+      count.textContent = `${data.length} foto${data.length !== 1 ? 's' : ''}`;
+
+      grid.innerHTML = data.map(p => {
+        const safeUrl = sanitizeAttr(p.url);
+        return `<div class="photo-item" data-lightbox-url="${safeUrl}"><img src="${safeUrl}" alt="Foto do casamento" loading="lazy" /></div>`;
+      }).join('');
+
+      grid.querySelectorAll('.photo-item').forEach(item => {
+        item.addEventListener('click', () => openLightbox(item.dataset.lightboxUrl));
+      });
+    }
+
+    function openLightbox(url) {
+      document.getElementById('lightboxImg').src = url;
+      document.getElementById('photoOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('photoOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+    function showToast(msg, type) { showToastGlobal(msg, type); }
+
+    window.addEventListener('load', () => {
+      initScrollReveal();
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

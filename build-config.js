@@ -33,6 +33,16 @@ const config = {
   supabaseAnonKey,
   adminEmails,
   adminUsers,
+  // Wedding constants (public, not secrets)
+  pixKey: '44999277915',
+  venue: {
+    name: 'Capela São Maximiliano',
+    address: 'Rua Siqueira Campos, 1234 — Country, Cascavel, PR',
+    query: 'Capela+S%C3%A3o+Maximiliano+Cascavel+PR',
+  },
+  weddingDate: '2027-02-06T08:00:00',
+  rsvpDeadline: '20 de Dezembro de 2026',
+  budgetDefault: 50000,
 };
 
 const output = `// Arquivo gerado automaticamente por build-config.js a partir das variáveis de ambiente.
