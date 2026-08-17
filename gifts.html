@@ -113,36 +113,37 @@
     </section>
 
     <section class="reveal active mt-12 mx-auto max-w-2xl">
-      <div class="premium-glass rounded-[2.5rem] p-8 md:p-12 text-center flex flex-col items-center">
+      <div class="premium-glass rounded-[2.5rem] p-8 md:p-12 text-center">
         <p class="text-xs font-bold text-vinho uppercase tracking-widest mb-6">Chave PIX (Telefone)</p>
         
-        <div id="pix-container" class="relative group cursor-pointer flex flex-col items-center" onclick="revealPix()">
+        <div id="pix-container" class="relative group cursor-pointer flex flex-col items-center mx-auto" onclick="revealPix()">
           <!-- Hidden QR Code placeholder -->
-          <div id="qr-placeholder" class="bg-slate-100 w-48 h-48 md:w-64 md:h-64 rounded-3xl flex flex-col items-center justify-center border border-dashed border-vinho/20 mb-8">
+          <div id="qr-placeholder" class="bg-slate-100 w-48 h-48 md:w-64 md:h-64 rounded-3xl flex flex-col items-center justify-center border border-dashed border-vinho/20 mb-6">
             <i data-lucide="lock" class="w-12 h-12 text-vinho/80 mb-3"></i>
             <p class="text-[10px] text-vinho/80 uppercase font-bold tracking-widest">Clique para revelar</p>
           </div>
           
-          <div id="qr-real" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-8 animate-fade-in">
+          <div id="qr-real" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6 animate-fade-in">
             <img id="qr-img" src="https://quickchart.io/qr?size=250&text=44999277915" alt="QR Code PIX" class="w-48 h-48 md:w-64 md:h-64" loading="lazy" width="250" height="250" />
           </div>
         </div>
 
-        <div class="space-y-4 w-full max-w-sm">
+        <div class="space-y-3 w-full max-w-xs mx-auto">
           <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
             <p class="text-[0.65rem] text-vinho/80 uppercase font-bold tracking-tight mb-1">Telefone (Chave PIX)</p>
             <p id="pix-number" class="text-xl font-mono text-vinho font-bold tracking-tighter blur-sm select-none">00000000000</p>
           </div>
 
           <button id="btnPix"
-            class="w-full inline-flex items-center justify-center rounded-2xl bg-vinho px-6 py-4 text-sm font-bold text-white shadow-xl shadow-vinho/20 hover:scale-[1.02] transition-all disabled:opacity-50"
+            class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-vinho px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-vinho/20 hover:scale-[1.02] transition-all disabled:opacity-50"
             type="button" disabled>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
             Copiar Chave PIX
           </button>
         </div>
 
-        <p class="mt-8 text-sm font-medium text-zinc-600 italic">
-          Agradecemos imensamente por todo o carinho e por fazer parte da nossa história!
+        <p class="mt-6 text-sm font-medium text-zinc-600 italic">
+          Agradecemos imensamente por todo o carinho e por fazer parte da nossa historia!
         </p>
       </div>
     </section>
