@@ -274,9 +274,9 @@
         <section id="tasks" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="check-circle-2"></i> Checklist</h2>
           <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-2 mb-6">
-            <input type="text" id="newTask" placeholder="O que precisa ser feito?" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa" />
-            <input type="date" id="taskDue" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa bg-white text-sm" />
-            <select id="taskOwner" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-rosa bg-white text-sm">
+            <input type="text" id="newTask" placeholder="O que precisa ser feito?" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho" />
+            <input type="date" id="taskDue" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm" />
+            <select id="taskOwner" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm">
               <option value="">Responsável</option><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
             </select>
             <button onclick="addTask()" class="bg-vinho text-white px-6 py-3 rounded-xl hover:bg-vinho/90 transition font-bold">Adicionar</button>
@@ -467,9 +467,7 @@
             <button onclick="addTimelineEvent()" class="bg-vinho text-white rounded-xl font-bold">Adicionar</button>
           </div>
           <div class="relative border-l-2 border-vinho/20 ml-3 pl-4 space-y-4" id="timelineList">
-            <!-- Timeline items will go here -->
-            <div class="relative"><div class="absolute -left-[1.35rem] top-1 w-3 h-3 bg-vinho rounded-full"></div><p class="font-bold text-vinho text-sm">08:00</p><p class="text-slate-700">Cerimônia na Capela</p></div>
-            <div class="relative"><div class="absolute -left-[1.35rem] top-1 w-3 h-3 bg-vinho rounded-full"></div><p class="font-bold text-vinho text-sm">09:30</p><p class="text-slate-700">Sessão de fotos dos noivos</p></div>
+            <!-- Timeline items will be loaded from Supabase -->
           </div>
         </section>
 
@@ -575,8 +573,8 @@
       <h3 class="text-2xl font-titulo text-vinho mb-6">Editar Convidado</h3>
       <div class="space-y-4">
         <input type="hidden" id="editGuestId" />
-        <input type="text" id="editGuestName" placeholder="Nome" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-rosa" />
-        <input type="text" id="editGuestPhone" placeholder="Telefone" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-rosa" />
+        <input type="text" id="editGuestName" placeholder="Nome" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+        <input type="text" id="editGuestPhone" placeholder="Telefone" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
         <select id="editGuestStatus" class="w-full p-3 rounded-xl border border-slate-200 bg-white">
           <option value="aguardando">Aguardando</option>
           <option value="confirmado">Confirmado</option>
@@ -589,7 +587,7 @@
         </label>
         <div>
           <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Parceiro(a) no convite</label>
-          <input type="text" id="editGuestPartner" placeholder="Nome do parceiro(a) (ex: Maria)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-rosa" />
+          <input type="text" id="editGuestPartner" placeholder="Nome do parceiro(a) (ex: Maria)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
           <p class="text-[0.65rem] text-slate-400 mt-1">Aparecerá no convite como "Seu Nome & Parceiro(a)"</p>
         </div>
       </div>
@@ -628,9 +626,7 @@
       guestFilter: 'all', 
       guestOwnerFilter: 'all',
       vipOnly: false,
-      guestSearch: '',
-      searchQuery: '', 
-      sortOrder: 'name-asc' 
+      guestSearch: ''
     };
 
     function togglePlannerModal(s) { 
@@ -996,7 +992,7 @@
     // CALENDAR INTEGRATION FOR TASKS
     function addToPersonalCalendar(title, date) {
       if (!date) return;
-      const d = new Date(date + 'T12:00:00');
+      const d = new Date(date + 'T08:00:00');
       const start = d.toISOString().replace(/-|:|\.\d\d\d/g, "");
       const end = d.toISOString().replace(/-|:|\.\d\d\d/g, "");
       const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('CASAMENTO: ' + title)}&dates=${start}/${end}&details=Lembrete de tarefa do painel de organização.`;
@@ -1040,7 +1036,10 @@
       const list = document.getElementById('taskList');
       if (!list) return;
       let filtered = dashboardState.tasks;
-      if (dashboardState.taskFilter !== 'all') filtered = filtered.filter(t => t.owner === dashboardState.taskFilter);
+      if (dashboardState.taskFilter !== 'all') filtered = filtered.filter(t => {
+        if (dashboardState.taskFilter === 'Bia') return t.owner === 'Bia' || t.owner === 'Beatriz';
+        return t.owner === dashboardState.taskFilter;
+      });
       const now = new Date(); now.setHours(0,0,0,0);
       list.innerHTML = filtered.map(t => {
         const isDone = t.status === 'concluido';
@@ -1158,6 +1157,9 @@
       if (title) { 
         const { data, error } = await supabaseClient.from('tasks').insert([{ title, status: 'pendente', due_date, owner }]).select('id').single();
         if (data?.id) await logAudit('tasks', data.id, 'INSERT', null, { title, status: 'pendente', due_date, owner });
+        document.getElementById('newTask').value = '';
+        document.getElementById('taskDue').value = '';
+        document.getElementById('taskOwner').value = '';
         fetchTasks(); 
       }
     }
@@ -1290,6 +1292,7 @@
         if (error) throw error;
         if (data?.id) await logAudit('guests', data.id, 'INSERT', null, { name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name });
         nameEl.value = ''; phoneEl.value = ''; partnerEl.value = '';
+        if (document.getElementById('guestOwner')) document.getElementById('guestOwner').value = '';
         fetchGuests();
       } catch (err) {
         console.error(err);
@@ -1345,42 +1348,6 @@
       doc.save("lista_convidados.pdf");
     }
 
-    async function generateIndividualPDF(name, token) {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const link = `${window.location.origin}/rsvp.html?token=${token}`;
-      const qrUrl = `https://quickchart.io/qr?size=250&text=${encodeURIComponent(link)}`;
-
-      doc.setTextColor(26, 26, 46);
-      doc.setFontSize(26);
-      doc.text("Jefferson & Bia", 105, 40, { align: 'center' });
-      doc.setFontSize(14);
-      doc.text("Convite Especial", 105, 50, { align: 'center' });
-      
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(12);
-      doc.text(`Olá, ${name}!`, 105, 75, { align: 'center' });
-      doc.text("Preparamos tudo com muito amor e ficaremos felizes em viver", 105, 85, { align: 'center' });
-      doc.text("esse momento ao seu lado.", 105, 92, { align: 'center' });
-      
-      doc.text("Aponte a câmera para confirmar e ver o mapa:", 105, 115, { align: 'center' });
-      
-      const img = new Image();
-      img.crossOrigin = "Anonymous";
-      img.src = qrUrl;
-      img.onload = () => {
-        doc.addImage(img, 'PNG', 75, 125, 60, 60);
-        doc.setTextColor(26, 26, 46);
-        doc.setFontSize(10);
-        doc.text(link, 105, 195, { align: 'center' });
-        doc.save(`Convite_${name.replace(/\s+/g, '_')}.pdf`);
-      };
-      img.onerror = () => {
-        doc.setTextColor(255, 0, 0);
-        doc.text("Erro ao gerar QR Code. Tente novamente.", 105, 150, { align: 'center' });
-        doc.save(`Convite_${name.replace(/\s+/g, '_')}.pdf`);
-      };
-    }
     async function shareInviteWhatsApp(name, token) {
       const link = `${window.location.origin}/rsvp.html?token=${token}`;
       const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${name}*!\n\nAcesse seu convite individual e confirme sua presença:\n👉 ${link}`;
@@ -1397,6 +1364,8 @@
       document.getElementById('stat-beatriz').textContent = allGuests.filter(g => g.invited_by === 'Bia' || g.invited_by === 'Beatriz').length;
       document.getElementById('dueSoonStat').textContent = dueSoonCount;
       document.getElementById('pendingTasksStat').textContent = dashboardState.tasks.filter(t => t.status !== 'concluido').length;
+      const confirmedAside = document.getElementById('stat-confirmed-aside');
+      if (confirmedAside) confirmedAside.textContent = confirmed;
     }
 
     async function fetchExpenses() { const { data } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false }); dashboardState.expenses = data || []; renderExpenses(); updateExpenseStats(); }
@@ -1570,17 +1539,6 @@
       if (data) meetingNotes.value = data.notes; 
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const saveBtn = document.getElementById('saveNotesBtn');
-      if (saveBtn) {
-        saveBtn.addEventListener('click', async () => { 
-          const notes = document.getElementById('meetingNotes').value; 
-          await supabaseClient.from(ORG_NOTES_TABLE_NAME).upsert([{ id: 'global', notes }]); 
-          showToast('Notas salvas!', 'success');
-        }); 
-      }
-    });
-
     // TELA DE CRONOGRAMA
     async function fetchTimeline() {
       const { data } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
@@ -1705,7 +1663,7 @@
       }).join('');
     }
     function initRealtime() {
-      const tables = { tasks: fetchTasks, guests: fetchGuests, expenses: fetchExpenses, timeline_events: fetchTimeline };
+      const tables = { tasks: fetchTasks, guests: fetchGuests, expenses: fetchExpenses, timeline: fetchTimeline };
       const channel = supabaseClient.channel('db-changes');
       Object.keys(tables).forEach(table => {
         channel.on('postgres_changes', { event: '*', schema: 'public', table }, tables[table]);
@@ -1713,7 +1671,7 @@
       channel.subscribe();
     }
     function previewInvite(token) {
-      window.open(`${window.location.origin}/index.html?token=${token}`, '_blank');
+      window.open(`${window.location.origin}/rsvp.html?token=${token}`, '_blank');
     }
 
     async function fetchSuppliers() { 
@@ -1788,6 +1746,8 @@
           document.getElementById('supplierContact').value = '';
           document.getElementById('supplierMap').value = '';
           document.getElementById('supplierValue').value = '';
+          document.getElementById('supplierCategory').value = '';
+          document.getElementById('supplierStatus').value = 'ativo';
           fetchSuppliers(); 
           showToast('Fornecedor salvo!', 'success');
         } else {

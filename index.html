@@ -412,9 +412,6 @@
   </script>
 <script>
 
-    // Usa shared.js para Supabase client
-    const supabaseClientGuest = supabaseClient;
-
     // Reveal animations on scroll (Cinematic)
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -432,7 +429,6 @@
     // Init
     window.addEventListener("DOMContentLoaded", () => {
       initAnimations();
-      checkWelcome();
     });
 
 </script>

@@ -478,13 +478,13 @@
 
       try {
         const plusOnes = parseInt(document.getElementById('plus-ones').value) || 0;
-        const { error } = await supabaseClient.rpc('confirm_guest_rsvp', {
+        const { data: rpcResult, error } = await supabaseClient.rpc('confirm_guest_rsvp', {
           p_invite_token: token,
           p_rsvp_status: selectedRsvp,
           p_plus_ones: plusOnes
         });
 
-        if (error) {
+        if (error || rpcResult === false) {
           showToast('Erro ao enviar confirmação. Tente novamente.');
           submitBtn.disabled = false;
           submitBtn.textContent = 'Enviar confirmação';
