@@ -149,7 +149,7 @@
     </div>
   </footer>
 
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.344.0"></script>
   <script>
     function revealPix() {
       document.getElementById('qr-placeholder').classList.add('hidden');
@@ -163,7 +163,7 @@
     const btnPix = document.getElementById('btnPix');
     if (btnPix) {
       btnPix.addEventListener('click', () => {
-        navigator.clipboard.writeText('44999277915');
+        navigator.clipboard.writeText('44999277915').catch(() => {});
         const original = btnPix.textContent;
         btnPix.textContent = 'Chave copiada! ✓';
         btnPix.classList.add('bg-green-600');
@@ -185,11 +185,11 @@
         }
       }
     }
-    window.addEventListener("scroll", reveal);
-    window.onload = () => {
+    window.addEventListener("scroll", reveal, { passive: true });
+    window.addEventListener('load', () => {
       reveal();
       if (window.lucide) lucide.createIcons();
-    };
+    });
   </script>
 </body>
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'casamento-v3';
+const CACHE_NAME = 'casamento-v4';
 const ASSETS = [
   '/',
   '/index.html',
@@ -6,9 +6,10 @@ const ASSETS = [
   '/faq.html',
   '/gifts.html',
   '/organizacao.html',
-  '/css/estilos.css',
+  '/css/output.css',
   '/js/shared.js',
   '/js/sanitize.js',
+  '/js/countdown.js',
   '/manifest.json'
 ];
 
@@ -17,7 +18,9 @@ const NETWORK_ONLY = ['/js/config.js'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.allSettled(ASSETS.map((url) => cache.add(url)))
+    )
   );
   self.skipWaiting();
 });
@@ -43,7 +46,7 @@ self.addEventListener('fetch', (event) => {
   // Para páginas HTML: tenta rede primeiro, cai no cache offline
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
+      fetch(event.request).catch(() => caches.match('/index.html'))
     );
     return;
   }

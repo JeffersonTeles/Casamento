@@ -5,8 +5,8 @@
 const WEDDING_CONFIG = window.WEDDING_CONFIG || {};
 const SUPABASE_URL = WEDDING_CONFIG.supabaseUrl || '';
 const SUPABASE_KEY = WEDDING_CONFIG.supabaseAnonKey || '';
-const supabaseClient = (typeof supabase !== 'undefined')
-  ? supabase.createClient(SUPABASE_URL || 'https://placeholder.supabase.co', SUPABASE_KEY || 'public-anon-placeholder')
+const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL && SUPABASE_KEY)
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
 
 // === UTILITÁRIOS ===
@@ -14,12 +14,14 @@ const NTFY_TOPIC = 'casamento-jefferson-bia-notificacoes';
 
 async function sendPushNotification(name, status, plusOnes, message) {
   if (!NTFY_TOPIC) return;
-  const body = `Convidado: ${name}\nResposta: ${status === 'confirmado' ? 'Confirmado!' : 'Não vai'}\nAcompanhantes: ${plusOnes}\nRecado: ${message}`;
+  const safeName = String(name || '').slice(0, 100);
+  const safeMsg = String(message || '').slice(0, 500);
+  const body = `Convidado: ${safeName}\nResposta: ${status === 'confirmado' ? 'Confirmado!' : 'Não vai'}\nAcompanhantes: ${plusOnes}\nRecado: ${safeMsg}`;
   try {
     await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
       method: 'POST',
       body,
-        headers: { 'Title': `Novo RSVP: ${name}`, 'Priority': 'high', 'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive' }
+        headers: { 'Title': `Novo RSVP: ${safeName}`, 'Priority': 'high', 'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive' }
     });
   } catch (err) { console.error('Erro notificação:', err); }
 }

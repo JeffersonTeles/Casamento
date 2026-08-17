@@ -555,7 +555,18 @@
   </nav>
 
   <datalist id="categories">
-    <option value="Taxa Igreja"><option value="Decoração Cerimônia"><option value="Fotografia"><option value="Filmagem"><option value="Vestido da Noiva"><option value="Traje do Noivo"><option value="Alianças"><option value="Papelaria e Convites"><option value="Lembrancinhas"><option value="Transporte"><option value="Lua de mel"><option value="Outros">
+    <option value="Taxa Igreja"></option>
+    <option value="Decoração Cerimônia"></option>
+    <option value="Fotografia"></option>
+    <option value="Filmagem"></option>
+    <option value="Vestido da Noiva"></option>
+    <option value="Traje do Noivo"></option>
+    <option value="Alianças"></option>
+    <option value="Papelaria e Convites"></option>
+    <option value="Lembrancinhas"></option>
+    <option value="Transporte"></option>
+    <option value="Lua de mel"></option>
+    <option value="Outros"></option>
   </datalist>
 
   <!-- Modal de Edição de Convidado -->
@@ -944,7 +955,7 @@
       });
     }
 
-    window.onload = async () => {
+    window.addEventListener('load', async () => {
       if (window.lucide) lucide.createIcons();
       handleRecoveryRedirect();
 
@@ -959,11 +970,9 @@
 
       // Register PWA Service Worker
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW Registered')).catch(err => console.log('SW Error', err));
-        });
+        navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW Registered')).catch(err => console.log('SW Error', err));
       }
-    };
+    });
 
     function switchTab(tabId) {
       const tabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline', 'docs'];
@@ -1294,7 +1303,7 @@
       
       let text = `📢 *LISTA DE COBRANÇA - RSVP* 📢\n\nOlá! Aqui está a lista de convidados que ainda não confirmaram:\n\n`;
       pending.forEach((g, i) => {
-        text += `${i+1}. *${g.name}*\n🔗 ${window.location.origin}/index.html?token=${g.invite_token}\n\n`;
+        text += `${i+1}. *${g.name}*\n🔗 ${window.location.origin}/rsvp.html?token=${g.invite_token}\n\n`;
       });
       
       const blob = new Blob([text], { type: 'text/plain' });
@@ -1373,7 +1382,7 @@
       };
     }
     async function shareInviteWhatsApp(name, token) {
-      const link = `${window.location.origin}${window.location.pathname.replace('organizacao.html', '')}rsvp.html?token=${token}`;
+      const link = `${window.location.origin}/rsvp.html?token=${token}`;
       const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${name}*!\n\nAcesse seu convite individual e confirme sua presença:\n👉 ${link}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
@@ -1840,4 +1849,4 @@
       }
     </script>
   </body>
-    </html>
+</html>

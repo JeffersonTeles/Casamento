@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Convite — Jefferson & Beatriz</title>
+  <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="./css/output.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./js/config.js"></script>
@@ -371,6 +372,14 @@
     let guestData = null;
     let selectedRsvp = null;
 
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-zinc-800 text-white px-5 py-2.5 rounded-full text-sm shadow-lg z-[999] transition-all';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
+    }
+
     // === Load Guest ===
     async function loadGuest() {
       const token = new URLSearchParams(window.location.search).get('token');
@@ -459,7 +468,7 @@
     }
 
     async function submitRsvp() {
-      if (!selectedRsvp) { alert('Por favor, selecione se você vai ou não.'); return; }
+      if (!selectedRsvp) { showToast('Selecione se você vai ou não.'); return; }
 
       const submitBtn = document.getElementById('submit-btn');
       submitBtn.disabled = true;
@@ -476,7 +485,7 @@
         });
 
         if (error) {
-          alert('Erro ao enviar confirmação. Tente novamente.');
+          showToast('Erro ao enviar confirmação. Tente novamente.');
           submitBtn.disabled = false;
           submitBtn.textContent = 'Enviar confirmação';
           return;
@@ -494,13 +503,13 @@
           document.getElementById('success-message').textContent = 'Entendemos que você não poderá comparecer. Agradecemos por nos avisar!';
         }
       } catch (err) {
-        alert('Erro ao enviar confirmação. Tente novamente.');
+        showToast('Erro ao enviar confirmação. Tente novamente.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Enviar confirmação';
       }
     }
 
-    window.onload = loadGuest;
+    document.addEventListener('DOMContentLoaded', loadGuest);
   </script>
 </body>
 </html>

@@ -100,7 +100,7 @@ function updateCountdownMessage(distance) {
  * Controla a liberação do botão de confirmação
  */
 function updateRsvpButton() {
-  const btn = document.getElementById("rsvp-button");
+  const btn = document.getElementById("rsvp-link");
   if (!btn) return;
 
   const now = Date.now();
@@ -110,7 +110,7 @@ function updateRsvpButton() {
     if (btn.classList.contains("opacity-50")) {
       btn.href = btn.dataset.href;
       btn.classList.remove("pointer-events-none", "cursor-not-allowed", "opacity-50");
-      btn.innerHTML = "Confirmar pelo WhatsApp";
+      btn.textContent = "Confirmar Presença";
     }
   } else {
     // Mantém bloqueado
