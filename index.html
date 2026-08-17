@@ -319,23 +319,25 @@
         <h2 class="font-titulo text-4xl text-[#1a1a2e]">Presentes</h2>
       </div>
 
-      <div class="premium-glass p-8 rounded-[2rem] text-center max-w-lg mx-auto">
+      <div class="premium-glass p-8 rounded-[2rem] text-center max-w-sm mx-auto">
         <p class="text-sm text-zinc-600 leading-relaxed mb-6 italic">
           Sua presença é o maior presente que podemos receber.<br/>
           Se quiser nos homenagear com um mimo, nosso PIX está disponível.
         </p>
         
-        <img src="https://quickchart.io/qr?size=160&text=44999277915&margin=1" alt="QR Code PIX" class="w-40 h-40 rounded-xl mx-auto mb-3" loading="lazy" width="160" height="160" />
+        <img id="pix-qr" src="" alt="QR Code PIX" class="w-40 h-40 rounded-xl mx-auto mb-4" loading="lazy" width="160" height="160" />
         
-        <p class="text-[0.65rem] text-[#1a1a2e]/50 uppercase font-bold tracking-tight mb-1">Telefone</p>
-        <p id="phone-text" class="text-lg font-mono text-[#1a1a2e] font-bold tracking-tighter">••••••••••</p>
+        <p class="text-[0.65rem] text-[#1a1a2e]/50 uppercase font-bold tracking-tight mb-1">Telefone (Chave PIX)</p>
+        <p id="phone-text" class="text-lg font-mono text-[#1a1a2e] font-bold tracking-tighter mb-4">••••••••••</p>
         
-        <div class="flex gap-2 mt-3">
-          <button id="btn-show-phone" onclick="showPhone()" class="bg-[#1a1a2e] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/90 transition-all">
-            Mostrar Telefone
+        <div class="flex flex-col sm:flex-row gap-2 justify-center">
+          <button id="btn-show-phone" onclick="showPhone()" class="inline-flex items-center justify-center gap-2 bg-[#1a1a2e] text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/90 transition-all">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Mostrar
           </button>
-          <button onclick="copyPIX(this)" class="bg-[#1a1a2e]/10 text-[#1a1a2e] px-4 py-2 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/20 transition-all">
-            Copiar Chave
+          <button onclick="copyPIX(this)" class="inline-flex items-center justify-center gap-2 bg-[#1a1a2e]/10 text-[#1a1a2e] px-5 py-2.5 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/20 transition-all">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copiar
           </button>
         </div>
       </div>
@@ -372,17 +374,25 @@
   <script src="./js/config.js"></script>
   <script src="./js/shared.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const pixKey = getPixKey();
+      const qr = document.getElementById('pix-qr');
+      if (qr && pixKey) qr.src = `https://quickchart.io/qr?size=160&text=${encodeURIComponent(pixKey)}&margin=1`;
+    });
+
     async function copyPIX(btn) {
       const ok = await copyToClipboard(getPixKey());
       if (ok) {
-        btn.textContent = 'Copiado!';
-        setTimeout(() => btn.textContent = 'Copiar Chave', TOAST_DURATION_MS);
+        btn.innerHTML = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Copiado!';
+        setTimeout(() => btn.innerHTML = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar', TOAST_DURATION_MS);
       }
     }
     function showPhone() {
       const phoneEl = document.getElementById('phone-text');
       const btn = document.getElementById('btn-show-phone');
-      phoneEl.textContent = '(44) 99927-7915';
+      const pixKey = getPixKey();
+      phoneEl.textContent = pixKey;
+      phoneEl.classList.remove('blur-sm');
       if (btn) btn.classList.add('hidden');
     }
     function addToGoogleCalendar() {
