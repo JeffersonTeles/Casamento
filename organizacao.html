@@ -14,10 +14,6 @@
   <script src="./js/shared.js"></script>
   <script src="https://unpkg.com/lucide@0.344.0" integrity="sha256-fJc75Q6pL2naKY4BfgHo5qBo+LWZ7ghwQRgfFRyO8JI=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4" integrity="sha256-SERKgtTty1vsDxll+qzd4Y2cF9swY9BCq62i9wXJ9Uo=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" integrity="sha256-nCrnp8qORkhqVg3Yx92WUgSkuRZDAfERVAK2ny+liQE=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" integrity="sha256-yVBhl8r4CaB1tt7h2g02+xnacVj/6KiOewyWxdhiPJk=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha256-mMzxeqEMILsTAXYmGPzJtqs6Tn8mtgcdZNC0EVTfOHU=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" integrity="sha256-iQWUsO+u9rPj2uc1m13fZG9V4W2wef4jIt5gMh2dRac=" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -273,9 +269,12 @@
         <!-- SEÇÃO TAREFAS -->
         <section id="tasks" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="check-circle-2"></i> Checklist</h2>
-          <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-2 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto_auto] gap-2 mb-6">
             <input type="text" id="newTask" placeholder="O que precisa ser feito?" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho" />
             <input type="date" id="taskDue" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm" />
+            <select id="taskPriority" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm">
+              <option value="media">Prioridade</option><option value="alta">🔴 Alta</option><option value="media">🟡 Média</option><option value="baixa">🔵 Baixa</option>
+            </select>
             <select id="taskOwner" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho bg-white text-sm">
               <option value="">Responsável</option><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
             </select>
@@ -323,6 +322,7 @@
             <input type="text" id="guestName" placeholder="Nome" class="p-3 rounded-xl border border-slate-300" />
             <input type="text" id="guestPhone" placeholder="Telefone" class="p-3 rounded-xl border border-slate-300" />
             <input type="text" id="guestPartner" placeholder="Parceiro(a) no convite" class="p-3 rounded-xl border border-slate-300" />
+            <input type="text" id="guestDietary" placeholder="Restrição alimentar (opcional)" class="p-3 rounded-xl border border-slate-300" />
             <select id="guestOwner" class="p-3 rounded-xl border border-slate-300 bg-white">
               <option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
             </select>
@@ -718,9 +718,13 @@
       }).join('');
     }
 
+    let _guestSearchTimer;
     function handleGuestSearch(q) {
-      dashboardState.guestSearch = q.toLowerCase();
-      renderGuestList();
+      clearTimeout(_guestSearchTimer);
+      _guestSearchTimer = setTimeout(() => {
+        dashboardState.guestSearch = q.toLowerCase();
+        renderGuestList();
+      }, 300);
     }
 
     function setGuestFilter(f) {
@@ -754,7 +758,7 @@
 
     async function initApp() {
       try {
-        await Promise.all([fetchTasks(), fetchGuests(), fetchExpenses(), fetchLogs(), loadNotesFromSupabase(), fetchTimeline(), fetchBudget()]);
+        await Promise.all([fetchSettings(), fetchTasks(), fetchGuests(), fetchExpenses(), fetchLogs(), loadNotesFromSupabase(), fetchTimeline(), fetchBudget()]);
         initRealtime(); updateOverviewStats(); updateDashboardSummary(); switchTab('dashboard');
         if (window.lucide) lucide.createIcons();
       } catch (err) { console.error("Erro setup:", err); }
@@ -1052,8 +1056,9 @@
         else if (t.owner === 'Bia' || t.owner === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
 
         let ownerTag = t.owner ? `<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 uppercase ml-2 text-slate-700">${sanitizeHTML(t.owner)}</span>` : '';
+        const prioBadge = t.priority === 'alta' ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 text-red-600 ml-1">ALTA</span>' : t.priority === 'baixa' ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-600 ml-1">BAIXA</span>' : '';
         const dateStr = t.due_date ? `<span class="text-xs font-medium text-slate-700 ml-auto">${new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>` : '';
-        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${sanitizeAttr(t.id)}', '${sanitizeAttr(t.status)}')" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${sanitizeHTML(t.title)} ${ownerTag}</span></div>${dateStr}</div><div class="flex gap-2">${t.due_date ? `<button onclick="addToPersonalCalendar('${sanitizeAttr(t.title)}', '${sanitizeAttr(t.due_date)}')" class="p-1 hover:bg-blue-50 rounded" title="Agendar"><i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-500"></i></button>` : ''}<button onclick="deleteTask('${sanitizeAttr(t.id)}')" class="p-1 hover:bg-red-50 rounded">🗑️</button></div></div>`;
+        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTask('${sanitizeAttr(t.id)}', '${sanitizeAttr(t.status)}')" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${sanitizeHTML(t.title)} ${ownerTag}${prioBadge}</span></div>${dateStr}</div><div class="flex gap-2">${t.due_date ? `<button onclick="addToPersonalCalendar('${sanitizeAttr(t.title)}', '${sanitizeAttr(t.due_date)}')" class="p-1 hover:bg-blue-50 rounded" title="Agendar"><i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-500"></i></button>` : ''}<button onclick="deleteTask('${sanitizeAttr(t.id)}')" class="p-1 hover:bg-red-50 rounded">🗑️</button></div></div>`;
       }).join('');
     }
     function filterTasks(f) {
@@ -1066,10 +1071,28 @@
       });
       renderTasks(); 
     }
+    // LAZY LOAD UTILITIES
+    const _lazyCache = {};
+    function lazyLoad(src) {
+      if (_lazyCache[src]) return _lazyCache[src];
+      _lazyCache[src] = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src; s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+      return _lazyCache[src];
+    }
+    const LAZY = {
+      confetti: 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js',
+      xlsx: 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
+      jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+      jspdfAuto: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js'
+    };
+
     async function toggleTask(id, status) { 
       const next = status === 'concluido' ? 'pendente' : 'concluido'; 
       await supabaseClient.from('tasks').update({ status: next }).eq('id', id); 
-      if (next === 'concluido') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#1a1a2e', '#c9a96e', '#f5e6d3'] });
+      if (next === 'concluido') { await lazyLoad(LAZY.confetti); confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#1a1a2e', '#c9a96e', '#f5e6d3'] }); }
       fetchTasks(); 
     }
 
@@ -1091,7 +1114,7 @@
       document.getElementById('dash-rsvp-no').textContent = no;
 
       // Financeiro
-      const budget = parseFloat(localStorage.getItem('weddingBudget')) || 50000;
+      const budget = dashboardState.budget || 50000;
       const spent = dashboardState.expenses.reduce((s, e) => s + parseFloat(e.amount), 0);
       const percent = Math.min(Math.round((spent / budget) * 100), 100);
       document.getElementById('dash-spent').textContent = `R$ ${spent.toLocaleString('pt-BR')}`;
@@ -1154,12 +1177,14 @@
       const title = document.getElementById('newTask').value;
       const due_date = document.getElementById('taskDue').value || null;
       const owner = document.getElementById('taskOwner').value || null;
+      const priority = document.getElementById('taskPriority').value || 'media';
       if (title) { 
-        const { data, error } = await supabaseClient.from('tasks').insert([{ title, status: 'pendente', due_date, owner }]).select('id').single();
-        if (data?.id) await logAudit('tasks', data.id, 'INSERT', null, { title, status: 'pendente', due_date, owner });
+        const { data, error } = await supabaseClient.from('tasks').insert([{ title, status: 'pendente', due_date, owner, priority }]).select('id').single();
+        if (data?.id) await logAudit('tasks', data.id, 'INSERT', null, { title, status: 'pendente', due_date, owner, priority });
         document.getElementById('newTask').value = '';
         document.getElementById('taskDue').value = '';
         document.getElementById('taskOwner').value = '';
+        document.getElementById('taskPriority').value = 'media';
         fetchTasks(); 
       }
     }
@@ -1227,7 +1252,7 @@
 
         const thankBtn = g.rsvp_status === 'confirmado' ? `<button onclick="shareThankYou('${sanitizeAttr(g.name)}')" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> Agradecer</button>` : '';
 
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button onclick="previewInvite('${sanitizeAttr(g.invite_token)}')" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button onclick="shareInviteWhatsApp('${sanitizeAttr(g.name)}', '${sanitizeAttr(g.invite_token)}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="editGuest('${sanitizeAttr(g.id)}', '${sanitizeAttr(g.name)}', '${sanitizeAttr(g.phone||'')}', '${sanitizeAttr(g.invited_by)}', '${sanitizeAttr(g.rsvp_status)}', ${g.is_vip}, '${sanitizeAttr(g.partner_name||'')}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${sanitizeAttr(g.id)}')" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}${g.dietary ? ' • 🍽️ ' + sanitizeHTML(g.dietary) : ''}${g.plus_ones > 0 ? ' • 👥 +' + g.plus_ones : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button onclick="previewInvite('${sanitizeAttr(g.invite_token)}')" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button onclick="copyInviteLink('${sanitizeAttr(g.invite_token)}')" class="bg-slate-100 text-slate-700 text-[10px] px-3 py-1 rounded-full">Copiar</button><button onclick="shareInviteWhatsApp('${sanitizeAttr(g.name)}', '${sanitizeAttr(g.invite_token)}')" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button onclick="editGuest('${sanitizeAttr(g.id)}', '${sanitizeAttr(g.name)}', '${sanitizeAttr(g.phone||'')}', '${sanitizeAttr(g.invited_by)}', '${sanitizeAttr(g.rsvp_status)}', ${g.is_vip}, '${sanitizeAttr(g.partner_name||'')}')" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button onclick="deleteGuest('${sanitizeAttr(g.id)}')" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
       if (window.lucide) lucide.createIcons();
@@ -1278,20 +1303,22 @@
       const phoneEl = document.getElementById('guestPhone');
       const ownerEl = document.getElementById('guestOwner');
       const partnerEl = document.getElementById('guestPartner');
+      const dietaryEl = document.getElementById('guestDietary');
       
       const name = nameEl.value.trim();
       const phone = phoneEl.value.trim();
       const invited_by = ownerEl.value;
       const partner_name = partnerEl.value.trim() || null;
+      const dietary = dietaryEl.value.trim() || null;
 
       if (!name) { alert('Informe o nome do convidado!'); return; }
 
       try {
         const token = window.crypto?.randomUUID ? window.crypto.randomUUID() : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        const { data, error } = await supabaseClient.from('guests').insert([{ name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name }]).select('id').single();
+        const { data, error } = await supabaseClient.from('guests').insert([{ name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name, dietary }]).select('id').single();
         if (error) throw error;
-        if (data?.id) await logAudit('guests', data.id, 'INSERT', null, { name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name });
-        nameEl.value = ''; phoneEl.value = ''; partnerEl.value = '';
+        if (data?.id) await logAudit('guests', data.id, 'INSERT', null, { name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name, dietary });
+        nameEl.value = ''; phoneEl.value = ''; partnerEl.value = ''; dietaryEl.value = '';
         if (document.getElementById('guestOwner')) document.getElementById('guestOwner').value = '';
         fetchGuests();
       } catch (err) {
@@ -1318,8 +1345,9 @@
       showToast('Lista gerada com sucesso!', 'success');
     }
 
-    function exportToExcel() {
-      if (!window.XLSX) { alert('Biblioteca de Excel não carregada.'); return; }
+    async function exportToExcel() {
+      await lazyLoad(LAZY.xlsx);
+      if (!window.XLSX) { showToast('Erro ao carregar biblioteca Excel', 'error'); return; }
       const data = allGuests.map(g => ({
         Nome: g.name,
         Telefone: g.phone || '-',
@@ -1334,7 +1362,9 @@
       XLSX.writeFile(wb, "convidados_casamento.xlsx");
     }
 
-    function exportToPDF() {
+    async function exportToPDF() {
+      await lazyLoad(LAZY.jspdf);
+      await lazyLoad(LAZY.jspdfAuto);
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       doc.text("Lista de Convidados - Jefferson & Beatriz", 14, 15);
@@ -1387,12 +1417,29 @@
         fetchExpenses(); 
       }
     }
+    // SETTINGS (budget/savings via Supabase)
+    async function fetchSettings() {
+      const { data } = await supabaseClient.from('settings').select('*');
+      if (data) {
+        data.forEach(s => {
+          if (s.key === 'weddingBudget') dashboardState.budget = parseFloat(s.value) || 50000;
+          if (s.key === 'weddingSavings') dashboardState.savings = parseFloat(s.value) || 0;
+        });
+      }
+      if (!dashboardState.budget) dashboardState.budget = 50000;
+    }
+    async function saveSetting(key, value) {
+      await supabaseClient.from('settings').upsert([{ key, value: String(value) }]);
+    }
+
+    function toggleBudgetEdit(s) { document.getElementById('budget-edit-container').classList.toggle('hidden', !s); }
+    function saveBudgetFromInput() { const v = document.getElementById('budget-input').value; if (v) { dashboardState.budget = parseFloat(v); saveSetting('weddingBudget', v); toggleBudgetEdit(false); updateExpenseStats(); } }
     function toggleSavingsEdit(s) { document.getElementById('savings-edit-container').classList.toggle('hidden', !s); }
-    function saveSavingsFromInput() { const v = document.getElementById('savings-input').value; if (v) { localStorage.setItem('weddingSavings', v); toggleSavingsEdit(false); updateExpenseStats(); } }
+    function saveSavingsFromInput() { const v = document.getElementById('savings-input').value; if (v) { dashboardState.savings = parseFloat(v); saveSetting('weddingSavings', v); toggleSavingsEdit(false); updateExpenseStats(); } }
 
     function updateExpenseStats() {
-      const budget = parseFloat(localStorage.getItem('weddingBudget')) || 0;
-      const savings = parseFloat(localStorage.getItem('weddingSavings')) || 0;
+      const budget = dashboardState.budget || 0;
+      const savings = dashboardState.savings || 0;
       const spent = dashboardState.expenses.reduce((s, e) => s + parseFloat(e.amount), 0);
       
       // Cálculo de Dívidas Ativas (Pendente + Pago Parcial)
@@ -1412,8 +1459,6 @@
       updateExpenseChart(); updateCategoryChart();
       renderBudgetPlanner();
     }
-    function toggleBudgetEdit(s) { document.getElementById('budget-edit-container').classList.toggle('hidden', !s); }
-    function saveBudgetFromInput() { const v = document.getElementById('budget-input').value; if (v) { localStorage.setItem('weddingBudget', v); toggleBudgetEdit(false); updateExpenseStats(); } }
 
     function updateCategoryChart() {
       const ctx = document.getElementById('categoryChart').getContext('2d');
@@ -1570,6 +1615,12 @@
       const time = document.getElementById('tlTime').value;
       const desc = document.getElementById('tlEvent').value;
       if (!time || !desc) { showToast('Preencha hora e descrição!', 'error'); return; }
+      // Check for conflicts
+      const { data: existing } = await supabaseClient.from('timeline').select('event_time, description').order('event_time');
+      if (existing) {
+        const conflict = existing.find(e => e.event_time === time);
+        if (conflict) { showToast(`Conflito! Já existe evento às ${time}: ${conflict.description}`, 'error'); return; }
+      }
       const { data, error } = await supabaseClient.from('timeline').insert([{ event_time: time, description: desc }]).select('id').single();
       if (!error && data?.id) await logAudit('timeline', data.id, 'INSERT', null, { event_time: time, description: desc });
       if (!error) { 
@@ -1673,6 +1724,18 @@
     function previewInvite(token) {
       window.open(`${window.location.origin}/rsvp.html?token=${token}`, '_blank');
     }
+    function copyInviteLink(token) {
+      const link = `${window.location.origin}/rsvp.html?token=${token}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(link).then(() => showToast('Link copiado!', 'success'));
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = link; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); showToast('Link copiado!', 'success'); } catch {}
+        document.body.removeChild(ta);
+      }
+    }
 
     async function fetchSuppliers() { 
       const { data } = await supabaseClient.from('suppliers').select('*').order('name', { ascending: true }); 
@@ -1701,9 +1764,12 @@
                 ${s.map_link ? `<a href="${sanitizeAttr(s.map_link)}" target="_blank" class="text-xs text-blue-500 font-bold flex items-center gap-1 hover:underline"><i data-lucide="map-pin" class="w-3 h-3"></i> Mapa</a>` : ''}
               </div>
             </div>
-            <div class="flex justify-between items-center border-t pt-3 mt-auto">
+              <div class="flex justify-between items-center border-t pt-3 mt-auto">
               <span class="text-lg font-bold text-vinho">R$ ${Number(s.value).toLocaleString('pt-BR')}</span>
-              <button onclick="deleteSupplier('${sanitizeAttr(s.id)}')" class="p-2 text-red-400 hover:text-red-600 transition-colors">🗑️</button>
+              <div class="flex items-center gap-2">
+                <span class="text-xs">${s.rating ? '⭐'.repeat(s.rating) : ''}</span>
+                <button onclick="deleteSupplier('${sanitizeAttr(s.id)}')" class="p-2 text-red-400 hover:text-red-600 transition-colors">🗑️</button>
+              </div>
             </div>
           </div>
         `;

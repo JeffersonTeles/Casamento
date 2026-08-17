@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convite Premium — Jefferson & Beatriz</title>
+  <link rel="stylesheet" href="./css/output.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: #0a0a0f; color: #f5f0e8; overflow-x: hidden; }
+    .font-titulo { font-family: 'Cormorant Garamond', serif; }
+
+    /* PRELOADER */
+    #preloader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0a0a0f;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1.5rem;
+      transition: opacity 0.8s ease-out, visibility 0.8s;
+    }
+    #preloader.fade-out { opacity: 0; visibility: hidden; }
+    #preloader .monogram {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem; font-weight: 700;
+      background: linear-gradient(135deg, #c9a96e, #e8d5a3, #c9a96e);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 2s ease-in-out infinite;
+    }
+    #preloader .line { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #c9a96e, transparent); animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes shimmer { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    @keyframes pulse { 0%, 100% { transform: scaleX(0.3); opacity: 0.3; } 50% { transform: scaleX(1); opacity: 1; } }
+
+    /* HEADER */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.4s ease;
+    }
+    .header.scrolled {
+      background: rgba(10, 10, 15, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201, 169, 110, 0.15);
+      padding: 0.7rem 2rem;
+    }
+    .header .logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; font-weight: 700;
+      background: linear-gradient(135deg, #c9a96e, #e8d5a3);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .header nav a {
+      color: rgba(245, 240, 232, 0.6); text-decoration: none;
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      margin-left: 2rem; transition: color 0.3s;
+    }
+    .header nav a:hover { color: #c9a96e; }
+
+    /* HERO — Cinematic Spotlight */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201, 169, 110, 0.08) 0%, transparent 70%);
+    }
+    .spotlight {
+      position: absolute; width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201, 169, 110, 0.12) 0%, transparent 70%);
+      animation: spotlightMove 8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes spotlightMove {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.3); }
+    }
+    .hero-content { position: relative; z-index: 2; padding: 2rem; }
+    .hero-pre {
+      font-size: 0.65rem; letter-spacing: 0.4em; text-transform: uppercase;
+      color: #c9a96e; margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 1s ease 0.5s forwards;
+    }
+    .hero-names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 10vw, 7rem); font-weight: 700;
+      line-height: 1; margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #c9a96e 0%, #e8d5a3 40%, #c9a96e 60%, #e8d5a3 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: fadeUp 1s ease 0.8s forwards, goldShift 4s ease-in-out infinite;
+      opacity: 0;
+    }
+    @keyframes goldShift { 0%, 100% { background-position: 0% center; } 50% { background-position: 200% center; } }
+    .hero-amp {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 4vw, 2.5rem); font-style: italic;
+      color: rgba(201, 169, 110, 0.5); margin: 0.5rem 0;
+      opacity: 0; animation: fadeUp 1s ease 1s forwards;
+    }
+    .hero-date {
+      font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(245, 240, 232, 0.5); margin-top: 2rem;
+      opacity: 0; animation: fadeUp 1s ease 1.2s forwards;
+    }
+    .hero-divider {
+      width: 60px; height: 1px; margin: 2rem auto;
+      background: linear-gradient(90deg, transparent, #c9a96e, transparent);
+      opacity: 0; animation: fadeUp 1s ease 1.4s forwards;
+    }
+    .hero-location {
+      font-size: 0.7rem; letter-spacing: 0.2em; color: rgba(245, 240, 232, 0.4);
+      opacity: 0; animation: fadeUp 1s ease 1.6s forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SCROLL INDICATOR */
+    .scroll-indicator {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      opacity: 0; animation: fadeUp 1s ease 2s forwards;
+    }
+    .scroll-indicator span {
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(201, 169, 110, 0.4);
+    }
+    .scroll-line {
+      width: 1px; height: 40px; background: linear-gradient(to bottom, #c9a96e, transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse { 0%, 100% { opacity: 0.3; transform: scaleY(0.5); } 50% { opacity: 1; transform: scaleY(1); } }
+
+    /* SECTIONS */
+    section { padding: 5rem 1.5rem; max-width: 800px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase;
+      color: #c9a96e; text-align: center; margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3rem); font-weight: 700;
+      text-align: center; color: #f5f0e8; margin-bottom: 1.5rem;
+    }
+    .section-text {
+      font-size: 0.85rem; line-height: 1.8; color: rgba(245, 240, 232, 0.6);
+      text-align: center; max-width: 600px; margin: 0 auto;
+    }
+
+    /* ART DECO DIVIDER */
+    .deco-divider {
+      display: flex; align-items: center; justify-content: center; gap: 1rem;
+      margin: 3rem auto; max-width: 300px;
+    }
+    .deco-divider::before, .deco-divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.3));
+    }
+    .deco-divider::after { background: linear-gradient(90deg, rgba(201, 169, 110, 0.3), transparent); }
+    .deco-diamond {
+      width: 8px; height: 8px; border: 1px solid #c9a96e;
+      transform: rotate(45deg); flex-shrink: 0;
+    }
+
+    /* COUNTDOWN */
+    .countdown-section {
+      background: linear-gradient(135deg, rgba(201, 169, 110, 0.05), rgba(201, 169, 110, 0.02));
+      border-top: 1px solid rgba(201, 169, 110, 0.1);
+      border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+      padding: 4rem 1.5rem; max-width: 100%;
+    }
+    .countdown-grid {
+      display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+    }
+    .countdown-item { text-align: center; min-width: 80px; }
+    .countdown-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 700;
+      background: linear-gradient(135deg, #c9a96e, #e8d5a3);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+    .countdown-label {
+      font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(245, 240, 232, 0.4); margin-top: 0.5rem;
+    }
+
+    /* TIMELINE */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 1px; background: linear-gradient(to bottom, transparent, rgba(201, 169, 110, 0.3), transparent);
+    }
+    .timeline-item {
+      position: relative; margin-bottom: 2.5rem;
+      padding-left: 1.5rem;
+      opacity: 0; transform: translateX(-20px);
+      transition: all 0.6s ease;
+    }
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -2rem; top: 0.3rem;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #c9a96e; box-shadow: 0 0 12px rgba(201, 169, 110, 0.4);
+    }
+    .timeline-time {
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: #c9a96e; margin-bottom: 0.3rem;
+    }
+    .timeline-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-weight: 600; color: #f5f0e8;
+    }
+    .timeline-desc {
+      font-size: 0.8rem; color: rgba(245, 240, 232, 0.5); margin-top: 0.3rem;
+    }
+
+    /* CARD */
+    .luxury-card {
+      background: rgba(245, 240, 232, 0.03);
+      border: 1px solid rgba(201, 169, 110, 0.12);
+      border-radius: 2px; padding: 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .luxury-card::before {
+      content: ''; position: absolute; inset: 4px;
+      border: 1px solid rgba(201, 169, 110, 0.06);
+      pointer-events: none;
+    }
+
+    /* RSVP FORM */
+    .rsvp-form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-label {
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(201, 169, 110, 0.7);
+    }
+    .form-input, .form-select {
+      background: rgba(245, 240, 232, 0.05);
+      border: 1px solid rgba(201, 169, 110, 0.15);
+      color: #f5f0e8; padding: 0.8rem 1rem;
+      font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+    .form-input:focus, .form-select:focus { border-color: #c9a96e; }
+    .form-input::placeholder { color: rgba(245, 240, 232, 0.25); }
+    .form-select option { background: #1a1a2e; color: #f5f0e8; }
+
+    .rsvp-options { display: flex; gap: 1rem; }
+    .rsvp-btn {
+      flex: 1; padding: 1rem; text-align: center;
+      border: 1px solid rgba(201, 169, 110, 0.2);
+      background: transparent; color: rgba(245, 240, 232, 0.6);
+      cursor: pointer; transition: all 0.3s;
+      font-family: 'Montserrat', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .rsvp-btn:hover { border-color: rgba(201, 169, 110, 0.4); color: #f5f0e8; }
+    .rsvp-btn.selected {
+      border-color: #c9a96e; color: #c9a96e;
+      background: rgba(201, 169, 110, 0.08);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #c9a96e, #b8944a);
+      color: #0a0a0f; padding: 1rem 2rem;
+      font-family: 'Montserrat', sans-serif; font-size: 0.7rem;
+      letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;
+      border: none; cursor: pointer; transition: all 0.3s;
+      margin-top: 1rem;
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201, 169, 110, 0.3); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* SUCCESS */
+    .success-msg {
+      text-align: center; padding: 3rem;
+      animation: fadeUp 0.6s ease;
+    }
+    .success-icon {
+      font-size: 3rem; margin-bottom: 1rem;
+      animation: successPop 0.5s ease 0.2s both;
+    }
+    @keyframes successPop {
+      from { transform: scale(0); } to { transform: scale(1); }
+    }
+
+    /* MAP */
+    .map-container {
+      border: 1px solid rgba(201, 169, 110, 0.12);
+      border-radius: 2px; overflow: hidden;
+      aspect-ratio: 16/9; position: relative;
+    }
+    .map-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(10, 10, 15, 0.8), rgba(10, 10, 15, 0.6));
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1rem;
+    }
+    .map-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.5rem;
+      border: 1px solid rgba(201, 169, 110, 0.3);
+      color: #c9a96e; text-decoration: none;
+      font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    .map-btn:hover { background: rgba(201, 169, 110, 0.1); border-color: #c9a96e; }
+
+    /* FOOTER */
+    .footer {
+      text-align: center; padding: 4rem 1.5rem;
+      border-top: 1px solid rgba(201, 169, 110, 0.08);
+    }
+    .footer-names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 600;
+      background: linear-gradient(135deg, #c9a96e, #e8d5a3);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .footer-text {
+      font-size: 0.7rem; color: rgba(245, 240, 232, 0.3);
+      letter-spacing: 0.1em;
+    }
+
+    /* REVEAL ANIMATION */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* GEOMETRIC BORDERS */
+    .geo-border {
+      position: relative;
+    }
+    .geo-border::before, .geo-border::after {
+      content: ''; position: absolute;
+      border: 1px solid rgba(201, 169, 110, 0.15);
+    }
+    .geo-border::before { top: 8px; left: 8px; right: 8px; bottom: 8px; }
+  </style>
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="monogram">J & B</div>
+    <div class="line"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header" id="header">
+    <span class="logo-text">J & B</span>
+    <nav>
+      <a href="#detalhes">Detalhes</a>
+      <a href="#cronograma">Cronograma</a>
+      <a href="#rsvp">RSVP</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="spotlight"></div>
+    <div class="hero-content">
+      <p class="hero-pre">Convite de Casamento</p>
+      <h1 class="hero-names font-titulo">Jefferson</h1>
+      <p class="hero-amp font-titulo">&</p>
+      <h1 class="hero-names font-titulo">Beatriz</h1>
+      <div class="hero-divider"></div>
+      <p class="hero-date">06 de Fevereiro de 2027</p>
+      <p class="hero-location">Capela São Maximiliano — Cascavel, PR</p>
+    </div>
+    <div class="scroll-indicator">
+      <span>Descubra</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section class="countdown-section">
+    <p class="section-label">Contagem Regressiva</p>
+    <div class="countdown-grid" id="countdown">
+      <div class="countdown-item"><div class="countdown-num" id="cd-days">---</div><div class="countdown-label">Dias</div></div>
+      <div class="countdown-item"><div class="countdown-num" id="cd-hours">--</div><div class="countdown-label">Horas</div></div>
+      <div class="countdown-item"><div class="countdown-num" id="cd-mins">--</div><div class="countdown-label">Minutos</div></div>
+      <div class="countdown-item"><div class="countdown-num" id="cd-secs">--</div><div class="countdown-label">Segundos</div></div>
+    </div>
+  </section>
+
+  <!-- DETALHES -->
+  <section id="detalhes" class="reveal">
+    <div class="deco-divider"><div class="deco-diamond"></div></div>
+    <p class="section-label">A Cerimônia</p>
+    <h2 class="section-title font-titulo">Um momento para guardar para sempre</h2>
+    <p class="section-text">
+      Com alegria e emoção, convidamos você para celebrar o nosso casamento.
+      Será uma cerimônia íntima e cheia de significado, aos 06 de Fevereiro de 2027,
+      às 08h00 da manhã, na Capela São Maximiliano, em Cascavel - PR.
+    </p>
+
+    <div class="deco-divider" style="margin-top: 3rem;"><div class="deco-diamond"></div></div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+      <div class="luxury-card geo-border" style="text-align: center;">
+        <p class="section-label" style="margin-bottom: 0.5rem;">Data</p>
+        <p class="font-titulo" style="font-size: 1.5rem; color: #c9a96e;">06 / 02 / 2027</p>
+        <p style="font-size: 0.75rem; color: rgba(245,240,232,0.4); margin-top: 0.3rem;">Sábado</p>
+      </div>
+      <div class="luxury-card geo-border" style="text-align: center;">
+        <p class="section-label" style="margin-bottom: 0.5rem;">Horário</p>
+        <p class="font-titulo" style="font-size: 1.5rem; color: #c9a96e;">08h00</p>
+        <p style="font-size: 0.75rem; color: rgba(245,240,232,0.4); margin-top: 0.3rem;">Pontualmente</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <div class="luxury-card geo-border" style="text-align: center;">
+        <p class="section-label" style="margin-bottom: 0.5rem;">Local</p>
+        <p class="font-titulo" style="font-size: 1.2rem; color: #f5f0e8;">Capela São Maximiliano</p>
+        <p style="font-size: 0.75rem; color: rgba(245,240,232,0.4); margin-top: 0.3rem;">Rua Siqueira Campos, 1234 — Country, Cascavel - PR</p>
+        <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+          <a href="https://www.google.com/maps/search/?api=1&query=Capela+S%C3%A3o+Maximiliano+Cascavel+PR" target="_blank" class="map-btn">📍 Google Maps</a>
+          <a href="https://www.waze.com/ul?q=Capela+São+Maximiliano+Cascavel+PR" target="_blank" class="map-btn">🧭 Waze</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRONOGRAMA -->
+  <section id="cronograma" class="reveal">
+    <div class="deco-divider"><div class="deco-diamond"></div></div>
+    <p class="section-label">Programação</p>
+    <h2 class="section-title font-titulo">A Ordem do Dia</h2>
+    <div class="timeline" id="timeline-container">
+      <div class="timeline-item">
+        <p class="timeline-time">07:30</p>
+        <p class="timeline-title font-titulo">Chegada dos Convidados</p>
+        <p class="timeline-desc">Recepção e acolhimento</p>
+      </div>
+      <div class="timeline-item">
+        <p class="timeline-time">08:00</p>
+        <p class="timeline-title font-titulo">Início da Cerimônia</p>
+        <p class="timeline-desc">A grande celebração começa</p>
+      </div>
+      <div class="timeline-item">
+        <p class="timeline-time">09:00</p>
+        <p class="timeline-title font-titulo">Sessão de Fotos</p>
+        <p class="timeline-desc">Registro dos momentos especiais</p>
+      </div>
+      <div class="timeline-item">
+        <p class="timeline-time">09:30</p>
+        <p class="timeline-title font-titulo">Encerramento</p>
+        <p class="timeline-desc">Agradecimentos e despedida</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAPA -->
+  <section class="reveal">
+    <div class="deco-divider"><div class="deco-diamond"></div></div>
+    <p class="section-label">Como Chegar</p>
+    <h2 class="section-title font-titulo">O Nosso Encontro</h2>
+    <div class="map-container">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3600!2d-53.4!3d-24.95!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCapela+S%C3%A3o+Maximiliano+Cascavel+PR!5e0!3m2!1spt-BR!2sbr!4v1" width="100%" height="100%" style="border:0; filter: grayscale(0.6) contrast(1.1);" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section id="rsvp" class="reveal">
+    <div class="deco-divider"><div class="deco-diamond"></div></div>
+    <p class="section-label">Confirme sua Presença</p>
+    <h2 class="section-title font-titulo">Sua Presença é o Nosso Maior Presente</h2>
+
+    <div class="luxury-card geo-border" id="rsvp-card">
+      <div id="rsvp-form-container">
+        <form class="rsvp-form" onsubmit="submitRSVP(event)">
+          <div class="form-group">
+            <label class="form-label">Seu Nome</label>
+            <input type="text" id="rsvp-name" class="form-input" placeholder="Nome completo" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Você comparecerá?</label>
+            <div class="rsvp-options">
+              <button type="button" class="rsvp-btn" data-status="confirmado" onclick="selectStatus(this)">Confirmo Presença</button>
+              <button type="button" class="rsvp-btn" data-status="recusado" onclick="selectStatus(this)">Não Poderei</button>
+            </div>
+          </div>
+
+          <div class="form-group" id="plus-ones-group" style="display: none;">
+            <label class="form-label">Acompanhantes</label>
+            <select id="rsvp-plusones" class="form-select">
+              <option value="0">Sem acompanhantes</option>
+              <option value="1">+1 acompanhante</option>
+              <option value="2">+2 acompanhantes</option>
+              <option value="3">+3 acompanhantes</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Restrição Alimentar</label>
+            <input type="text" id="rsvp-dietary" class="form-input" placeholder="Ex: vegetariano, sem glúten..." />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Recado para os Noivos</label>
+            <input type="text" id="rsvp-message" class="form-input" placeholder="Deixe uma mensagem carinhosa..." />
+          </div>
+
+          <button type="submit" class="submit-btn" id="submit-btn">Enviar Resposta</button>
+        </form>
+      </div>
+
+      <div id="rsvp-success" style="display: none;">
+        <div class="success-msg">
+          <div class="success-icon">💍</div>
+          <h3 class="font-titulo" style="font-size: 1.8rem; color: #c9a96e; margin-bottom: 0.5rem;">Resposta Enviada!</h3>
+          <p style="font-size: 0.85rem; color: rgba(245,240,232,0.6);">Obrigado por confirmar. Mal podemos esperar para te ver!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PIX -->
+  <section class="reveal">
+    <div class="deco-divider"><div class="deco-diamond"></div></div>
+    <p class="section-label">Presentes</p>
+    <h2 class="section-title font-titulo">Mimo com Carinho</h2>
+    <div class="luxury-card geo-border" style="text-align: center;">
+      <p style="font-size: 0.85rem; color: rgba(245,240,232,0.6); margin-bottom: 1.5rem;">
+        Se quiser nos homenagear com um mimo, nosso PIX está disponível.
+      </p>
+      <p style="font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(201,169,110,0.6); margin-bottom: 0.3rem;">Chave PIX</p>
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #c9a96e; letter-spacing: 0.05em;">(44) 99927-7915</p>
+      <button onclick="copyPIX(this)" style="margin-top: 1.5rem; background: rgba(201,169,110,0.1); border: 1px solid rgba(201,169,110,0.2); color: #c9a96e; padding: 0.6rem 1.5rem; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; font-family: 'Montserrat', sans-serif;">
+        Copiar Chave
+      </button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p class="footer-names font-titulo">Jefferson & Beatriz</p>
+    <p class="footer-text">06.02.2027 — Cascavel, PR</p>
+    <div class="deco-divider" style="margin-top: 2rem;"><div class="deco-diamond"></div></div>
+    <p style="font-size: 0.6rem; color: rgba(245,240,232,0.2); margin-top: 1rem; letter-spacing: 0.1em;">Feito com amor</p>
+  </footer>
+
+  <script src="./js/sanitize.js"></script>
+  <script>
+    // PRELOADER
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('preloader').classList.add('fade-out');
+        setTimeout(() => document.getElementById('preloader').remove(), 900);
+      }, 1500);
+    });
+
+    // HEADER SCROLL
+    window.addEventListener('scroll', () => {
+      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 80);
+    });
+
+    // COUNTDOWN
+    const TARGET = new Date(2027, 1, 6, 8, 0, 0).getTime();
+    function updateCountdown() {
+      const now = Date.now();
+      const diff = TARGET - now;
+      if (diff <= 0) return;
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('cd-days').textContent = d;
+      document.getElementById('cd-hours').textContent = String(h).padStart(2, '0');
+      document.getElementById('cd-mins').textContent = String(m).padStart(2, '0');
+      document.getElementById('cd-secs').textContent = String(s).padStart(2, '0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // REVEAL ON SCROLL
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal, .timeline-item').forEach(el => observer.observe(el));
+
+    // RSVP
+    let selectedStatus = null;
+    function selectStatus(btn) {
+      document.querySelectorAll('.rsvp-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedStatus = btn.dataset.status;
+      document.getElementById('plus-ones-group').style.display = selectedStatus === 'confirmado' ? 'block' : 'none';
+    }
+
+    async function submitRSVP(e) {
+      e.preventDefault();
+      if (!selectedStatus) { alert('Por favor, selecione se você comparecerá.'); return; }
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true; btn.textContent = 'Enviando...';
+
+      const payload = {
+        name: document.getElementById('rsvp-name').value.trim(),
+        status: selectedStatus,
+        plus_ones: parseInt(document.getElementById('rsvp-plusones').value) || 0,
+        dietary: document.getElementById('rsvp-dietary').value.trim(),
+        message: document.getElementById('rsvp-message').value.trim()
+      };
+
+      // Simular envio (pode integrar com Supabase depois)
+      await new Promise(r => setTimeout(r, 1200));
+
+      document.getElementById('rsvp-form-container').style.display = 'none';
+      document.getElementById('rsvp-success').style.display = 'block';
+    }
+
+    function copyPIX(btn) {
+      const text = '44999277915';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => { btn.textContent = 'Copiado!'; setTimeout(() => btn.textContent = 'Copiar Chave', 2000); });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); btn.textContent = 'Copiado!'; setTimeout(() => btn.textContent = 'Copiar Chave', 2000); } catch {}
+        document.body.removeChild(ta);
+      }
+    }
+
+    // SMOOTH SCROLL
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
