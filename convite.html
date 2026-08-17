@@ -587,9 +587,9 @@
     }
 
     async function submitRSVP() {
-      if (!selectedStatus) { alert('Selecione se você comparecerá.'); return; }
-      if (!currentGuest) { alert('Erro: convidado não identificado.'); return; }
-      if (!checkRsvpRateLimit(GUEST_TOKEN)) { alert('Aguarde antes de enviar novamente.'); return; }
+      if (!selectedStatus) { showToastGlobal('Selecione se você comparecerá.', 'error'); return; }
+      if (!currentGuest) { showToastGlobal('Erro: convidado não identificado.', 'error'); return; }
+      if (!checkRsvpRateLimit(GUEST_TOKEN)) { showToastGlobal('Aguarde antes de enviar novamente.', 'error'); return; }
       const btn = document.getElementById('submit-btn');
       btn.disabled = true; btn.textContent = 'Enviando...';
       try {
@@ -607,7 +607,7 @@
         document.getElementById('rsvp-success').classList.add('active');
       } catch (err) {
         console.error('RSVP error:', err);
-        alert('Erro ao enviar. Tente novamente.');
+        showToastGlobal('Erro ao enviar. Tente novamente.', 'error');
         btn.disabled = false; btn.textContent = 'Enviar';
       }
     }

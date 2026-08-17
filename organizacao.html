@@ -338,7 +338,7 @@
             <input type="text" id="guestName" aria-label="Nome do convidado" placeholder="Nome" required class="p-3 rounded-xl border border-slate-300" />
             <input type="tel" id="guestPhone" aria-label="Telefone" placeholder="Telefone" inputmode="tel" pattern="[\d\s\-\(\)]+" class="p-3 rounded-xl border border-slate-300" />
             <input type="text" id="guestPartner" aria-label="Parceiro(a)" placeholder="Parceiro(a) no convite" class="p-3 rounded-xl border border-slate-300" />
-            <input type="text" id="guestDietary" aria-label="Restrição alimentar" placeholder="Restrição alimentar (opcional)" class="p-3 rounded-xl border border-slate-300" />
+            <input type="number" id="guestPlusOnes" aria-label="Acompanhantes" placeholder="Acompanhantes" min="0" max="5" class="p-3 rounded-xl border border-slate-300" />
             <select id="guestOwner" aria-label="Responsável" class="p-3 rounded-xl border border-slate-300 bg-white">
               <option value="">Responsável</option>
               <option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
@@ -612,6 +612,10 @@
           <input type="text" id="editGuestPartner" placeholder="Nome do parceiro(a) (ex: Maria)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
           <p class="text-[0.65rem] text-slate-400 mt-1">Aparecerá no convite como "Seu Nome & Parceiro(a)"</p>
         </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Acompanhantes</label>
+          <input type="number" id="editGuestPlusOnes" min="0" max="5" placeholder="0" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+        </div>
       </div>
       <div class="mt-8 flex gap-3"><button onclick="toggleEditModal(false)" class="flex-1 py-3 rounded-xl border">Cancelar</button><button onclick="saveGuestEdit()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold">Salvar</button></div>
     </div>
@@ -706,12 +710,11 @@
     }
 
     async function deletePlannerItem(id) {
-      if (confirm('Remover este item orçado?')) {
+      showUndoToast('Item removido', async () => {
         const { error } = await supabaseClient.from('budget_categories').delete().eq('id', id);
         if (error) { console.error('Erro delete budget:', error); showToast('Erro ao remover item', 'error'); return; }
         fetchBudget();
-        showToast('Item removido', 'success');
-      }
+      });
     }
 
     function renderBudgetPlanner() {
@@ -785,7 +788,7 @@
 
         if (action === 'guest-edit') {
           const g = _guestStore.get(id);
-          if (g) editGuest(g.id, g.name, g.phone || '', g.invited_by, g.rsvp_status, g.is_vip, g.partner_name || '');
+          if (g) editGuest(g.id, g.name, g.phone || '', g.invited_by, g.rsvp_status, g.is_vip, g.partner_name || '', g.plus_ones || 0);
         } else if (action === 'guest-delete') {
           deleteGuest(id);
         } else if (action === 'guest-preview') {
@@ -1200,10 +1203,12 @@
       if (window.lucide) lucide.createIcons();
     }
     async function deleteMood(id) { 
-      const { error } = await supabaseClient.from('moodboard').delete().eq('id', id); 
-      if (error) { console.error('Erro delete mood:', error); showToast('Erro ao remover', 'error'); return; }
-      await logAudit('moodboard', id, 'DELETE');
-      fetchMoodLinks(); 
+      showUndoToast('Referência removida', async () => {
+        const { error } = await supabaseClient.from('moodboard').delete().eq('id', id); 
+        if (error) { console.error('Erro delete mood:', error); showToast('Erro ao remover', 'error'); return; }
+        await logAudit('moodboard', id, 'DELETE');
+        fetchMoodLinks(); 
+      });
     }
 
     async function fetchTasks() {
@@ -1351,12 +1356,12 @@
       }, 1500);
     });
     async function deleteTask(id) { 
-      if (confirm('Deletar?')) { 
+      showUndoToast('Tarefa removida', async () => {
         const { error } = await supabaseClient.from('tasks').delete().eq('id', id); 
         if (error) { console.error('Erro delete task:', error); showToast('Erro ao deletar tarefa', 'error'); return; }
         await logAudit('tasks', id, 'DELETE');
         fetchTasks(); 
-      } 
+      });
     }
     async function addTask() {
       const title = document.getElementById('newTask').value;
@@ -1448,7 +1453,7 @@
         modal.classList.remove('flex', 'items-center', 'justify-center');
       }
     }
-    function editGuest(id, name, phone, owner, status, isVip, partnerName) { 
+    function editGuest(id, name, phone, owner, status, isVip, partnerName, plusOnes) { 
       document.getElementById('editGuestId').value = id; 
       document.getElementById('editGuestName').value = name; 
       document.getElementById('editGuestPhone').value = phone; 
@@ -1456,6 +1461,7 @@
       document.getElementById('editGuestStatus').value = status || 'aguardando';
       document.getElementById('editGuestVip').checked = !!isVip;
       document.getElementById('editGuestPartner').value = partnerName || '';
+      document.getElementById('editGuestPlusOnes').value = plusOnes || 0;
       toggleEditModal(true); 
     }
     async function saveGuestEdit() {
@@ -1466,7 +1472,8 @@
         invited_by: document.getElementById('editGuestOwner').value,
         rsvp_status: document.getElementById('editGuestStatus').value,
         is_vip: document.getElementById('editGuestVip').checked,
-        partner_name: document.getElementById('editGuestPartner').value.trim() || null
+        partner_name: document.getElementById('editGuestPartner').value.trim() || null,
+        plus_ones: parseInt(document.getElementById('editGuestPlusOnes').value) || 0
       };
       const { error } = await supabaseClient.from('guests').update(payload).eq('id', id); 
       if (error) { console.error('Erro update guest:', error); showToast('Erro ao salvar convidado', 'error'); return; }
@@ -1474,39 +1481,39 @@
       toggleEditModal(false); fetchGuests();
     }
     async function deleteGuest(id) { 
-      if (confirm('Remover?')) { 
+      showUndoToast('Convidado removido', async () => {
         const { error } = await supabaseClient.from('guests').delete().eq('id', id); 
         if (error) { console.error('Erro delete guest:', error); showToast('Erro ao remover convidado', 'error'); return; }
         await logAudit('guests', id, 'DELETE');
         fetchGuests(); 
-      } 
+      });
     }
     async function addGuest() {
       const nameEl = document.getElementById('guestName');
       const phoneEl = document.getElementById('guestPhone');
       const ownerEl = document.getElementById('guestOwner');
       const partnerEl = document.getElementById('guestPartner');
-      const dietaryEl = document.getElementById('guestDietary');
+      const plusOnesEl = document.getElementById('guestPlusOnes');
       
       const name = nameEl.value.trim();
       const phone = phoneEl.value.trim();
       const invited_by = ownerEl.value;
       const partner_name = partnerEl.value.trim() || null;
-      const dietary = dietaryEl.value.trim() || null;
+      const plus_ones = parseInt(plusOnesEl.value) || 0;
 
-      if (!name) { alert('Informe o nome do convidado!'); return; }
+      if (!name) { showToastGlobal('Informe o nome do convidado!', 'error'); return; }
 
       try {
         const token = window.crypto?.randomUUID ? window.crypto.randomUUID() : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        const { data, error } = await supabaseClient.from('guests').insert([{ name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name, dietary }]).select('id').single();
+        const { data, error } = await supabaseClient.from('guests').insert([{ name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name, plus_ones }]).select('id').single();
         if (error) throw error;
-        if (data?.id) await logAudit('guests', data.id, 'INSERT', null, { name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name, dietary });
-        nameEl.value = ''; phoneEl.value = ''; partnerEl.value = ''; dietaryEl.value = '';
+        if (data?.id) await logAudit('guests', data.id, 'INSERT', null, { name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name, plus_ones });
+        nameEl.value = ''; phoneEl.value = ''; partnerEl.value = ''; plusOnesEl.value = '';
         document.getElementById('guestOwner').value = '';
         fetchGuests();
       } catch (err) {
         console.error(err);
-        alert('Erro ao cadastrar: ' + (err.message || 'Verifique o console'));
+        showToastGlobal('Erro ao cadastrar: ' + (err.message || 'Verifique o console'), 'error');
       }
     }
 
@@ -1590,12 +1597,12 @@
       }).join('');
     }
     async function deleteExpense(id) { 
-      if (confirm('Remover este gasto?')) { 
+      showUndoToast('Gasto removido', async () => {
         const { error } = await supabaseClient.from('expenses').delete().eq('id', id); 
         if (error) { console.error('Erro delete expense:', error); showToast('Erro ao remover gasto', 'error'); return; }
         await logAudit('expenses', id, 'DELETE');
         fetchExpenses(); 
-      } 
+      });
     }
     async function addExpense() {
       const item = document.getElementById('expItem').value, cat = document.getElementById('expCategory').value, amount = document.getElementById('expAmount').value;
@@ -1846,12 +1853,12 @@
     }
 
     async function deleteTimelineEvent(id) {
-      if (confirm('Excluir este horário?')) {
+      showUndoToast('Evento removido', async () => {
         const { error } = await supabaseClient.from('timeline').delete().eq('id', id);
         if (error) { console.error('Erro delete timeline:', error); showToast('Erro ao excluir evento', 'error'); return; }
         await logAudit('timeline', id, 'DELETE');
         fetchTimeline();
-      }
+      });
     }
 
     function printTimeline() {
@@ -1994,13 +2001,12 @@
     }
 
     async function deleteSupplier(id) { 
-      if (confirm('Remover este fornecedor?')) { 
+      showUndoToast('Fornecedor removido', async () => {
         const { error } = await supabaseClient.from('suppliers').delete().eq('id', id); 
         if (error) { console.error('Erro delete supplier:', error); showToast('Erro ao remover fornecedor', 'error'); return; }
         await logAudit('suppliers', id, 'DELETE');
         fetchSuppliers(); 
-        showToast('Fornecedor removido', 'success');
-      } 
+      });
     }
 
     let _editingSupplierId = null;
@@ -2053,6 +2059,28 @@
     
     function showToast(message, type = 'success') {
       showToastGlobal(message, type);
+    }
+
+    function showUndoToast(message, onUndo, duration = 5000) {
+      let t = document.getElementById('undo-toast');
+      if (t) t.remove();
+      t = document.createElement('div');
+      t.id = 'undo-toast';
+      t.style.cssText = 'position:fixed;bottom:6rem;left:50%;transform:translateX(-50%) translateY(20px);padding:0.75rem 1rem;border-radius:1rem;color:white;font-size:0.8rem;font-weight:600;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:9999;opacity:0;transition:all 0.3s;display:flex;align-items:center;gap:0.75rem;background:#1a1a2e;white-space:nowrap;';
+      t.innerHTML = `<span>${message}</span><button id="undo-btn" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:0.3rem 0.75rem;border-radius:0.5rem;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap">Desfazer</button>`;
+      document.body.appendChild(t);
+      requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; });
+      let timer = setTimeout(() => {
+        t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)';
+        setTimeout(() => t.remove(), 300);
+        onUndo();
+      }, duration);
+      document.getElementById('undo-btn').addEventListener('click', () => {
+        clearTimeout(timer);
+        t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)';
+        setTimeout(() => t.remove(), 300);
+        showToastGlobal('Ação desfeita', 'info');
+      });
     }
     </script>
       <!-- FAB (Floating Action Button) -->
