@@ -2,7 +2,7 @@
   "name": "Casamento Jefferson & Beatriz",
   "short_name": "Casamento",
   "description": "Site e painel de organização do casamento de Jefferson & Beatriz",
-  "start_url": "/organizacao.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a1a2e",

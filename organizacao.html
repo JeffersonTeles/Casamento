@@ -5,18 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Organização do Casamento — Jefferson & Beatriz</title>
   <meta name="description" content="Painel de organização do casamento de Jefferson & Beatriz" />
-  <meta name="theme-color" content="#c9a96e" />
+  <meta name="theme-color" content="#1a1a2e" />
   <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="./css/output.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./js/config.js"></script>
   <script src="./js/sanitize.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="./js/shared.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
@@ -48,7 +42,7 @@
     .orb-b { width: 260px; height: 260px; left: -40px; bottom: -50px; border-radius: 55% 45% 45% 55% / 45% 60% 40% 55%; background: linear-gradient(160deg, rgba(250, 250, 248, 0.9), rgba(26, 26, 46, 0.04)); }
 
     .stat-label { color: #6f6a60; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
-    .stat-value { font-size: 1.8rem; line-height: 1; color: #1a1a2e; font-family: 'Playfair Display', serif; }
+    .stat-value { font-size: 1.8rem; line-height: 1; color: #1a1a2e; font-family: 'Cormorant Garamond', serif; }
 
     .mini-pill { display: inline-flex; align-items: center; border-radius: 999px; border: 1px solid var(--line); background: #fff; padding: 0.35rem 0.7rem; font-size: 0.75rem; color: #6f6a60; transition: all 0.2s ease; }
 
@@ -117,7 +111,7 @@
           <i data-lucide="lock-keyhole" class="w-8 h-8 text-vinho"></i>
         </div>
         <p class="text-xs uppercase tracking-[0.35em] text-vinho/80 mt-4">Área privada</p>
-        <h1 class="text-3xl font-titulo font-bold text-vinho mt-1">Jefferson <span class="text-rosa">&amp;</span> Beatriz</h1>
+        <h1 class="text-3xl font-titulo font-bold text-vinho mt-1">Jefferson <span class="text-dourado">&amp;</span> Beatriz</h1>
         <p class="text-sm text-slate-600 mt-2">Acesso restrito. Entre com suas credenciais para abrir a Central do Casal.</p>
       </div>
       <form id="accessForm" class="mt-6 space-y-4">
@@ -263,7 +257,7 @@
                 </div>
               </div>
               <div class="glass-card p-6 rounded-[1.6rem]">
-                <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="calendar-days" class="text-rosa"></i> Próximo Evento</h3>
+                <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="calendar-days" class="text-dourado"></i> Próximo Evento</h3>
                 <div id="dash-next-event" class="p-4 bg-vinho/5 rounded-2xl border border-vinho/10"></div>
               </div>
             </div>
@@ -507,7 +501,7 @@
 
       <aside id="secondary-column" class="hidden xl:block space-y-6 sticky top-24">
         <div class="glass-card p-6 rounded-3xl">
-          <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="heart" class="text-rosa"></i> Resumo</h3>
+          <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="heart" class="text-dourado"></i> Resumo</h3>
           <div class="space-y-4">
             <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-600">Pendentes</span><strong id="pendingTasksStat" class="text-vinho text-lg">0</strong></div>
             <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-amber-600">Vencem em 7 dias</span><strong id="dueSoonStat" class="text-amber-600 text-lg">0</strong></div>
@@ -1064,7 +1058,7 @@
       const nextTasks = dashboardState.tasks.filter(t => t.status !== 'concluido').slice(0, 3);
       document.getElementById('dash-next-tasks').innerHTML = nextTasks.length > 0 ? nextTasks.map(t => {
         const ownerColor = t.owner === 'Jefferson' ? 'text-blue-500' : 'text-purple-500';
-        return `<div class="p-3 bg-white border border-slate-100 rounded-xl text-xs flex justify-between items-center"><span>${t.title}</span><span class="font-bold ${ownerColor}">${t.due_date ? new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR') : ''}</span></div>`
+        return `<div class="p-3 bg-white border border-slate-100 rounded-xl text-xs flex justify-between items-center"><span>${sanitizeHTML(t.title)}</span><span class="font-bold ${ownerColor}">${t.due_date ? new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR') : ''}</span></div>`
       }).join('') : '<p class="text-xs font-medium text-slate-700 italic text-center py-4">Tudo em dia!</p>';
       
       // RSVP
@@ -1575,7 +1569,7 @@
           <div class="flex justify-between items-start">
             <div>
               <p class="font-bold text-vinho text-sm">${ev.event_time.substring(0, 5)}</p>
-              <p class="text-slate-700">${ev.description}</p>
+              <p class="text-slate-700">${sanitizeHTML(ev.description)}</p>
             </div>
             <button onclick="deleteTimelineEvent('${ev.id}')" class="opacity-0 group-hover:opacity-100 transition-opacity text-red-400 text-xs">Excluir</button>
           </div>
@@ -1621,7 +1615,7 @@
           <style>
             body { font-family: 'Georgia', serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a; }
             .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #1a1a2e; padding-bottom: 20px; }
-            .header h1 { font-family: 'Playfair Display', serif; color: #1a1a2e; margin: 0 0 8px; font-size: 2.5rem; }
+            .header h1 { font-family: 'Cormorant Garamond', serif; color: #1a1a2e; margin: 0 0 8px; font-size: 2.5rem; }
             .header p { color: #c9a96e; margin: 0; font-size: 1.1rem; }
             .meta { text-align: center; margin-bottom: 30px; color: #666; font-size: 0.9rem; }
             .timeline { position: relative; padding-left: 30px; }

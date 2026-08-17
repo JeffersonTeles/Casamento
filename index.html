@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth overflow-x-hidden">
+<html lang="pt-BR" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8" />
@@ -43,7 +43,7 @@
     gtag('config', 'G-T4JLWH2930');
   </script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/output.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./js/config.js"></script>
   <script src="./js/sanitize.js"></script>
@@ -123,7 +123,6 @@
     /* Utils */
     .bg-vinho { background-color: #1a1a2e !important; }
     .text-vinho { color: #1a1a2e !important; }
-    .text-rosa { color: #c9a96e !important; }
     .text-dourado { color: #c9a96e !important; }
     .border-dourado { border-color: #c9a96e !important; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -135,9 +134,9 @@
     }
     .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
 
-    .delay-100 { transition-delay: 150ms; }
-    .delay-200 { transition-delay: 300ms; }
-    .delay-300 { transition-delay: 450ms; }
+    .delay-100 { transition-delay: 100ms; }
+    .delay-200 { transition-delay: 200ms; }
+    .delay-300 { transition-delay: 300ms; }
 
     @keyframes fadeInExpand {
       0% { opacity: 0; letter-spacing: 0.1em; transform: translateY(-10px); }
@@ -189,7 +188,7 @@
           Save the date
         </p>
         <h1 class="font-titulo text-3xl md:text-5xl text-vinho leading-tight">
-          Jefferson <span class="text-rosa">&amp;</span> Beatriz
+          Jefferson <span class="text-dourado">&amp;</span> Beatriz
         </h1>
         <p class="mt-3 text-sm md:text-base text-zinc-600">
           06 de fevereiro de 2027 às 08:00 DA MANHÃ (PONTUALMENTE) • Cascavel - PR

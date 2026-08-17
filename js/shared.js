@@ -1,25 +1,5 @@
 // js/shared.js — Configurações compartilhadas entre todas as páginas
-// Inclui: Tailwind config, inicialização Supabase, utilitários
-
-// === TAILWIND CONFIG ===
-if (typeof tailwind !== 'undefined' && tailwind.config) {
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          vinho: '#1a1a2e',
-          dourado: '#c9a96e',
-          rosa: '#c9a96e',
-          champagne: '#fafaf8',
-        },
-        fontFamily: {
-          titulo: ['"Cormorant Garamond"', 'serif'],
-          corpo: ['"Montserrat"', 'sans-serif'],
-        },
-      },
-    },
-  };
-}
+// Inicialização Supabase e utilitários
 
 // === SUPABASE CLIENT ===
 const WEDDING_CONFIG = window.WEDDING_CONFIG || {};
