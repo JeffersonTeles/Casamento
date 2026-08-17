@@ -12,6 +12,12 @@
   <script src="./js/config.js"></script>
   <script src="./js/sanitize.js"></script>
   <script src="./js/shared.js"></script>
+  <script src="https://unpkg.com/lucide@0.344.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -98,7 +104,7 @@
     }
   </style>
 </head>
-<body class="font-corpo text-slate-800 min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(233,30,99,0.10),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(245,230,211,0.95),transparent_32%),linear-gradient(160deg,var(--bg-1),var(--bg-2))]">
+<body class="font-corpo text-slate-800 min-h-screen" style="background-color: #fafaf8;">
   <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
   <div class="bg-orb orb-a"></div>
   <div class="bg-orb orb-b"></div>
@@ -553,7 +559,7 @@
   </datalist>
 
   <!-- Modal de Edição de Convidado -->
-  <div id="editGuestModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+  <div id="editGuestModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden p-4">
     <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md p-8">
       <h3 class="text-2xl font-titulo text-vinho mb-6">Editar Convidado</h3>
       <div class="space-y-4">
@@ -581,7 +587,7 @@
   </div>
 
   <!-- Modal de Planejamento de Item (Budget) -->
-  <div id="plannerModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+  <div id="plannerModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden p-4">
     <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md p-8">
       <h3 id="plannerModalTitle" class="text-2xl font-titulo text-vinho mb-6">Orçar Novo Item</h3>
       <div class="space-y-4">
@@ -617,13 +623,18 @@
     };
 
     function togglePlannerModal(s) { 
+      const modal = document.getElementById('plannerModal');
       if (!s) {
         document.getElementById('plannerId').value = '';
         document.getElementById('plannerCategory').value = '';
         document.getElementById('plannerAmount').value = '';
         document.getElementById('plannerModalTitle').textContent = 'Orçar Novo Item';
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'items-center', 'justify-center');
+      } else {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex', 'items-center', 'justify-center');
       }
-      document.getElementById('plannerModal').classList.toggle('hidden', !s); 
     }
 
     function editPlannerItem(id, cat, amount) {
@@ -631,7 +642,9 @@
       document.getElementById('plannerCategory').value = cat;
       document.getElementById('plannerAmount').value = amount;
       document.getElementById('plannerModalTitle').textContent = 'Editar Orçamento';
-      document.getElementById('plannerModal').classList.remove('hidden');
+      const modal = document.getElementById('plannerModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex', 'items-center', 'justify-center');
     }
 
     async function addPlannerItem() {
@@ -1208,7 +1221,16 @@
       updateOverviewStats();
       if (window.lucide) lucide.createIcons();
     }
-    function toggleEditModal(s) { document.getElementById('editGuestModal').classList.toggle('hidden', !s); }
+    function toggleEditModal(s) {
+      const modal = document.getElementById('editGuestModal');
+      if (s) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex', 'items-center', 'justify-center');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'items-center', 'justify-center');
+      }
+    }
     function editGuest(id, name, phone, owner, status, isVip, partnerName) { 
       document.getElementById('editGuestId').value = id; 
       document.getElementById('editGuestName').value = name; 

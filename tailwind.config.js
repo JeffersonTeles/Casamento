@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         vinho: "#1a1a2e",
         dourado: "#c9a96e",
+        champagne: "#fafaf8",
       },
       fontFamily: {
         titulo: ['"Cormorant Garamond"', 'serif'],
