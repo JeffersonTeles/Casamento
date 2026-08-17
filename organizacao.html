@@ -1379,7 +1379,7 @@
     }
 
     async function shareInviteWhatsApp(name, token) {
-      const link = `${window.location.origin}/rsvp.html?token=${token}`;
+      const link = `${window.location.origin}/convite.html?token=${token}`;
       const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${name}*!\n\nAcesse seu convite individual e confirme sua presença:\n👉 ${link}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
@@ -1722,10 +1722,10 @@
       channel.subscribe();
     }
     function previewInvite(token) {
-      window.open(`${window.location.origin}/rsvp.html?token=${token}`, '_blank');
+      window.open(`${window.location.origin}/convite.html?token=${token}`, '_blank');
     }
     function copyInviteLink(token) {
-      const link = `${window.location.origin}/rsvp.html?token=${token}`;
+      const link = `${window.location.origin}/convite.html?token=${token}`;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(link).then(() => showToast('Link copiado!', 'success'));
       } else {

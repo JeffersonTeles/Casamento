@@ -368,13 +368,14 @@
     <div class="hero-bg"></div>
     <div class="spotlight"></div>
     <div class="hero-content">
-      <p class="hero-pre">Convite de Casamento</p>
+      <p class="hero-pre" id="pre-greeting">Um convite especialmente para você</p>
       <h1 class="hero-names font-titulo">Jefferson</h1>
       <p class="hero-amp font-titulo">&</p>
       <h1 class="hero-names font-titulo">Beatriz</h1>
       <div class="hero-divider"></div>
       <p class="hero-date">06 de Fevereiro de 2027</p>
       <p class="hero-location">Capela São Maximiliano — Cascavel, PR</p>
+      <p class="hero-pre" id="greeting-text" style="margin-top: 1.5rem; font-size: 0.75rem; letter-spacing: 0.1em; animation-delay: 1.8s;">Bem-vindo(a) ao nosso convite</p>
     </div>
     <div class="scroll-indicator">
       <span>Descubra</span>
@@ -552,8 +553,62 @@
     <p style="font-size: 0.6rem; color: rgba(245,240,232,0.2); margin-top: 1rem; letter-spacing: 0.1em;">Feito com amor</p>
   </footer>
 
+  <script src="./js/config.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="./js/sanitize.js"></script>
   <script>
+    // SUPABASE INIT
+    const WEDDING_CONFIG = window.WEDDING_CONFIG || {};
+    const SUPABASE_URL = WEDDING_CONFIG.supabaseUrl || '';
+    const SUPABASE_KEY = WEDDING_CONFIG.supabaseAnonKey || '';
+    const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL && SUPABASE_KEY)
+      ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+      : null;
+
+    // TOKEN FROM URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const GUEST_TOKEN = urlParams.get('token');
+    let currentGuest = null;
+
+    // PERSONALIZED GREETING
+    async function loadGuest() {
+      if (!supabaseClient || !GUEST_TOKEN) return;
+      try {
+        const { data, error } = await supabaseClient
+          .from('guests')
+          .select('*')
+          .eq('invite_token', GUEST_TOKEN)
+          .single();
+        if (error || !data) return;
+        currentGuest = data;
+
+        // Personalize
+        const firstName = data.name.split(' ')[0];
+        document.getElementById('greeting-text').textContent = `${firstName}, você está convidado(a)!`;
+        document.getElementById('pre-greeting').textContent = 'Um convite especialmente para você';
+        document.getElementById('rsvp-name').value = data.name;
+
+        // If already RSVP'd, show status
+        if (data.rsvp_status === 'confirmado') {
+          document.getElementById('rsvp-form-container').style.display = 'none';
+          document.getElementById('rsvp-success').style.display = 'block';
+          document.getElementById('rsvp-success').querySelector('p').textContent =
+            'Sua presença já foi confirmada! Mal podemos esperar para te ver.';
+        } else if (data.rsvp_status === 'recusado') {
+          document.getElementById('rsvp-form-container').style.display = 'none';
+          document.getElementById('rsvp-success').style.display = 'block';
+          document.getElementById('rsvp-success').querySelector('h3').textContent = 'Obrigado pela resposta!';
+          document.getElementById('rsvp-success').querySelector('p').textContent =
+            'Sentimos muito que não poderá estar presente. Estaremos pensando em você!';
+        }
+
+        // Log access
+        await supabaseClient.from('rsvp_access_logs').insert([{
+          guest_id: data.id, access_time: new Date().toISOString()
+        }]);
+      } catch (err) { console.error('Erro ao carregar convidado:', err); }
+    }
+
     // PRELOADER
     window.addEventListener('load', () => {
       setTimeout(() => {
@@ -603,22 +658,50 @@
     async function submitRSVP(e) {
       e.preventDefault();
       if (!selectedStatus) { alert('Por favor, selecione se você comparecerá.'); return; }
+      if (!currentGuest) { alert('Erro: convidado não identificado.'); return; }
+
       const btn = document.getElementById('submit-btn');
       btn.disabled = true; btn.textContent = 'Enviando...';
 
-      const payload = {
-        name: document.getElementById('rsvp-name').value.trim(),
-        status: selectedStatus,
-        plus_ones: parseInt(document.getElementById('rsvp-plusones').value) || 0,
-        dietary: document.getElementById('rsvp-dietary').value.trim(),
-        message: document.getElementById('rsvp-message').value.trim()
-      };
+      const plusOnes = parseInt(document.getElementById('rsvp-plusones').value) || 0;
+      const message = document.getElementById('rsvp-message').value.trim();
+      const dietary = document.getElementById('rsvp-dietary').value.trim();
 
-      // Simular envio (pode integrar com Supabase depois)
-      await new Promise(r => setTimeout(r, 1200));
+      try {
+        // Update guest via Supabase
+        const { error } = await supabaseClient.rpc('confirm_guest_rsvp', {
+          p_invite_token: GUEST_TOKEN,
+          p_rsvp_status: selectedStatus,
+          p_plus_ones: plusOnes
+        });
 
-      document.getElementById('rsvp-form-container').style.display = 'none';
-      document.getElementById('rsvp-success').style.display = 'block';
+        if (error) throw error;
+
+        // Update dietary if provided
+        if (dietary) {
+          await supabaseClient.from('guests')
+            .update({ dietary })
+            .eq('invite_token', GUEST_TOKEN);
+        }
+
+        // Send notification
+        const safeName = String(currentGuest.name || '').slice(0, 100);
+        const safeMsg = String(message || '').slice(0, 500);
+        try {
+          await fetch('https://ntfy.sh/casamento-jefferson-bia-notificacoes', {
+            method: 'POST',
+            body: `Convidado: ${safeName}\nResposta: ${selectedStatus === 'confirmado' ? 'Confirmado!' : 'Não vai'}\nAcompanhantes: ${plusOnes}\nRestrição: ${dietary}\nRecado: ${safeMsg}`,
+            headers: { 'Title': `Novo RSVP: ${safeName}`, 'Priority': 'high', 'Tags': selectedStatus === 'confirmado' ? 'tada,ring' : 'pensive' }
+          });
+        } catch (err) { console.warn('Notificação falhou:', err); }
+
+        document.getElementById('rsvp-form-container').style.display = 'none';
+        document.getElementById('rsvp-success').style.display = 'block';
+      } catch (err) {
+        console.error('Erro RSVP:', err);
+        alert('Erro ao enviar. Tente novamente.');
+        btn.disabled = false; btn.textContent = 'Enviar Resposta';
+      }
     }
 
     function copyPIX(btn) {
@@ -642,6 +725,9 @@
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
+
+    // INIT
+    loadGuest();
   </script>
 </body>
 </html>

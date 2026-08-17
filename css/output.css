@@ -1292,10 +1292,6 @@ video {
   border-color: rgb(201 169 110 / 0.15);
 }
 
-.border-\[\#c9a96e\]\/30 {
-  border-color: rgb(201 169 110 / 0.3);
-}
-
 .border-amber-400 {
   --tw-border-opacity: 1;
   border-color: rgb(251 191 36 / var(--tw-border-opacity, 1));
@@ -1392,10 +1388,6 @@ video {
 
 .bg-\[\#1a1a2e\]\/10 {
   background-color: rgb(26 26 46 / 0.1);
-}
-
-.bg-\[\#c9a96e\]\/10 {
-  background-color: rgb(201 169 110 / 0.1);
 }
 
 .bg-amber-100 {
@@ -2345,10 +2337,6 @@ video {
 
 .hover\:bg-\[\#1a1a2e\]\/90:hover {
   background-color: rgb(26 26 46 / 0.9);
-}
-
-.hover\:bg-\[\#c9a96e\]\/20:hover {
-  background-color: rgb(201 169 110 / 0.2);
 }
 
 .hover\:bg-amber-50:hover {
