@@ -67,21 +67,36 @@
 </head>
 
 <body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 min-h-screen">
-  <header class="w-full bg-white/80 backdrop-blur border-b border-white/60 sticky top-0 z-20">
-    <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+  <header class="w-full bg-white/95 backdrop-blur-sm border-b border-[#c9a96e]/15 sticky top-0 z-20">
+    <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-4 md:py-3">
       <a href="index.html" class="flex items-center gap-2">
-        <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-vinho text-white text-sm">J&B</span>
-        <span class="font-titulo text-lg text-vinho">Jefferson &amp; Beatriz</span>
+        <span class="font-titulo text-2xl text-[#1a1a2e]">Jefferson &amp; Beatriz</span>
       </a>
-      <a href="index.html" class="text-xs font-medium text-vinho hover:underline">Voltar ao início</a>
+      <div class="flex items-center gap-5 text-xs font-semibold overflow-x-auto no-scrollbar whitespace-nowrap py-1">
+        <a href="index.html" class="text-[#1a1a2e]/60 hover:text-[#1a1a2e] transition-colors">Início</a>
+        <a href="gifts.html" class="text-[#1a1a2e]/60 hover:text-[#1a1a2e] transition-colors">Presentes</a>
+        <a href="gallery.html" class="text-[#1a1a2e] font-bold transition-colors">Galeria</a>
+        <a href="faq.html" class="text-[#1a1a2e]/60 hover:text-[#1a1a2e] transition-colors">Dúvidas</a>
+      </div>
     </nav>
   </header>
 
   <main class="max-w-3xl mx-auto px-4 py-12">
+    <!-- Galeria bloqueada antes do evento -->
+    <div id="galleryLocked" class="hidden text-center py-20">
+      <div class="inline-flex h-20 w-20 items-center justify-center rounded-full bg-vinho/10 mb-6">
+        <svg class="w-10 h-10 text-vinho/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      </div>
+      <h1 class="font-titulo text-4xl text-vinho mb-4">Galeria</h1>
+      <p class="text-lg text-zinc-600 mb-2">A galeria sera aberta no dia do casamento!</p>
+      <p class="text-sm text-zinc-500">06 de fevereiro de 2027 — Aguardamos voces la.</p>
+    </div>
+
+    <div id="galleryContent">
     <section class="reveal active text-center mb-8">
       <h1 class="font-titulo text-4xl text-vinho">Galeria</h1>
       <p class="mt-4 text-sm text-zinc-600 leading-relaxed">
-        Envie suas fotos do nosso casamento! Clique no botão abaixo ou arraste uma foto para o quadro.
+        Envie suas fotos do nosso casamento! Clique no botao abaixo ou arraste uma foto para o quadro.
       </p>
     </section>
 
@@ -116,6 +131,7 @@
         Nenhuma foto ainda. Seja o primeiro a compartilhar!
       </p>
     </section>
+    </div><!-- /galleryContent -->
   </main>
 
   <footer class="mt-12 border-t border-slate-100 bg-white/60">
@@ -143,6 +159,14 @@
     let db = null;
 
     document.addEventListener('DOMContentLoaded', () => {
+      const WEDDING_DATE = new Date(2027, 1, 6, 8, 0, 0);
+      const now = new Date();
+      if (now < WEDDING_DATE) {
+        document.getElementById('galleryLocked').classList.remove('hidden');
+        document.getElementById('galleryContent').classList.add('hidden');
+        return;
+      }
+
       const config = window.WEDDING_CONFIG || {};
       if (typeof supabase !== 'undefined' && config.supabaseUrl && config.supabaseAnonKey) {
         db = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
