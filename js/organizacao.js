@@ -2463,25 +2463,30 @@ function getGuestPersonCount(g) {
       showToastGlobal(message, type);
     }
 
-    function showUndoToast(message, onUndo, duration = 5000) {
+    function showUndoToast(message, onConfirm, duration = 5000) {
       let t = document.getElementById('undo-toast');
-      if (t) t.remove();
+      if (t) { t.remove(); }
       t = document.createElement('div');
       t.id = 'undo-toast';
       t.style.cssText = 'position:fixed;bottom:6rem;left:50%;transform:translateX(-50%) translateY(20px);padding:0.75rem 1rem;border-radius:1rem;color:white;font-size:0.8rem;font-weight:600;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:9999;opacity:0;transition:all 0.3s;display:flex;align-items:center;gap:0.75rem;background:#1a1a2e;white-space:nowrap;';
-      t.innerHTML = `<span>${message}</span><button id="undo-btn" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:0.3rem 0.75rem;border-radius:0.5rem;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap">Desfazer</button>`;
+      t.innerHTML = `<span>${message}. Clique em Confirmar para apagar.</span><button id="undo-btn-confirm" style="background:rgba(239,68,68,0.8);border:none;color:white;padding:0.3rem 0.75rem;border-radius:0.5rem;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap">Confirmar</button><button id="undo-btn-cancel" style="background:rgba(255,255,255,0.15);border:none;color:white;padding:0.3rem 0.75rem;border-radius:0.5rem;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap">Cancelar</button>`;
       document.body.appendChild(t);
       requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; });
-      let timer = setTimeout(() => {
+      const dismiss = () => {
         t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)';
-        setTimeout(() => t.remove(), 300);
-        onUndo();
-      }, duration);
-      document.getElementById('undo-btn').addEventListener('click', () => {
+        setTimeout(() => { if (t.parentNode) t.remove(); }, 300);
+      };
+      // Auto-dismiss (cancel) after duration
+      const timer = setTimeout(() => { dismiss(); showToastGlobal('Ação cancelada', 'info'); }, duration);
+      document.getElementById('undo-btn-confirm').addEventListener('click', () => {
         clearTimeout(timer);
-        t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)';
-        setTimeout(() => t.remove(), 300);
-        showToastGlobal('Ação desfeita', 'info');
+        dismiss();
+        onConfirm();
+      });
+      document.getElementById('undo-btn-cancel').addEventListener('click', () => {
+        clearTimeout(timer);
+        dismiss();
+        showToastGlobal('Ação cancelada', 'info');
       });
     }
       function toggleFab() {
