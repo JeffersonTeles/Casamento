@@ -120,7 +120,7 @@ function getGuestPersonCount(g) {
 
       _budgetStore.clear();
       const items = dashboardState.budgetCategories.map(b => {
-        _budgetStore.set(b.id, b);
+        _budgetStore.set(String(b.id), b);
         return b;
       });
 
@@ -741,7 +741,7 @@ function getGuestPersonCount(g) {
       if (!grid) return;
       _moodStore.clear();
       grid.innerHTML = (data || []).map(m => {
-        _moodStore.set(m.id, m);
+        _moodStore.set(String(m.id), m);
         return `
         <div class="relative group aspect-square bg-slate-100 rounded-lg overflow-hidden border">
           <img src="${sanitizeAttr(m.url)}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/100x100?text=Link'"/>
@@ -777,7 +777,7 @@ function getGuestPersonCount(g) {
       const now = new Date(); now.setHours(0,0,0,0);
       _taskStore.clear();
       list.innerHTML = filtered.map(t => {
-        _taskStore.set(t.id, t);
+        _taskStore.set(String(t.id), t);
         const isDone = t.status === 'concluido';
         const dueDate = t.due_date ? new Date(t.due_date + 'T12:00:00') : null;
         const isOverdue = !isDone && dueDate && dueDate < now;
@@ -1220,7 +1220,7 @@ function getGuestPersonCount(g) {
 
       _guestStore.clear();
       list.innerHTML = filtered.map(g => {
-        _guestStore.set(g.id, g);
+        _guestStore.set(String(g.id), g);
         let borderClass = 'border-slate-200';
         if (g.invited_by === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
         else if (g.invited_by === 'Bia' || g.invited_by === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
@@ -1482,7 +1482,7 @@ function getGuestPersonCount(g) {
     function renderExpenses() {
       _expenseStore.clear();
       document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => {
-        _expenseStore.set(e.id, e);
+        _expenseStore.set(String(e.id), e);
         return `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${sanitizeHTML(e.item)}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(e.category || 'Sem categoria')}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button data-action="expense-delete" data-id="${sanitizeAttr(e.id)}" class="text-red-500 text-sm">🗑️</button></div></div>`;
       }).join('');
     }
@@ -1722,7 +1722,7 @@ function getGuestPersonCount(g) {
       }
       _timelineStore.clear();
       list.innerHTML = events.map(ev => {
-        _timelineStore.set(ev.id, ev);
+        _timelineStore.set(String(ev.id), ev);
         return `
         <div class="relative group">
           <div class="absolute -left-[1.35rem] top-1 w-3 h-3 bg-vinho rounded-full"></div>
@@ -1942,7 +1942,7 @@ function getGuestPersonCount(g) {
       
       _supplierStore.clear();
       list.innerHTML = allSuppliers.map(s => {
-        _supplierStore.set(s.id, s);
+        _supplierStore.set(String(s.id), s);
         const statusColors = {
           'Quitado': 'bg-emerald-100 text-emerald-700',
           'Pago Parcial': 'bg-blue-100 text-blue-700',
