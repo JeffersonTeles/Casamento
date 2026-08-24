@@ -289,6 +289,17 @@ function getGuestPersonCount(g) {
           deleteTimelineEvent(id);
         } else if (action === 'expense-delete') {
           deleteExpense(id);
+        } else if (action === 'expense-edit') {
+          const e = _expenseStore.get(id) || Array.from(_expenseStore.values()).find(x => String(x.id) === String(id));
+          if (e) {
+            const novoValor = prompt(`Editar valor do gasto: ${e.item}\nValor atual: R$ ${e.amount}`, e.amount);
+            if (novoValor !== null) {
+              const val = parseFloat(novoValor.replace(',', '.'));
+              if (!isNaN(val) && val >= 0) {
+                supabaseClient.from('expenses').update({ amount: val }).eq('id', e.id).then(() => fetchExpenses());
+              }
+            }
+          }
         } else if (action === 'budget-edit') {
           const b = _budgetStore.get(id) || Array.from(_budgetStore.values()).find(x => String(x.id) === String(id));
           const spent = btn.dataset.spent ? parseFloat(btn.dataset.spent) : 0;
@@ -1484,7 +1495,7 @@ function getGuestPersonCount(g) {
       _expenseStore.clear();
       document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => {
         _expenseStore.set(String(e.id), e);
-        return `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${sanitizeHTML(e.item)}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(e.category || 'Sem categoria')}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button data-action="expense-delete" data-id="${sanitizeAttr(e.id)}" class="text-red-500 text-sm">🗑️</button></div></div>`;
+        return `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${sanitizeHTML(e.item)}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(e.category || 'Sem categoria')}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button data-action="expense-edit" data-id="${sanitizeAttr(e.id)}" class="text-slate-400 hover:text-vinho text-sm p-1">✏️</button><button data-action="expense-delete" data-id="${sanitizeAttr(e.id)}" class="text-red-500 text-sm">🗑️</button></div></div>`;
       }).join('');
     }
     async function deleteExpense(id) { 
