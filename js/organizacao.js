@@ -248,48 +248,49 @@ function getGuestPersonCount(g) {
 
     function initEventDelegation() {
       document.addEventListener('click', (e) => {
+        if (!e.target || !e.target.closest) return;
         const btn = e.target.closest('[data-action]');
         if (!btn) return;
         const action = btn.dataset.action;
         const id = btn.dataset.id;
 
         if (action === 'guest-edit') {
-          const g = _guestStore.get(id);
+          const g = _guestStore.get(id) || Array.from(_guestStore.values()).find(x => String(x.id) === String(id));
           if (g) editGuest(g.id, g.name, g.phone || '', g.invited_by, g.rsvp_status, g.is_vip, g.partner_name || '', g.plus_ones || 0);
         } else if (action === 'guest-delete') {
           deleteGuest(id);
         } else if (action === 'guest-preview') {
-          const g = _guestStore.get(id);
+          const g = _guestStore.get(id) || Array.from(_guestStore.values()).find(x => String(x.id) === String(id));
           if (g) previewInvite(g.invite_token);
         } else if (action === 'guest-copy') {
-          const g = _guestStore.get(id);
+          const g = _guestStore.get(id) || Array.from(_guestStore.values()).find(x => String(x.id) === String(id));
           if (g) copyInviteLink(g.invite_token);
         } else if (action === 'guest-whatsapp') {
-          const g = _guestStore.get(id);
+          const g = _guestStore.get(id) || Array.from(_guestStore.values()).find(x => String(x.id) === String(id));
           if (g) shareInviteWhatsApp(g.name, g.invite_token);
         } else if (action === 'guest-thank') {
-          const g = _guestStore.get(id);
+          const g = _guestStore.get(id) || Array.from(_guestStore.values()).find(x => String(x.id) === String(id));
           if (g) shareThankYou(g.name);
         } else if (action === 'task-delete') {
           deleteTask(id);
         } else if (action === 'task-calendar') {
-          const t = _taskStore.get(id);
+          const t = _taskStore.get(id) || Array.from(_taskStore.values()).find(x => String(x.id) === String(id));
           if (t) addToPersonalCalendar(t.title, t.due_date);
         } else if (action === 'task-toggle') {
-          const t = _taskStore.get(id);
+          const t = _taskStore.get(id) || Array.from(_taskStore.values()).find(x => String(x.id) === String(id));
           if (t) toggleTask(t.id, t.status);
         } else if (action === 'task-edit') {
-          const t = _taskStore.get(id);
+          const t = _taskStore.get(id) || Array.from(_taskStore.values()).find(x => String(x.id) === String(id));
           if (t) openTaskEditModal(t);
         } else if (action === 'tl-edit') {
-          const ev = _timelineStore.get(id);
+          const ev = _timelineStore.get(id) || Array.from(_timelineStore.values()).find(x => String(x.id) === String(id));
           if (ev) editTimelineEvent(ev.id, ev.event_time, ev.description);
         } else if (action === 'tl-delete') {
           deleteTimelineEvent(id);
         } else if (action === 'expense-delete') {
           deleteExpense(id);
         } else if (action === 'budget-edit') {
-          const b = _budgetStore.get(id);
+          const b = _budgetStore.get(id) || Array.from(_budgetStore.values()).find(x => String(x.id) === String(id));
           const spent = btn.dataset.spent ? parseFloat(btn.dataset.spent) : 0;
           if (b) editPlannerItem(b.id, b.category, b.planned_amount, spent);
         } else if (action === 'budget-create-missing') {
@@ -299,7 +300,7 @@ function getGuestPersonCount(g) {
         } else if (action === 'budget-delete') {
           deletePlannerItem(id);
         } else if (action === 'supplier-edit') {
-          const s = _supplierStore.get(id);
+          const s = _supplierStore.get(id) || Array.from(_supplierStore.values()).find(x => String(x.id) === String(id));
           if (s) editSupplier(s.id, s.name, s.contact || '', s.map_link || '', s.category || '', s.value || 0, s.status || 'Pendente');
         } else if (action === 'supplier-delete') {
           deleteSupplier(id);
