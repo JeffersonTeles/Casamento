@@ -1530,18 +1530,33 @@ function getGuestPersonCount(g) {
       const budget = plannedTotal > 0 ? plannedTotal : (dashboardState.budget || 0);
       const savings = dashboardState.savings || 0;
       const spent = dashboardState.expenses.reduce((s, e) => s + parseFloat(e.amount), 0);
-      const remaining = Math.max(0, budget - spent);
-      const percent = budget > 0 ? Math.min(Math.round((spent / budget) * 100), 100) : 0;
-      
-      const suppliersTotal = allSuppliers.reduce((s, sp) => s + (parseFloat(sp.value) || 0), 0);
-      const activeDebts = allSuppliers.reduce((sum, s) => {
-        if (s.status === 'Pendente' || s.status === 'Pago Parcial') {
-          return sum + (parseFloat(s.value) || 0);
-        }
-        return sum;
-      }, 0);
-      const suppliersTotalCalc = suppliersTotal;
 
+      const expensesByCategory = {};
+      dashboardState.expenses.forEach(e => {
+        const c = (e.category || 'Outros').toLowerCase().trim();
+        expensesByCategory[c] = (expensesByCategory[c] || 0) + parseFloat(e.amount);
+      });
+      const suppliersByCategory = {};
+      allSuppliers.forEach(s => {
+        const c = (s.category || 'Outros').toLowerCase().trim();
+        suppliersByCategory[c] = (suppliersByCategory[c] || 0) + (parseFloat(s.value) || 0);
+      });
+      const allCats = new Set([...Object.keys(expensesByCategory), ...Object.keys(suppliersByCategory)]);
+      
+      let totalCommitted = 0;
+      allCats.forEach(cat => {
+        const sp = expensesByCategory[cat] || 0;
+        const sup = suppliersByCategory[cat] || 0;
+        totalCommitted += Math.max(sp, sup);
+      });
+
+      const remaining = Math.max(0, budget - totalCommitted);
+      const percent = budget > 0 ? Math.min(Math.round((totalCommitted / budget) * 100), 100) : 0;
+      
+      // Dívida ativa é o total comprometido menos o que já foi efetivamente gasto
+      const activeDebts = Math.max(0, totalCommitted - spent);
+      const suppliersTotal = allSuppliers.reduce((s, sp) => s + (parseFloat(sp.value) || 0), 0);
+      
       document.getElementById('stat-budget').textContent = `R$ ${budget.toLocaleString('pt-BR')}`;
       document.getElementById('stat-savings').textContent = `R$ ${savings.toLocaleString('pt-BR')}`;
       document.getElementById('stat-total-spent').textContent = `R$ ${spent.toLocaleString('pt-BR')}`;
