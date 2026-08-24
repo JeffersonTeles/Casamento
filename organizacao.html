@@ -9,112 +9,18 @@
   <meta name="theme-color" content="#1a1a2e" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="./css/output.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" integrity="sha256-z1Kf6JgMvm8t0+OTDs+WNS7T09cSM7Z2Dk+Sf4m5S58=" crossorigin="anonymous"></script>
-  <script src="./js/config.js"></script>
-  <script src="./js/sanitize.js"></script>
-  <script src="./js/shared.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" integrity="sha256-z1Kf6JgMvm8t0+OTDs+WNS7T09cSM7Z2Dk+Sf4m5S58=" crossorigin="anonymous" defer></script>
+  <script src="./js/config.js" defer></script>
+  <script src="./js/sanitize.js" defer></script>
+  <script src="./js/shared.js" defer></script>
   <script src="https://unpkg.com/lucide@0.344.0" integrity="sha256-fJc75Q6pL2naKY4BfgHo5qBo+LWZ7ghwQRgfFRyO8JI=" crossorigin="anonymous" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4" integrity="sha256-SERKgtTty1vsDxll+qzd4Y2cF9swY9BCq62i9wXJ9Uo=" crossorigin="anonymous" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg-1: #fafaf8;
-      --bg-2: #f5f3ef;
-      --surface: rgba(255, 255, 255, 0.92);
-      --line: rgba(26, 26, 46, 0.08);
-    }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    .dock-btn.active { background: #1a1a2e; color: #fff; box-shadow: 0 12px 30px rgba(26, 26, 46, 0.22); }
-
-    .glass-card { background: var(--surface); backdrop-filter: blur(14px); border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(26, 26, 46, 0.10); }
-
-    .summary-card { background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 244, 0.88)); border: 1px solid var(--line); box-shadow: 0 14px 40px rgba(26, 26, 46, 0.08); }
-
-    .gate-overlay { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(15, 23, 42, 0.72); backdrop-filter: blur(10px); }
-
-    .gate-card { width: 100%; max-width: 420px; }
-    .gate-hidden { display: none !important; }
-
-    .bg-orb { position: fixed; pointer-events: none; z-index: -1; filter: blur(2px); opacity: 0.75; will-change: transform; }
-    .orb-a { width: 340px; height: 340px; top: -90px; right: -60px; border-radius: 45% 55% 60% 40% / 50% 35% 65% 50%; background: linear-gradient(160deg, rgba(201, 169, 110, 0.18), rgba(26, 26, 46, 0.06)); }
-    .orb-b { width: 260px; height: 260px; left: -40px; bottom: -50px; border-radius: 55% 45% 45% 55% / 45% 60% 40% 55%; background: linear-gradient(160deg, rgba(250, 250, 248, 0.9), rgba(26, 26, 46, 0.04)); }
-
-    .stat-label { color: #6f6a60; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
-    .stat-value { font-size: 1.8rem; line-height: 1; color: #1a1a2e; font-family: 'Cormorant Garamond', serif; }
-
-    .mini-pill { display: inline-flex; align-items: center; border-radius: 999px; border: 1px solid var(--line); background: #fff; padding: 0.35rem 0.7rem; font-size: 0.75rem; color: #6f6a60; transition: all 0.2s ease; }
-
-    .item-card { 
-      display: flex; 
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      border: 1px solid var(--line);
-      border-radius: 1rem;
-      background: rgba(255, 253, 249, 0.95);
-      padding: 0.9rem;
-      transition: all 0.3s ease;
-    }
-
-    .item-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
-    .item-card.done { background: rgba(236, 253, 245, 0.95); border-color: rgba(16, 185, 129, 0.18); }
-    .item-card.confirmed { background: rgba(239, 246, 255, 0.95); border-color: rgba(59, 130, 246, 0.18); }
-
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    .nav-scroll-wrapper { position: relative; }
-    .nav-scroll-wrapper::after {
-      content: '';
-      position: absolute;
-      top: 0; right: 0; bottom: 0;
-      width: 40px;
-      background: linear-gradient(to left, rgba(255,253,249,0.95), transparent);
-      pointer-events: none;
-      opacity: 1;
-      transition: opacity 0.3s;
-    }
-    .nav-scroll-wrapper.no-fade::after { opacity: 0; }
-
-    /* Mobile Premium Fixes */
-    @media (max-width: 768px) {
-      body { padding-bottom: 80px; }
-      .item-card { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; padding: 1.25rem !important; }
-      .item-card > div:last-child { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-      .item-card > div:last-child button { width: 100%; justify-content: center; height: 44px; }
-      .dock-btn { flex-shrink: 0; padding: 0.5rem 1rem !important; font-size: 0.75rem !important; }
-      .glass-card { padding: 1.25rem !important; margin-bottom: 1rem !important; }
-      .stat-value { font-size: 1.75rem !important; }
-      input, select, button { height: 48px; font-size: 16px !important; }
-    }
-    /* FAB Styles */
-    .fab-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; }
-    .fab-main { width: 60px; height: 60px; border-radius: 50%; background: #1a1a2e; color: white; display: flex; items-center: center; justify-content: center; box-shadow: 0 10px 25px rgba(26, 26, 46, 0.4); cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .fab-main:hover { transform: scale(1.1) rotate(90deg); }
-    .fab-main.active { transform: scale(0.9) rotate(45deg); background: #c9a96e; }
-    
-    .fab-menu { display: none; flex-direction: column; gap: 0.75rem; margin-bottom: 0.5rem; pointer-events: none; }
-    .fab-menu.active { display: flex; pointer-events: auto; animation: slideUp 0.3s ease-out forwards; }
-    
-    .fab-item { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; opacity: 0; transform: translateY(10px); }
-    .fab-menu.active .fab-item { opacity: 1; transform: translateY(0); transition: all 0.3s ease-out; }
-    .fab-item span { background: white; padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #1a1a2e; }
-    .fab-icon { width: 44px; height: 44px; border-radius: 50%; background: white; color: #1a1a2e; display: flex; items-center: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(26, 26, 46, 0.1); }
-    
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    @media (max-width: 768px) {
-      .fab-container { bottom: 1.5rem; right: 1.5rem; }
-    }
-  </style>
+  <link rel="stylesheet" href="./css/organizacao.css" />
 </head>
-<body class="font-corpo text-slate-800 min-h-screen" style="background-color: #fafaf8;">
+<body class="font-corpo text-slate-800 min-h-screen bg-gradient-to-b from-white via-slate-50 to-white" style="">
   <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
   <div class="bg-orb orb-a"></div>
   <div class="bg-orb orb-b"></div>
@@ -123,12 +29,12 @@
   <div id="accessGate" class="gate-overlay">
     <div class="gate-card glass-card p-8 rounded-3xl">
       <div class="text-center">
-        <div class="mx-auto h-16 w-16 rounded-2xl bg-vinho/10 flex items-center justify-center">
-          <i data-lucide="lock-keyhole" class="w-8 h-8 text-vinho"></i>
+        <div class="mx-auto h-16 w-16 rounded-2xl bg-dourado/10 flex items-center justify-center">
+          <i data-lucide="lock-keyhole" class="w-8 h-8 text-dourado"></i>
         </div>
-        <p class="text-xs uppercase tracking-[0.35em] text-vinho/80 mt-4">Área privada</p>
+        <p class="text-xs uppercase tracking-[0.35em] text-dourado/80 mt-4">Área privada</p>
         <h1 class="text-3xl font-titulo font-bold text-vinho mt-1">Jefferson <span class="text-dourado">&amp;</span> Beatriz</h1>
-        <p class="text-sm text-slate-600 mt-2">Acesso restrito. Entre com suas credenciais para abrir a Central do Casal.</p>
+        <p class="text-sm text-slate-500 mt-2">Acesso restrito. Entre com suas credenciais para abrir a Central do Casal.</p>
       </div>
       <form id="accessForm" class="mt-6 space-y-4">
         <div>
@@ -148,7 +54,7 @@
             </button>
           </div>
         </div>
-        <button type="submit" id="accessSubmit" class="w-full bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 active:scale-[0.99] transition font-semibold flex items-center justify-center gap-2">
+        <button type="submit" id="accessSubmit" class="w-full bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 active:scale-[0.99] transition font-semibold flex items-center justify-center gap-2 shadow-lg shadow-vinho/20">
           <span>Entrar</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
@@ -160,6 +66,17 @@
       </div>
       <p id="accessError" class="mt-3 text-sm text-red-600 min-h-[1.25rem] text-center"></p>
       <p id="accessInfo" class="mt-2 text-sm text-emerald-600 min-h-[1.25rem] text-center font-medium"></p>
+
+      <!-- Form de redefinição de senha (pede e-mail) -->
+      <form id="forgotForm" class="gate-hidden mt-6 pt-6 border-t border-slate-200">
+        <p class="text-sm font-semibold text-slate-700 mb-2">Redefinir senha</p>
+        <p class="text-xs text-slate-500 mb-4">Informe seu e-mail e enviaremos um link para criar uma nova senha.</p>
+        <div class="space-y-3">
+          <input type="text" id="forgotEmail" autocomplete="email" placeholder="Seu e-mail ou usuário" class="w-full p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-vinho focus:ring-2 focus:ring-vinho/15 transition" />
+          <button type="submit" class="w-full bg-vinho text-white px-4 py-3 rounded-xl hover:bg-vinho/90 active:scale-[0.99] transition font-semibold">Enviar link de redefinição</button>
+        </div>
+        <button type="button" id="forgotBack" class="mt-3 text-xs font-medium text-slate-500 hover:text-vinho transition-colors">← Voltar ao login</button>
+      </form>
 
       <!-- Form de nova senha (retorno do link de redefinição) -->
       <div id="resetForm" class="gate-hidden mt-6 pt-6 border-t border-slate-200">
@@ -178,34 +95,52 @@
     <header class="glass-card rounded-[2rem] p-5 md:p-6 mb-6">
       <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p class="text-xs uppercase tracking-[0.35em] text-vinho/80">Área do casal</p>
+          <p class="text-xs uppercase tracking-[0.35em] text-dourado/80">Área do casal</p>
           <h1 class="mt-2 text-3xl md:text-4xl font-titulo font-bold text-vinho">Central do Casal</h1>
         </div>
         <div class="flex items-center gap-3 flex-wrap">
-          <div class="glass-card rounded-2xl px-4 py-3 flex items-center gap-4">
-            <div>
-              <p class="text-xs font-medium uppercase tracking-[0.28em] text-slate-700">Logado como</p>
-              <select id="userSelect" class="mt-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none">
-                <option value="Jefferson">Jefferson</option>
-                <option value="Bia">Bia</option>
-              </select>
+          <div class="glass-card rounded-2xl px-4 py-3 flex items-center gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-[10px] font-medium uppercase tracking-[0.28em] text-slate-500">Logado como</p>
+              <p class="mt-0.5 text-sm font-bold text-vinho truncate" id="loggedUser">...</p>
             </div>
-            <button onclick="logout()" class="p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
+            <button onclick="logout()" class="p-2 rounded-xl bg-red-50 text-red-400 hover:bg-red-100 hover:text-red-500 transition-colors flex-shrink-0" aria-label="Sair">
               <i data-lucide="log-out" class="w-5 h-5"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <div class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div class="summary-card rounded-2xl p-4"><p class="stat-label">Total Convidados</p><div class="mt-2 stat-value" id="stat-total">0</div></div>
-        <div class="summary-card rounded-2xl p-4 border-l-4 border-green-500"><p class="stat-label">Confirmados</p><div class="mt-2 stat-value" id="stat-confirmed">0</div></div>
-        <div class="summary-card rounded-2xl p-4 border-l-4 border-blue-400"><p class="stat-label">Jefferson</p><div class="mt-2 stat-value" id="stat-jefferson">0</div></div>
-        <div class="summary-card rounded-2xl p-4 border-l-4 border-purple-400"><p class="stat-label">Bia</p><div class="mt-2 stat-value" id="stat-beatriz">0</div></div>
+      <div class="mt-6 grid grid-cols-3 md:grid-cols-5 gap-3">
+        <div class="summary-card rounded-2xl p-4">
+          <p class="stat-label">Convites</p>
+          <div class="mt-2 stat-value" id="stat-total">0</div>
+          <p class="text-[11px] text-slate-400 mt-1" id="stat-records-text">cadastros</p>
+        </div>
+        <div class="summary-card rounded-2xl p-4 border-l-4 border-dourado">
+          <p class="stat-label">Pessoas</p>
+          <div class="mt-2 stat-value" id="stat-total-people">0</div>
+          <p class="text-[11px] text-slate-400 mt-1">estimadas</p>
+        </div>
+        <div class="summary-card rounded-2xl p-4 border-l-4 border-emerald-400">
+          <p class="stat-label">Confirmadas</p>
+          <div class="mt-2 stat-value" id="stat-confirmed">0</div>
+          <p class="text-[11px] text-emerald-500 mt-1" id="stat-confirmed-people">0 pessoas</p>
+        </div>
+        <div class="summary-card rounded-2xl p-4 border-l-4 border-amber-400">
+          <p class="stat-label">Pendentes</p>
+          <div class="mt-2 stat-value" id="stat-pending">0</div>
+          <p class="text-[11px] text-amber-500 mt-1" id="stat-pending-people">0 pessoas</p>
+        </div>
+        <div class="summary-card rounded-2xl p-4 border-l-4 border-rose-400">
+          <p class="stat-label">Recusadas</p>
+          <div class="mt-2 stat-value" id="stat-declined">0</div>
+          <p class="text-[11px] text-rose-500 mt-1" id="stat-declined-people">0 pessoas</p>
+        </div>
       </div>
     </header>
 
-    <nav class="glass-card rounded-[1.2rem] p-2 mb-6 sticky top-4 z-20 overflow-hidden shadow-sm" style="min-height: 60px;">
+    <nav class="hidden md:block glass-card rounded-[1.2rem] p-2 mb-6 sticky top-4 z-20 overflow-hidden shadow-sm border border-dourado/10" style="min-height: 60px;">
       <div class="nav-scroll-wrapper">
         <div id="navTabsContainer" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth w-full" onscroll="checkNavScroll(this)">
           <button onclick="switchTab('dashboard')" id="btn-dashboard" role="tab" aria-selected="true" aria-controls="dashboard" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-vinho text-white">Início</button>
@@ -215,8 +150,9 @@
           <button onclick="switchTab('notes')" id="btn-notes" role="tab" aria-selected="false" aria-controls="notes" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Notas</button>
           <button onclick="switchTab('analytics')" id="btn-analytics" role="tab" aria-selected="false" aria-controls="analytics" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Analytics</button>
           <button onclick="switchTab('suppliers')" id="btn-suppliers" role="tab" aria-selected="false" aria-controls="suppliers" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Fornecedores</button>
-          <button onclick="switchTab('timeline')" id="btn-timeline" role="tab" aria-selected="false" aria-controls="timeline" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Cronograma</button>
+
           <button onclick="switchTab('docs')" id="btn-docs" role="tab" aria-selected="false" aria-controls="docs" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Documentos</button>
+          <button onclick="switchTab('home-items')" id="btn-home-items" role="tab" aria-selected="false" aria-controls="home-items" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">🏠 Casa</button>
           <button onclick="switchTab('audit')" id="btn-audit" role="tab" aria-selected="false" aria-controls="audit" class="dock-btn px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-slate-600 border border-slate-200">Log</button>
         </div>
       </div>
@@ -237,9 +173,31 @@
               <div class="glass-card p-6 rounded-[1.6rem]">
                 <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="pie-chart" class="text-emerald-500"></i> Visão Geral RSVP</h3>
                 <div class="grid grid-cols-3 gap-2 text-center">
-                  <div class="p-3 bg-emerald-50 rounded-2xl"><p class="text-[9px] uppercase text-emerald-600 font-bold">Sim</p><p class="text-xl font-bold text-emerald-700" id="dash-rsvp-yes">0</p></div>
-                  <div class="p-3 bg-amber-50 rounded-2xl"><p class="text-[9px] uppercase text-amber-600 font-bold">Aguardando</p><p class="text-xl font-bold text-amber-700" id="dash-rsvp-maybe">0</p></div>
-                  <div class="p-3 bg-rose-50 rounded-2xl"><p class="text-[9px] uppercase text-rose-600 font-bold">Não</p><p class="text-xl font-bold text-rose-700" id="dash-rsvp-no">0</p></div>
+                  <div class="p-3 bg-emerald-50 rounded-2xl">
+                    <p class="text-[9px] uppercase text-emerald-600 font-bold">Sim</p>
+                    <p class="text-xl font-bold text-emerald-700" id="dash-rsvp-yes">0</p>
+                    <p class="text-[10px] text-emerald-500" id="dash-rsvp-yes-people">0 pessoas</p>
+                  </div>
+                  <div class="p-3 bg-amber-50 rounded-2xl">
+                    <p class="text-[9px] uppercase text-amber-600 font-bold">Aguardando</p>
+                    <p class="text-xl font-bold text-amber-700" id="dash-rsvp-maybe">0</p>
+                    <p class="text-[10px] text-amber-500" id="dash-rsvp-maybe-people">0 pessoas</p>
+                  </div>
+                  <div class="p-3 bg-rose-50 rounded-2xl">
+                    <p class="text-[9px] uppercase text-rose-600 font-bold">Não</p>
+                    <p class="text-xl font-bold text-rose-700" id="dash-rsvp-no">0</p>
+                    <p class="text-[10px] text-rose-500" id="dash-rsvp-no-people">0 pessoas</p>
+                  </div>
+                </div>
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                  <div class="p-2 bg-vinho/5 rounded-xl text-center border border-vinho/10">
+                    <p class="text-[9px] uppercase text-vinho/60 font-bold">Não responderam</p>
+                    <p class="text-lg font-bold text-vinho" id="dash-rsvp-pending-count">0</p>
+                  </div>
+                  <div class="p-2 bg-vinho/5 rounded-xl text-center border border-vinho/10">
+                    <p class="text-[9px] uppercase text-vinho/60 font-bold">Total pessoas</p>
+                    <p class="text-lg font-bold text-vinho" id="dash-rsvp-total-people">0</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -278,6 +236,29 @@
                 <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="calendar-days" class="text-dourado"></i> Próximo Evento</h3>
                 <div id="dash-next-event" class="p-4 bg-vinho/5 rounded-2xl border border-vinho/10"></div>
               </div>
+              <!-- Card Casa & Móveis no Dashboard -->
+              <div class="glass-card p-5 rounded-[1.6rem]">
+                <h3 class="text-lg font-titulo text-vinho mb-4 flex items-center gap-2">
+                  <i data-lucide="home" class="text-purple-500"></i> Casa &amp; Móveis
+                </h3>
+                <div class="space-y-2.5">
+                  <div class="flex justify-between items-center text-sm border-b border-slate-100 pb-2">
+                    <span class="text-slate-500">💸 A comprar</span>
+                    <span class="font-bold text-slate-800" id="dash-home-buy-total">R$ —</span>
+                  </div>
+                  <div class="flex justify-between items-baseline text-sm border-b border-slate-100 pb-2">
+                    <span class="text-slate-500">🤞 Prometidos</span>
+                    <span class="text-xs font-semibold text-purple-600" id="dash-home-promised">0 prometidos</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-700 font-semibold">💡 Investimento est.</span>
+                    <span class="font-bold text-vinho" id="dash-home-net">R$ —</span>
+                  </div>
+                </div>
+                <button onclick="switchTab('home-items')" class="mt-4 w-full py-2.5 text-xs font-bold text-vinho border border-vinho/20 rounded-xl hover:bg-slate-50 transition">
+                  Ver todos os itens da casa →
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -309,41 +290,62 @@
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
             <h2 class="text-2xl font-titulo text-vinho flex items-center gap-2"><i data-lucide="users"></i> Convidados</h2>
             <div class="flex flex-wrap gap-2">
-              <button onclick="generateBroadcastList()" class="bg-amber-500 text-white text-[10px] md:text-xs px-4 py-2 rounded-full font-bold shadow-md hover:bg-amber-600 transition-all flex items-center gap-1"><i data-lucide="megaphone" class="w-3 h-3"></i> Cobrar Pendentes</button>
-              <button onclick="exportToExcel()" class="bg-emerald-600 text-white text-[10px] md:text-xs px-4 py-2 rounded-full font-bold">Excel</button>
-              <button onclick="exportToPDF()" class="bg-rose-600 text-white text-[10px] md:text-xs px-4 py-2 rounded-full font-bold">PDF (Lista)</button>
+              <button onclick="toggleGuestValidation()" id="btn-validate-guests" class="bg-vinho text-white text-[10px] md:text-xs px-3 py-2 rounded-full font-bold flex items-center gap-1 hover:opacity-90 transition relative">
+                <i data-lucide="shield-check" class="w-3 h-3"></i> <span class="hidden md:inline">Validar</span>
+                <span id="validationBadge" class="hidden absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center leading-none">0</span>
+              </button>
+              <button onclick="exportToExcel()" class="bg-emerald-600 text-white text-[10px] md:text-xs px-3 py-2 rounded-full font-bold">Excel</button>
+              <button onclick="exportToPDF()" class="bg-rose-600 text-white text-[10px] md:text-xs px-3 py-2 rounded-full font-bold">PDF</button>
             </div>
           </div>
 
-          <!-- Busca e Filtros -->
-          <div class="mb-6 space-y-4">
+          <!-- Painel de Validação -->
+          <div id="guestValidation" class="hidden mb-5">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50">
+                <h3 class="text-sm font-bold text-vinho flex items-center gap-2">
+                  <i data-lucide="shield-check" class="w-4 h-4"></i> Validação da Lista
+                </h3>
+                <button onclick="toggleGuestValidation()" aria-label="Fechar" class="text-slate-400 hover:text-slate-600">✕</button>
+              </div>
+              <div id="guestValidationContent" class="p-4">
+                <p class="text-xs text-slate-400 text-center py-4 italic">Analisando...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Busca -->
+          <div class="mb-4">
             <div class="relative">
-              <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-700"></i>
+              <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
               <input type="text" id="guestSearch" oninput="handleGuestSearch(this.value)" aria-label="Buscar convidado" placeholder="Buscar por nome..." class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-vinho transition-all" />
             </div>
-            <div class="flex flex-wrap gap-2">
-              <button onclick="setGuestFilter('all')" id="guest-filter-all" class="mini-pill bg-vinho text-white">Todos</button>
-              <button onclick="setGuestFilter('confirmado')" id="guest-filter-confirmado" class="mini-pill">Confirmados</button>
-              <button onclick="setGuestFilter('aguardando')" id="guest-filter-aguardando" class="mini-pill">Aguardando</button>
-              <button onclick="setGuestFilter('recusado')" id="guest-filter-recusado" class="mini-pill">Recusados</button>
-              <button onclick="toggleVipFilter()" id="guest-filter-vip" class="mini-pill border-amber-400 text-amber-600">⭐ VIPs</button>
-              <div class="w-px h-6 bg-slate-200 mx-1 self-center"></div>
-              <button onclick="setGuestOwnerFilter('all')" id="owner-filter-all" class="mini-pill bg-slate-100 text-slate-800">Todos os donos</button>
-              <button onclick="setGuestOwnerFilter('Jefferson')" id="owner-filter-Jefferson" class="mini-pill">Jefferson</button>
-              <button onclick="setGuestOwnerFilter('Bia')" id="owner-filter-Bia" class="mini-pill">Bia</button>
-            </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-6">
-            <input type="text" id="guestName" aria-label="Nome do convidado" placeholder="Nome" required class="p-3 rounded-xl border border-slate-300" />
-            <input type="tel" id="guestPhone" aria-label="Telefone" placeholder="Telefone" inputmode="tel" pattern="[\d\s\-\(\)]+" class="p-3 rounded-xl border border-slate-300" />
-            <input type="text" id="guestPartner" aria-label="Parceiro(a)" placeholder="Parceiro(a) no convite" class="p-3 rounded-xl border border-slate-300" />
-            <input type="number" id="guestPlusOnes" aria-label="Acompanhantes" placeholder="Acompanhantes" min="0" max="5" class="p-3 rounded-xl border border-slate-300" />
-            <select id="guestOwner" aria-label="Responsável" class="p-3 rounded-xl border border-slate-300 bg-white">
-              <option value="">Responsável</option>
-              <option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
-            </select>
-            <button onclick="addGuest()" class="md:col-span-2 lg:col-span-4 bg-vinho text-white p-3 rounded-xl font-bold">Cadastrar</button>
+          <!-- Filtros compactos -->
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <button onclick="setGuestFilter('all')" id="guest-filter-all" class="mini-pill bg-vinho text-white text-[10px] px-2.5 py-1">Todos</button>
+            <button onclick="setGuestFilter('confirmado')" id="guest-filter-confirmado" class="mini-pill text-[10px] px-2.5 py-1">Confirmados</button>
+            <button onclick="setGuestFilter('aguardando')" id="guest-filter-aguardando" class="mini-pill text-[10px] px-2.5 py-1">Aguardando</button>
+            <button onclick="setGuestFilter('recusado')" id="guest-filter-recusado" class="mini-pill text-[10px] px-2.5 py-1">Recusados</button>
+            <button onclick="setGuestOwnerFilter('Jefferson')" id="owner-filter-Jefferson" class="mini-pill text-[10px] px-2.5 py-1">Jeff</button>
+            <button onclick="setGuestOwnerFilter('Bia')" id="owner-filter-Bia" class="mini-pill text-[10px] px-2.5 py-1">Bia</button>
+          </div>
+
+          <div class="space-y-3 mb-6">
+            <input type="text" id="guestName" aria-label="Nome do convidado" placeholder="Nome completo" required class="w-full p-3 rounded-xl border border-slate-300 text-sm" />
+            <div class="grid grid-cols-2 gap-3">
+              <input type="tel" id="guestPhone" aria-label="Telefone" placeholder="Telefone" inputmode="tel" class="p-3 rounded-xl border border-slate-300 text-sm" />
+              <input type="text" id="guestPartner" aria-label="Parceiro(a)" placeholder="Parceiro(a)" class="p-3 rounded-xl border border-slate-300 text-sm" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <input type="number" id="guestPlusOnes" aria-label="Acompanhantes" placeholder="Acomp. (0)" min="0" max="5" class="p-3 rounded-xl border border-slate-300 text-sm" />
+              <select id="guestOwner" aria-label="Responsável" class="p-3 rounded-xl border border-slate-300 bg-white text-sm">
+                <option value="">Responsável</option>
+                <option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
+              </select>
+            </div>
+            <button onclick="addGuest()" class="w-full bg-vinho text-white p-3 rounded-xl font-bold text-sm hover:opacity-90 transition">Cadastrar</button>
           </div>
           <div id="guestList" class="space-y-3"></div>
         </section>
@@ -351,34 +353,71 @@
         <!-- SEÇÃO FINANCEIRO -->
         <section id="expenses" role="tabpanel" aria-labelledby="btn-expenses" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="banknote"></i> Financeiro</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
-            <div class="summary-card p-4 rounded-xl relative">
-              <p class="text-xs font-medium text-slate-700 uppercase tracking-wider">Orçamento Total</p>
-              <div class="flex items-center gap-2 mt-1"><span class="text-lg font-bold text-vinho" id="stat-budget">R$ 0,00</span><button onclick="toggleBudgetEdit(true)" class="text-slate-700 text-xs">✏️</button></div>
-              <div id="budget-edit-container" class="hidden absolute inset-0 bg-white/95 rounded-xl flex items-center p-2 gap-1 z-10"><input type="number" id="budget-input" aria-label="Orçamento total" class="w-full p-2 border rounded-lg text-sm" placeholder="Total" /><button onclick="saveBudgetFromInput()" class="bg-vinho text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button></div>
+
+          <!-- Resumo principal: Orçamento vs Gasto -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div class="summary-card p-4 rounded-2xl border-l-4 border-dourado">
+              <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Orçamento Total</p>
+              <p class="text-xl font-bold text-vinho mt-1" id="stat-budget">R$ 0,00</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">orcados + fornecedores</p>
             </div>
-            <div class="summary-card p-4 rounded-xl relative">
-              <p class="text-[10px] uppercase text-emerald-600 font-bold tracking-wider">Guardado (Em Conta)</p>
-              <div class="flex items-center gap-2 mt-1"><span class="text-lg font-bold text-emerald-600" id="stat-savings">R$ 0,00</span><button onclick="toggleSavingsEdit(true)" class="text-emerald-300 text-xs">✏️</button></div>
-              <div id="savings-edit-container" class="hidden absolute inset-0 bg-emerald-50/95 rounded-xl flex items-center p-2 gap-1 z-10"><input type="number" id="savings-input" aria-label="Valor guardado" class="w-full p-2 border border-emerald-200 rounded-lg text-sm" placeholder="Valor guardado" /><button onclick="saveSavingsFromInput()" class="bg-emerald-600 text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button></div>
+            <div class="summary-card p-4 rounded-2xl border-l-4 border-emerald-400 relative">
+              <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Guardado</p>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-xl font-bold text-emerald-600" id="stat-savings">R$ 0,00</span>
+                <button onclick="toggleSavingsEdit(true)" class="text-slate-400 hover:text-emerald-600 transition-colors" aria-label="Editar guardado"><i data-lucide="pencil" class="w-3 h-3"></i></button>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-0.5">em conta</p>
+              <div id="savings-edit-container" class="hidden absolute inset-0 bg-white/95 rounded-2xl flex items-center p-3 gap-2 z-10">
+                <input type="number" id="savings-input" aria-label="Valor guardado" class="flex-1 p-2 border border-emerald-200 rounded-lg text-sm" placeholder="Valor guardado" />
+                <button onclick="saveSavingsFromInput()" class="bg-emerald-600 text-white px-3 py-2 rounded-lg text-xs font-bold">OK</button>
+              </div>
             </div>
-            <div class="summary-card p-4 rounded-xl"><p class="text-[10px] uppercase text-rose-500 font-bold tracking-wider">Total Gasto Real</p><p class="text-lg font-bold text-rose-600 mt-1" id="stat-total-spent">R$ 0,00</p></div>
-            <div class="summary-card p-4 rounded-xl">
-              <p class="text-[10px] uppercase text-amber-600 font-bold tracking-wider">Dívidas Ativas</p>
+            <div class="summary-card p-4 rounded-2xl border-l-4 border-rose-400">
+              <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Total Gasto</p>
+              <p class="text-xl font-bold text-rose-600 mt-1" id="stat-total-spent">R$ 0,00</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">realizado</p>
+            </div>
+            <div class="summary-card p-4 rounded-2xl border-l-4 border-blue-400">
+              <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Restante</p>
+              <p class="text-xl font-bold text-blue-600 mt-1" id="stat-remaining">R$ 0,00</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">disponivel</p>
+            </div>
+          </div>
+
+          <!-- Detalhamento -->
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="summary-card p-4 rounded-xl border-l-4 border-amber-400">
+              <p class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Dividas Ativas</p>
               <p class="text-lg font-bold text-amber-700 mt-1" id="stat-active-debts">R$ 0,00</p>
             </div>
-            <div class="summary-card p-4 rounded-xl"><p class="text-[10px] uppercase text-blue-500 font-bold tracking-wider">Falta Guardar</p><p class="text-lg font-bold text-blue-600 mt-1" id="stat-remaining">R$ 0,00</p></div>
+            <div class="summary-card p-4 rounded-xl border-l-4 border-purple-400">
+              <p class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Fornecedores</p>
+              <p class="text-lg font-bold text-purple-600 mt-1" id="stat-suppliers-total">R$ 0,00</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">total contratado</p>
+            </div>
+          </div>
+          
+          <!-- Barra de progresso -->
+          <div class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+            <div class="flex justify-between text-sm mb-2">
+              <span class="text-slate-600 font-medium">Progresso do orçamento</span>
+              <span class="font-bold text-vinho" id="budget-progress-text">0% usado</span>
+            </div>
+            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+              <div id="dash-budget-progress" class="bg-vinho h-full transition-all duration-1000 rounded-full" style="width: 0%"></div>
+            </div>
           </div>
           
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Lançamento de Gastos -->
             <div class="space-y-4">
-              <h3 class="text-sm font-bold text-slate-700 uppercase tracking-widest">Novo Lançamento Real</h3>
+              <h3 class="text-sm font-bold text-slate-700 uppercase tracking-widest flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4 text-vinho"></i> Novo Lançamento</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <input type="text" id="expItem" aria-label="Descrição do gasto" placeholder="Ex: Entrada do Fotógrafo" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-                <input list="categories" id="expCategory" aria-label="Categoria" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-                <input type="number" id="expAmount" aria-label="Valor" placeholder="Valor R$" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-                <button onclick="addExpense()" class="bg-vinho text-white rounded-xl font-bold p-3 hover:opacity-90 transition-all">Lançar Gasto</button>
+                <input type="text" id="expItem" aria-label="Descrição do gasto" placeholder="Ex: Entrada do Fotógrafo" class="input-base " />
+                <input list="categories" id="expCategory" aria-label="Categoria" placeholder="Categoria" class="input-base " />
+                <input type="number" id="expAmount" aria-label="Valor" placeholder="Valor R$" class="input-base " />
+                <button onclick="addExpense()" class="bg-vinho text-white rounded-xl font-bold p-3 hover:opacity-90 transition-all">Lançar</button>
               </div>
               <div id="expenseList" class="space-y-2 max-h-[300px] overflow-y-auto no-scrollbar pr-1"></div>
             </div>
@@ -386,11 +425,11 @@
             <!-- Planejamento por Item -->
             <div class="space-y-4">
               <div class="flex justify-between items-center">
-                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-widest">Orçados / Planejados</h3>
-                <button onclick="togglePlannerModal(true)" class="text-[10px] bg-slate-100 px-3 py-1 rounded-full font-bold text-slate-600">+ Orçar Item</button>
+                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-widest flex items-center gap-2"><i data-lucide="clipboard-list" class="w-4 h-4 text-dourado"></i> Orçamento por Categoria</h3>
+                <p class="text-[10px] text-slate-400 mt-1">Cruzamento: planejado × gastos lançados × fornecedores contratados</p>
+                <button onclick="togglePlannerModal(true)" class="text-[10px] bg-dourado/10 px-3 py-1 rounded-full font-bold text-dourado hover:bg-dourado/20 transition">+ Orçar Item</button>
               </div>
               <div id="plannerList" class="space-y-2 max-h-[350px] overflow-y-auto no-scrollbar pr-1">
-                <!-- Itens orçados entram aqui -->
               </div>
             </div>
           </div>
@@ -455,12 +494,12 @@
           
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
             <div class="md:col-span-2 lg:col-span-1">
-              <input type="text" id="supplierName" aria-label="Nome do fornecedor" placeholder="Nome do Fornecedor" class="w-full p-3 border rounded-xl outline-none focus:border-vinho" />
+              <input type="text" id="supplierName" aria-label="Nome do fornecedor" placeholder="Nome do Fornecedor" class="input-base " />
             </div>
-            <input type="text" id="supplierContact" aria-label="Contato" placeholder="Telefone ou Instagram" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-            <input type="text" id="supplierMap" aria-label="Link do Google Maps" placeholder="Link do Google Maps" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-            <input list="categories" id="supplierCategory" aria-label="Categoria" placeholder="Categoria" class="p-3 border rounded-xl outline-none focus:border-vinho" />
-            <input type="number" id="supplierValue" aria-label="Valor total" placeholder="Valor total R$" class="p-3 border rounded-xl outline-none focus:border-vinho" />
+            <input type="text" id="supplierContact" aria-label="Contato" placeholder="Telefone ou Instagram" class="input-base " />
+            <input type="text" id="supplierMap" aria-label="Link do Google Maps" placeholder="Link do Google Maps" class="input-base " />
+            <input list="categories" id="supplierCategory" aria-label="Categoria" placeholder="Categoria" class="input-base " />
+            <input type="number" id="supplierValue" aria-label="Valor total" placeholder="Valor total R$" class="input-base " />
             <select id="supplierStatus" aria-label="Status do pagamento" class="p-3 border rounded-xl bg-white outline-none focus:border-vinho text-sm">
               <option value="Pendente">Pendente</option>
               <option value="Pago Parcial">Pago Parcial</option>
@@ -491,32 +530,172 @@
         <!-- SEÇÃO DOCUMENTOS -->
         <section id="docs" role="tabpanel" aria-labelledby="btn-docs" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
           <h2 class="text-2xl font-titulo text-vinho mb-4 flex items-center gap-2"><i data-lucide="folder-lock"></i> Checklist de Documentação</h2>
-          <p class="text-sm font-medium text-slate-600 mb-6 italic">Gerencie os documentos necessários para o Civil e Religioso.</p>
+          <p class="text-sm font-medium text-slate-600 mb-4 italic">Gerencie os documentos necessários para o Civil e Religioso.</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-2 mb-6">
+            <input type="text" id="newDocName" aria-label="Nome do documento" placeholder="Ex: Certidão de Nascimento" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho" />
+            <input type="text" id="newDocDesc" aria-label="Descrição" placeholder="Ex: Atualizada 90 dias" class="p-3 rounded-xl border border-slate-300 outline-none focus:border-vinho" />
+            <button onclick="addDoc()" class="bg-vinho text-white px-6 py-3 rounded-xl hover:bg-vinho/90 transition font-bold">Adicionar</button>
+          </div>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="docsList">
-            <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
-              <input type="checkbox" id="doc-0" class="w-5 h-5 accent-vinho" onchange="saveDocCheckboxes()" />
-              <label for="doc-0" class="flex-1 cursor-pointer"><p class="font-bold text-sm">Certidão de Nascimento (Noivos)</p><p class="text-xs font-medium text-slate-700">Atualizada 90 dias</p></label>
+          </div>
+        </section>
+
+        <!-- SEÇÃO CASA & MÓVEIS -->
+        <section id="home-items" role="tabpanel" aria-labelledby="btn-home-items" class="tab-content glass-card p-5 md:p-6 rounded-[1.6rem]">
+          <h2 class="text-2xl font-titulo text-vinho mb-1 flex items-center gap-2"><i data-lucide="sofa"></i> Casa &amp; Móveis</h2>
+          <p class="text-sm text-slate-500 mb-5">Controle o que vocês já têm e o que ainda precisam para o novo lar.</p>
+
+          <!-- Formulário -->
+          <div class="bg-slate-50 rounded-2xl p-4 mb-6 space-y-3 border border-slate-100">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <input type="text" id="hiName"
+                aria-label="Nome do item"
+                placeholder="Nome do item (ex: Geladeira, Panelas...)"
+                class="input-base " />
+              <select id="hiCategory" aria-label="Categoria" class="p-3 border rounded-xl bg-white outline-none focus:border-vinho text-sm">
+                <option value="">Categoria...</option>
+                <option value="Cozinha">🍳 Cozinha</option>
+                <option value="Sala">🛋️ Sala</option>
+                <option value="Quarto">🛏️ Quarto</option>
+                <option value="Banheiro">🚿 Banheiro</option>
+                <option value="Lavanderia">🧺 Lavanderia</option>
+                <option value="Área Externa">🌿 Área Externa</option>
+                <option value="Eletrodomésticos">🔌 Eletrodomésticos</option>
+                <option value="Eletrônicos">📺 Eletrônicos</option>
+                <option value="Outros">📦 Outros</option>
+              </select>
             </div>
-            <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
-              <input type="checkbox" id="doc-1" class="w-5 h-5 accent-vinho" onchange="saveDocCheckboxes()" />
-              <label for="doc-1" class="flex-1 cursor-pointer"><p class="font-bold text-sm">Comprovante de Residência</p><p class="text-xs font-medium text-slate-700">Jefferson & Bia</p></label>
+
+            <!-- Status + Prioridade lado a lado no mobile; preço linha própria -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <select id="hiStatus" aria-label="Status do item" class="p-3 border rounded-xl bg-white outline-none focus:border-vinho text-sm">
+                <option value="precisamos">🛒 Precisamos</option>
+                <option value="possivel">🤞 Possível</option>
+                <option value="temos">✅ Já temos</option>
+              </select>
+              <select id="hiPriority" aria-label="Prioridade" class="p-3 border rounded-xl bg-white outline-none focus:border-vinho text-sm">
+                <option value="Alta">🔴 Alta</option>
+                <option value="Média">🟡 Média</option>
+                <option value="Baixa">🟢 Baixa</option>
+              </select>
+              <input type="number" id="hiPrice"
+                aria-label="Preço estimado"
+                inputmode="decimal"
+                placeholder="Preço estimado R$"
+                class="col-span-2 md:col-span-1 input-base " />
             </div>
-            <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
-              <input type="checkbox" id="doc-2" class="w-5 h-5 accent-vinho" onchange="saveDocCheckboxes()" />
-              <label for="doc-2" class="flex-1 cursor-pointer"><p class="font-bold text-sm">Certificado de Batismo</p><p class="text-xs font-medium text-slate-700">Para o religioso</p></label>
+
+            <textarea id="hiNotes" rows="2"
+              aria-label="Observações"
+              placeholder="Observações (opcional)..."
+              class="input-base  resize-none text-sm"></textarea>
+
+            <!-- Campo: Prometido por (destaque visual roxo) -->
+            <input type="text" id="hiPromisedBy"
+              aria-label="Prometido por"
+              placeholder="🎁 Prometido por quem? (ex: Família da Bia, Tia Maria...)"
+              class="w-full p-3 border border-purple-200 rounded-xl outline-none focus:border-purple-400 bg-purple-50 text-sm" />
+
+            <!-- Campo de link de compra com preview -->
+            <div class="space-y-2">
+              <div class="flex gap-2">
+                <input type="url" id="hiBuyLink"
+                  aria-label="Link de compra"
+                  placeholder="Cole o link da loja aqui..."
+                  class="flex-1 input-base  text-sm"
+                  oninput="debounceLinkPreview(this.value)" />
+                <button onclick="triggerLinkPreview()"
+                  aria-label="Carregar prévia do link"
+                  title="Carregar prévia do link"
+                  class="px-4 py-3 bg-slate-700 text-white rounded-xl text-sm font-bold hover:bg-slate-600 transition flex-shrink-0">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+              </div>
+              <!-- Preview estilo WhatsApp -->
+              <div id="hiLinkPreview" class="hidden" aria-live="polite" aria-atomic="true"></div>
             </div>
-            <div class="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-3">
-              <input type="checkbox" id="doc-3" class="w-5 h-5 accent-vinho" onchange="saveDocCheckboxes()" />
-              <label for="doc-3" class="flex-1 cursor-pointer"><p class="font-bold text-sm">Cópia RG/CPF Padrinhos</p><p class="text-xs font-medium text-slate-700">Civil & Igreja</p></label>
+
+            <div class="flex gap-3 pt-1">
+              <button onclick="cancelHomeItemEdit()" id="hiCancelBtn"
+                aria-label="Cancelar edição"
+                class="hidden px-5 py-3 border rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition">Cancelar</button>
+              <button onclick="addHomeItem()" class="flex-1 bg-vinho text-white py-3 rounded-xl font-bold hover:opacity-90 transition text-sm">
+                <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i> Salvar Item
+              </button>
             </div>
           </div>
+
+          <!-- Resumo rápido -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div class="bg-slate-50 rounded-2xl p-3 text-center border border-slate-100">
+              <p class="text-2xl font-bold text-slate-800" id="hiTotalCount">0</p>
+              <p class="text-xs text-slate-500 mt-0.5">Total de itens</p>
+            </div>
+            <div class="bg-emerald-50 rounded-2xl p-3 text-center border border-emerald-100">
+              <p class="text-2xl font-bold text-emerald-600" id="hiTemosCount">0</p>
+              <p class="text-xs text-emerald-600 mt-0.5">Já temos</p>
+            </div>
+            <div class="bg-amber-50 rounded-2xl p-3 text-center border border-amber-100">
+              <p class="text-2xl font-bold text-amber-600" id="hiPrecisamosCount">0</p>
+              <p class="text-xs text-amber-600 mt-0.5">Precisamos</p>
+            </div>
+            <div class="bg-purple-50 rounded-2xl p-3 text-center border border-purple-100">
+              <p class="text-2xl font-bold text-purple-600" id="hiPossivelCount">0</p>
+              <p class="text-xs text-purple-600 mt-0.5">Possível</p>
+            </div>
+          </div>
+
+          <!-- Estimativa de Orçamento -->
+          <div class="rounded-2xl border border-slate-100 bg-white shadow-sm mb-5 overflow-hidden">
+            <div class="px-4 pt-4 pb-3 border-b border-slate-50 flex items-center justify-between">
+              <h3 class="text-sm font-bold text-vinho flex items-center gap-2">
+                <i data-lucide="calculator" class="w-4 h-4"></i> Estimativa de Orçamento
+              </h3>
+              <span class="text-[10px] text-slate-400">Itens sem preço não entram no total</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4">
+              <div class="p-4 border-r border-b md:border-b-0 border-slate-100">
+                <p class="text-[10px] uppercase tracking-widest font-bold text-amber-600 mb-1">💸 A comprar</p>
+                <p class="text-lg font-bold text-slate-800 leading-tight" id="hi-budget-buy">R$ —</p>
+                <p class="text-[10px] text-slate-400 mt-0.5" id="hi-budget-buy-sub">0 itens</p>
+              </div>
+              <div class="p-4 border-b md:border-b-0 md:border-r border-slate-100">
+                <p class="text-[10px] uppercase tracking-widest font-bold text-purple-600 mb-1">🤞 Prometidos</p>
+                <p class="text-lg font-bold text-slate-800 leading-tight" id="hi-budget-promised">R$ —</p>
+                <p class="text-[10px] text-slate-400 mt-0.5" id="hi-budget-promised-sub">0 itens</p>
+              </div>
+              <div class="p-4 border-r border-slate-100">
+                <p class="text-[10px] uppercase tracking-widest font-bold text-emerald-600 mb-1">✅ Já temos</p>
+                <p class="text-lg font-bold text-slate-800 leading-tight" id="hi-budget-have">0 itens</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">garantidos</p>
+              </div>
+              <div class="p-4 bg-slate-50">
+                <p class="text-[10px] uppercase tracking-widest font-bold text-vinho mb-1">💡 Investimento est.</p>
+                <p class="text-lg font-bold text-vinho leading-tight" id="hi-budget-net">R$ —</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">a comprar − prometidos</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filtros -->
+          <div class="flex flex-wrap gap-2 mb-4" role="group" aria-label="Filtrar itens por status">
+            <button onclick="setHomeItemFilter('all')" id="hi-filter-all" aria-pressed="true" class="mini-pill bg-vinho text-white text-xs px-3 py-1 rounded-full font-bold transition">Todos</button>
+            <button onclick="setHomeItemFilter('precisamos')" id="hi-filter-precisamos" aria-pressed="false" class="mini-pill bg-white text-slate-600 border border-slate-200 text-xs px-3 py-1 rounded-full font-bold transition">🛒 Precisamos</button>
+            <button onclick="setHomeItemFilter('possivel')" id="hi-filter-possivel" aria-pressed="false" class="mini-pill bg-white text-slate-600 border border-slate-200 text-xs px-3 py-1 rounded-full font-bold transition">🤞 Possível</button>
+            <button onclick="setHomeItemFilter('temos')" id="hi-filter-temos" aria-pressed="false" class="mini-pill bg-white text-slate-600 border border-slate-200 text-xs px-3 py-1 rounded-full font-bold transition">✅ Já temos</button>
+          </div>
+
+          <!-- Lista de itens -->
+          <div id="homeItemList" class="grid grid-cols-1 md:grid-cols-2 gap-4"
+            aria-live="polite" aria-atomic="false" aria-label="Lista de itens"></div>
         </section>
 
         <!-- SEÇÃO AUDITORIA (LOG) -->
         <section id="audit" role="tabpanel" aria-labelledby="btn-audit" class="tab-content glass-card p-5 rounded-[1.6rem]">
            <h2 class="text-2xl font-titulo text-vinho mb-4"><i data-lucide="history"></i> Log de Atividades</h2>
-           <div id="auditLogs" class="space-y-2 max-h-[500px] overflow-y-auto pr-2"></div>
+           <div id="auditLogs" class="space-y-2 max-h-[500px] overflow-y-auto overflow-x-hidden pr-1"></div>
         </section>
       </div>
 
@@ -526,7 +705,7 @@
           <div class="space-y-4">
             <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-600">Pendentes</span><strong id="pendingTasksStat" class="text-vinho text-lg">0</strong></div>
             <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-amber-600">Vencem em 7 dias</span><strong id="dueSoonStat" class="text-amber-600 text-lg">0</strong></div>
-            <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-600">RSVP Confirmados</span><strong id="stat-confirmed-aside" class="text-emerald-600 text-lg">0</strong></div>
+            <div class="flex justify-between items-center text-sm border-b pb-2"><span class="text-slate-600">RSVP Confirmados</span><strong id="stat-confirmed-aside" class="text-emerald-600 text-lg">0</strong> <span class="text-[10px] text-slate-400" id="confirmed-aside-people">0 pessoas</span></div>
           </div>
           <div class="mt-4 pt-4 border-t border-slate-100">
             <a href="gallery.html" target="_blank" class="flex items-center gap-2 text-xs font-bold text-vinho hover:text-vinho/80 transition-colors">
@@ -559,11 +738,12 @@
       <button onclick="switchTab('suppliers')" aria-label="Fornecedores" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="truck" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Fornecedores</span>
       </button>
-      <button onclick="switchTab('timeline')" aria-label="Cronograma" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
-        <i data-lucide="calendar" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Cronograma</span>
-      </button>
+
       <button onclick="switchTab('docs')" aria-label="Documentos" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="file-text" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Docs</span>
+      </button>
+      <button onclick="switchTab('home-items')" aria-label="Casa e Móveis" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
+        <i data-lucide="home" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Casa</span>
       </button>
       <button onclick="switchTab('audit')" aria-label="Log de atividades" class="flex flex-col items-center gap-0.5 text-slate-700 focus:text-vinho active:text-vinho shrink-0 px-2 py-1">
         <i data-lucide="scroll" class="w-5 h-5"></i><span class="text-[8px] font-bold uppercase tracking-tighter">Log</span>
@@ -589,35 +769,97 @@
     <option value="Outros"></option>
   </datalist>
 
+  <!-- Modal de Edição de Tarefa -->
+  <div id="editTaskModal" role="dialog" aria-modal="true" aria-labelledby="editTaskTitle" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden p-4">
+    <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto p-8">
+      <h3 id="editTaskTitle" class="text-2xl font-titulo text-vinho mb-6">Editar Tarefa</h3>
+      <div class="space-y-4">
+        <input type="hidden" id="editTaskId" />
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Tarefa</label>
+          <input type="text" id="editTaskTitleInput" placeholder="Título da tarefa" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Data</label>
+            <input type="date" id="editTaskDate" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho bg-white text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Prioridade</label>
+            <select id="editTaskPriority" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-sm">
+              <option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Responsável</label>
+          <select id="editTaskOwner" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-sm">
+            <option value="">Responsável</option><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Status</label>
+          <select id="editTaskStatus" class="w-full p-3 rounded-xl border border-slate-200 bg-white text-sm">
+            <option value="pendente">Pendente</option><option value="concluido">Concluído</option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-6 flex gap-3">
+        <button onclick="toggleTaskEditModal(false)" class="flex-1 py-3 rounded-xl border border-slate-200 font-medium text-slate-600">Cancelar</button>
+        <button onclick="saveTaskEdit()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold shadow-lg shadow-vinho/20">Salvar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal de Edição de Convidado -->
   <div id="editGuestModal" role="dialog" aria-modal="true" aria-labelledby="editGuestTitle" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden p-4">
-    <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md p-8">
+    <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto p-8">
       <h3 id="editGuestTitle" class="text-2xl font-titulo text-vinho mb-6">Editar Convidado</h3>
       <div class="space-y-4">
         <input type="hidden" id="editGuestId" />
-        <input type="text" id="editGuestName" placeholder="Nome" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
-        <input type="text" id="editGuestPhone" placeholder="Telefone" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
-        <select id="editGuestStatus" class="w-full p-3 rounded-xl border border-slate-200 bg-white">
-          <option value="aguardando">Aguardando</option>
-          <option value="confirmado">Confirmado</option>
-          <option value="recusado">Recusado</option>
-        </select>
-        <select id="editGuestOwner" class="w-full p-3 rounded-xl border border-slate-200 bg-white"><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option></select>
-        <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-amber-50 transition-colors">
-          <input type="checkbox" id="editGuestVip" class="w-5 h-5 accent-amber-500 rounded" />
-          <span class="text-sm font-medium text-slate-700">⭐ Padrinho/Madrinha (convite especial)</span>
-        </label>
-        <div>
-          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Parceiro(a) no convite</label>
-          <input type="text" id="editGuestPartner" placeholder="Nome do parceiro(a) (ex: Maria)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
-          <p class="text-[0.65rem] text-slate-400 mt-1">Aparecerá no convite como "Seu Nome & Parceiro(a)"</p>
+
+        <div class="bg-champagne/60 rounded-2xl p-4 space-y-3 border border-dourado/10">
+          <p class="text-[10px] uppercase font-bold text-dourado tracking-widest">Dados pessoais</p>
+          <input type="text" id="editGuestName" placeholder="Nome completo" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-dourado" />
+          <input type="text" id="editGuestPhone" placeholder="Telefone (com DDD)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-dourado" />
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Acompanhantes</label>
-          <input type="number" id="editGuestPlusOnes" min="0" max="5" placeholder="0" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+
+        <div class="bg-champagne/60 rounded-2xl p-4 space-y-3 border border-dourado/10">
+          <p class="text-[10px] uppercase font-bold text-dourado tracking-widest">Status & Responsável</p>
+          <select id="editGuestStatus" class="w-full p-3 rounded-xl border border-slate-200 bg-white">
+            <option value="aguardando">Aguardando</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="recusado">Recusado</option>
+          </select>
+          <select id="editGuestOwner" class="w-full p-3 rounded-xl border border-slate-200 bg-white"><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option></select>
+          <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-amber-50 transition-colors">
+            <input type="checkbox" id="editGuestVip" class="w-5 h-5 accent-amber-500 rounded" />
+            <span class="text-sm font-medium text-slate-700">⭐ Padrinho/Madrinha (convite especial)</span>
+          </label>
+        </div>
+
+        <div class="bg-champagne/60 rounded-2xl p-4 space-y-3 border border-dourado/10">
+          <p class="text-[10px] uppercase font-bold text-dourado tracking-widest">Composição do convite</p>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Parceiro(a) no convite</label>
+            <input type="text" id="editGuestPartner" placeholder="Nome do parceiro(a) (ex: Maria)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-dourado" />
+            <p class="text-[0.65rem] text-slate-400 mt-1">Aparecerá no convite como "Seu Nome & Parceiro(a)"</p>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Acompanhantes</label>
+            <input type="number" id="editGuestPlusOnes" min="0" max="5" placeholder="0" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-dourado" />
+            <p class="text-[0.65rem] text-slate-400 mt-1">Total de pessoas: titular + parceiro + acompanhantes</p>
+          </div>
+          <div class="bg-vinho/5 rounded-xl p-3 text-center">
+            <p class="text-[10px] uppercase font-bold text-vinho tracking-widest">Total de pessoas neste convite</p>
+            <p id="editGuestPersonCount" class="text-2xl font-titulo font-bold text-vinho">1</p>
+          </div>
         </div>
       </div>
-      <div class="mt-8 flex gap-3"><button onclick="toggleEditModal(false)" class="flex-1 py-3 rounded-xl border">Cancelar</button><button onclick="saveGuestEdit()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold">Salvar</button></div>
+      <div class="mt-6 flex gap-3">
+        <button onclick="toggleEditModal(false)" class="flex-1 py-3 rounded-xl border border-slate-200 font-medium text-slate-600">Cancelar</button>
+        <button onclick="saveGuestEdit()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold shadow-lg shadow-vinho/20">Salvar</button>
+      </div>
     </div>
   </div>
 
@@ -627,8 +869,9 @@
       <h3 id="plannerModalTitle" class="text-2xl font-titulo text-vinho mb-6">Orçar Novo Item</h3>
       <div class="space-y-4">
         <input type="hidden" id="plannerId" />
-        <input type="text" id="plannerCategory" list="categories" placeholder="Categoria (ex: Fotografia)" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
-        <input type="number" id="plannerAmount" placeholder="Valor Planejado R$" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+        <input type="text" id="plannerCategory" list="categories" placeholder="Categoria (ex: Fotografia)" class="input-base" />
+        <input type="number" id="plannerAmount" placeholder="Valor Planejado R$" class="input-base" />
+        <input type="number" id="plannerSpent" placeholder="Valor Gasto R$ (Opcional)" class="input-base" />
         <div class="flex gap-3 mt-6">
           <button onclick="togglePlannerModal(false)" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-700">Cancelar</button>
           <button onclick="addPlannerItem()" class="flex-1 py-3 rounded-xl bg-vinho text-white font-bold shadow-lg">Salvar</button>
@@ -637,1495 +880,31 @@
     </div>
   </div>
 
-  <script>
-    // Usa shared.js para Supabase client
-    const ADMIN_EMAILS = (WEDDING_CONFIG.adminEmails || []).map(e => String(e).trim().toLowerCase());
-
-    const ORG_NOTES_TABLE_NAME = 'planner_notes';
-
-    const dashboardState = { 
-      tasks: [], 
-      guests: [], 
-      expenses: [], 
-      budgetCategories: [],
-      budget: 0,
-      savings: 0,
-      cachedTimeline: [],
-      cachedGuestbookCount: 0,
-      taskFilter: 'all', 
-      guestFilter: 'all', 
-      guestOwnerFilter: 'all',
-      vipOnly: false,
-      guestSearch: ''
-    };
-
-    function togglePlannerModal(s) { 
-      const modal = document.getElementById('plannerModal');
-      if (!s) {
-        document.getElementById('plannerId').value = '';
-        document.getElementById('plannerCategory').value = '';
-        document.getElementById('plannerAmount').value = '';
-        document.getElementById('plannerModalTitle').textContent = 'Orçar Novo Item';
-        modal.classList.add('hidden');
-        modal.classList.remove('flex', 'items-center', 'justify-center');
-      } else {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex', 'items-center', 'justify-center');
-        const firstInput = modal.querySelector('input:not([type="hidden"])');
-        if (firstInput) firstInput.focus();
-      }
-    }
-
-    function editPlannerItem(id, cat, amount) {
-      document.getElementById('plannerId').value = id;
-      document.getElementById('plannerCategory').value = cat;
-      document.getElementById('plannerAmount').value = amount;
-      document.getElementById('plannerModalTitle').textContent = 'Editar Orçamento';
-      const modal = document.getElementById('plannerModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex', 'items-center', 'justify-center');
-    }
-
-    async function addPlannerItem() {
-      const id = document.getElementById('plannerId').value;
-      const cat = document.getElementById('plannerCategory').value.trim();
-      const amount = document.getElementById('plannerAmount').value;
-      
-      if (cat && amount) {
-        const payload = { category: cat, planned_amount: parseFloat(amount) };
-        
-        if (id) {
-          const { error } = await supabaseClient.from('budget_categories').update(payload).eq('id', id);
-          if (error) { console.error('Erro update budget:', error); showToast('Erro ao atualizar orçamento', 'error'); return; }
-          showToast('Orçamento atualizado!', 'success');
-        } else {
-          const { error } = await supabaseClient.from('budget_categories').insert([payload]);
-          if (error) { console.error('Erro insert budget:', error); showToast('Erro ao criar item orçado', 'error'); return; }
-          showToast('Item orçado!', 'success');
-        }
-        
-        togglePlannerModal(false);
-        fetchBudget();
-      }
-    }
-
-    async function deletePlannerItem(id) {
-      showUndoToast('Item removido', async () => {
-        const { error } = await supabaseClient.from('budget_categories').delete().eq('id', id);
-        if (error) { console.error('Erro delete budget:', error); showToast('Erro ao remover item', 'error'); return; }
-        fetchBudget();
-      });
-    }
-
-    function renderBudgetPlanner() {
-      const list = document.getElementById('plannerList');
-      if (!list) return;
-      
-      const expensesByCategory = {};
-      dashboardState.expenses.forEach(e => {
-        const c = (e.category || 'Outros').toLowerCase().trim();
-        expensesByCategory[c] = (expensesByCategory[c] || 0) + parseFloat(e.amount);
-      });
-
-      _budgetStore.clear();
-      list.innerHTML = dashboardState.budgetCategories.map(b => {
-        _budgetStore.set(b.id, b);
-        const actual = expensesByCategory[b.category.toLowerCase().trim()] || 0;
-        const diff = b.planned_amount - actual;
-        const percent = Math.min(Math.round((actual / b.planned_amount) * 100), 100);
-        return `
-          <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2 group relative">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-vinho">${sanitizeHTML(b.category)}</span>
-              <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button data-action="budget-edit" data-id="${sanitizeAttr(b.id)}" class="text-slate-600 hover:text-vinho text-xs">✏️</button>
-                <button data-action="budget-delete" data-id="${sanitizeAttr(b.id)}" class="text-slate-300 hover:text-red-500 text-xs">✕</button>
-              </div>
-            </div>
-            <div class="flex justify-between text-[10px] uppercase font-bold text-slate-700">
-              <span>Orçado: R$ ${Number(b.planned_amount).toLocaleString('pt-BR')}</span>
-              <span>Gasto: R$ ${actual.toLocaleString('pt-BR')}</span>
-            </div>
-            <div class="w-full bg-slate-50 h-1.5 rounded-full overflow-hidden">
-              <div class="h-full ${diff < 0 ? 'bg-rose-500' : 'bg-emerald-500'}" style="width: ${percent}%"></div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    async function fetchBudget() {
-      const { data, error } = await supabaseClient.from('budget_categories').select('*').order('category', { ascending: true });
-      if (error) { console.error('Erro fetch budget:', error); return; }
-      dashboardState.budgetCategories = data || [];
-      renderBudgetPlanner();
-    }
-
-    function saveDocCheckboxes() {
-      const checks = {};
-      for (let i = 0; i < 4; i++) {
-        const el = document.getElementById('doc-' + i);
-        if (el) checks['doc-' + i] = el.checked;
-      }
-      localStorage.setItem('wedding_doc_checks', JSON.stringify(checks));
-    }
-    function loadDocCheckboxes() {
-      try {
-        const data = JSON.parse(localStorage.getItem('wedding_doc_checks') || '{}');
-        for (let i = 0; i < 4; i++) {
-          const el = document.getElementById('doc-' + i);
-          if (el && data['doc-' + i]) el.checked = true;
-        }
-      } catch (e) { console.warn('Falha ao carregar checkboxes:', e); }
-    }
-
-    function initEventDelegation() {
-      document.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-action]');
-        if (!btn) return;
-        const action = btn.dataset.action;
-        const id = btn.dataset.id;
-
-        if (action === 'guest-edit') {
-          const g = _guestStore.get(id);
-          if (g) editGuest(g.id, g.name, g.phone || '', g.invited_by, g.rsvp_status, g.is_vip, g.partner_name || '', g.plus_ones || 0);
-        } else if (action === 'guest-delete') {
-          deleteGuest(id);
-        } else if (action === 'guest-preview') {
-          const g = _guestStore.get(id);
-          if (g) previewInvite(g.invite_token);
-        } else if (action === 'guest-copy') {
-          const g = _guestStore.get(id);
-          if (g) copyInviteLink(g.invite_token);
-        } else if (action === 'guest-whatsapp') {
-          const g = _guestStore.get(id);
-          if (g) shareInviteWhatsApp(g.name, g.invite_token);
-        } else if (action === 'guest-thank') {
-          const g = _guestStore.get(id);
-          if (g) shareThankYou(g.name);
-        } else if (action === 'task-delete') {
-          deleteTask(id);
-        } else if (action === 'task-calendar') {
-          const t = _taskStore.get(id);
-          if (t) addToPersonalCalendar(t.title, t.due_date);
-        } else if (action === 'task-toggle') {
-          const t = _taskStore.get(id);
-          if (t) toggleTask(t.id, t.status);
-        } else if (action === 'tl-edit') {
-          const ev = _timelineStore.get(id);
-          if (ev) editTimelineEvent(ev.id, ev.event_time, ev.description);
-        } else if (action === 'tl-delete') {
-          deleteTimelineEvent(id);
-        } else if (action === 'expense-delete') {
-          deleteExpense(id);
-        } else if (action === 'budget-edit') {
-          const b = _budgetStore.get(id);
-          if (b) editPlannerItem(b.id, b.category, b.planned_amount);
-        } else if (action === 'budget-delete') {
-          deletePlannerItem(id);
-        } else if (action === 'supplier-edit') {
-          const s = _supplierStore.get(id);
-          if (s) editSupplier(s.id, s.name, s.contact || '', s.map_link || '', s.category || '', s.value || 0, s.status || 'Pendente');
-        } else if (action === 'supplier-delete') {
-          deleteSupplier(id);
-        } else if (action === 'mood-delete') {
-          deleteMood(id);
-        }
-      });
-    }
-
-    let _currentTab = 'dashboard';
-    let _guestSearchTimer;
-
-    // Safe data stores for event delegation (XSS prevention)
-    const _guestStore = new Map();
-    const _taskStore = new Map();
-    const _timelineStore = new Map();
-    const _expenseStore = new Map();
-    const _budgetStore = new Map();
-    const _supplierStore = new Map();
-    const _moodStore = new Map();
-    function handleGuestSearch(q) {
-      clearTimeout(_guestSearchTimer);
-      _guestSearchTimer = setTimeout(() => {
-        dashboardState.guestSearch = q.toLowerCase();
-        renderGuestList();
-      }, 300);
-    }
-
-    function setGuestFilter(f) {
-      dashboardState.guestFilter = f;
-      ['all', 'confirmado', 'aguardando', 'recusado'].forEach(id => {
-        const btn = document.getElementById(`guest-filter-${id}`);
-        if (btn) {
-          btn.classList.toggle('bg-vinho', id === f);
-          btn.classList.toggle('text-white', id === f);
-          if (id !== f) { btn.classList.add('bg-white', 'text-slate-600'); btn.classList.remove('bg-vinho', 'text-white'); }
-        }
-      });
-      renderGuestList();
-    }
-
-    function setGuestOwnerFilter(o) {
-      dashboardState.guestOwnerFilter = o;
-      ['all', 'Jefferson', 'Bia'].forEach(id => {
-        const btn = document.getElementById(`owner-filter-${id}`);
-        if (btn) {
-          btn.classList.toggle('bg-vinho', id === o);
-          btn.classList.toggle('text-white', id === o);
-          if (id !== o) { btn.classList.add('bg-slate-100', 'text-slate-800'); btn.classList.remove('bg-vinho', 'text-white'); }
-        }
-      });
-      renderGuestList();
-    }
-    let allGuests = [], allSuppliers = [];
-    let expenseChart, categoryChart, accessChart, inviterChart, rsvpChart, dashDonutChart;
-
-    async function initApp() {
-      try {
-        await Promise.all([fetchSettings(), fetchTasks(), fetchGuests(), fetchExpenses(), fetchLogs(), loadNotesFromSupabase(), fetchTimeline(), fetchBudget()]);
-        loadDocCheckboxes();
-        initEventDelegation();
-        initRealtime(); updateOverviewStats(); updateDashboardSummary();
-        const hashTab = location.hash.slice(1);
-        const validTabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline', 'docs'];
-        switchTab(validTabs.includes(hashTab) ? hashTab : 'dashboard');
-        if (window.lucide) lucide.createIcons();
-      } catch (err) { console.error("Erro setup:", err); }
-    }
-
-    function openOrgApp() {
-      document.getElementById('accessGate').classList.add('gate-hidden');
-      document.getElementById('orgApp').classList.remove('gate-hidden');
-      initApp();
-    }
-
-    async function logout() {
-      try {
-        await supabaseClient.auth.signOut();
-      } catch (err) {
-        console.error('Erro logout:', err);
-      }
-      window.location.reload();
-    }
-
-    function isAdminUser(user) {
-      if (!user?.email) return false;
-      const email = String(user.email).trim().toLowerCase();
-      if (ADMIN_EMAILS.length === 0) return true; // fallback: qualquer e-mail autenticado
-      return ADMIN_EMAILS.includes(email);
-    }
-
-    function resolveAdminEmail(input) {
-      const value = String(input || '').trim();
-      if (!value) return '';
-      const lower = value.toLowerCase();
-      if (lower.includes('@')) return value;
-      const match = (WEDDING_CONFIG.adminUsers || []).find((u) => String(u.username).toLowerCase() === lower);
-      return match ? match.email : '';
-    }
-
-    // Helper para registrar auditoria
-    async function logAudit(tableName, recordId, action, oldData = null, newData = null) {
-      try {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        const userName = user?.user_metadata?.username || user?.email || 'Sistema';
-        await supabaseClient.from('audit_logs').insert([{
-          table_name: tableName,
-          record_id: recordId,
-          action: action,
-          user_name: userName,
-          old_data: oldData,
-          new_data: newData
-        }]);
-      } catch (err) {
-        console.warn('Falha ao registrar auditoria:', err);
-      }
-    }
-
-    document.getElementById('accessForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const errorEl = document.getElementById('accessError');
-      const submitBtn = document.getElementById('accessSubmit');
-      const identifier = document.getElementById('accessEmail').value.trim();
-      const password = document.getElementById('accessPassword').value.trim();
-      const email = resolveAdminEmail(identifier);
-
-      if (!SUPABASE_URL || !SUPABASE_KEY) {
-        errorEl.textContent = 'Configuração ausente. Copie js/config.example.js para js/config.js.';
-        return;
-      }
-
-      if (!identifier || !password) {
-        errorEl.textContent = 'Informe usuário ou e-mail e senha.';
-        return;
-      }
-
-      errorEl.textContent = '';
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Entrando...';
-
-      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Entrar';
-
-      if (error || !data.user) {
-        errorEl.textContent = 'Usuário ou senha inválidos.';
-        return;
-      }
-
-      if (!isAdminUser(data.user)) {
-        errorEl.textContent = 'Acesso restrito aos noivos.';
-        await supabaseClient.auth.signOut();
-        return;
-      }
-
-      openOrgApp();
-    });
-
-    // Mostrar/ocultar senha
-    const togglePassBtn = document.getElementById('togglePass');
-    if (togglePassBtn) {
-      togglePassBtn.addEventListener('click', () => {
-        const passInput = document.getElementById('accessPassword');
-        const isHidden = passInput.type === 'password';
-        passInput.type = isHidden ? 'text' : 'password';
-        togglePassBtn.setAttribute('aria-label', isHidden ? 'Ocultar senha' : 'Mostrar senha');
-        togglePassBtn.querySelector('i').setAttribute('data-lucide', isHidden ? 'eye-off' : 'eye');
-        if (window.lucide) lucide.createIcons();
-      });
-    }
-
-    // Escape key closes modals
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        const editModal = document.getElementById('editGuestModal');
-        const plannerModal = document.getElementById('plannerModal');
-        if (editModal && !editModal.classList.contains('hidden')) toggleEditModal(false);
-        if (plannerModal && !plannerModal.classList.contains('hidden')) togglePlannerModal(false);
-      }
-    });
-
-    // Redefinição de senha (envia link de reset por e-mail)
-    const forgotPassBtn = document.getElementById('forgotPass');
-    if (forgotPassBtn) {
-      forgotPassBtn.addEventListener('click', async () => {
-        const errorEl = document.getElementById('accessError');
-        const infoEl = document.getElementById('accessInfo');
-        const identifier = document.getElementById('accessEmail').value.trim();
-        const email = resolveAdminEmail(identifier);
-
-        if (!email) {
-          errorEl.textContent = 'Informe seu usuário ou e-mail para redefinir a senha.';
-          infoEl.textContent = '';
-          return;
-        }
-
-        errorEl.textContent = '';
-        infoEl.textContent = 'Enviando link de redefinição...';
-
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + '/organizacao.html',
-        });
-
-        if (error) {
-          infoEl.textContent = '';
-          errorEl.textContent = 'Não foi possível enviar. Tente novamente.';
-        } else {
-          infoEl.textContent = 'Link de redefinição enviado! Verifique seu e-mail.';
-        }
-      });
-    }
-
-    // Fluxo de redefinição de senha: detecta retorno do link do e-mail
-    function handleRecoveryRedirect() {
-      const parseHash = () => {
-        const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-        return {
-          type: params.get('type'),
-          token: params.get('access_token') || params.get('code'),
-        };
-      };
-      const q = new URLSearchParams(window.location.search);
-      const type = parseHash().type || q.get('type');
-      const code = parseHash().token || q.get('code');
-
-      if ((type === 'recovery' || type === 'reset_password') && code) {
-        const resetForm = document.getElementById('resetForm');
-        const form = document.getElementById('accessForm');
-        if (resetForm) resetForm.classList.remove('gate-hidden');
-        if (form) form.classList.add('gate-hidden');
-        document.getElementById('accessInfo').textContent = '';
-      }
-    }
-
-    const submitNewPassBtn = document.getElementById('submitNewPass');
-    if (submitNewPassBtn) {
-      submitNewPassBtn.addEventListener('click', async () => {
-        const p1 = document.getElementById('newPassword').value;
-        const p2 = document.getElementById('newPassword2').value;
-        const errEl = document.getElementById('resetError');
-
-        if (!p1 || p1.length < 6) {
-          errEl.textContent = 'A senha deve ter pelo menos 6 caracteres.';
-          return;
-        }
-        if (p1 !== p2) {
-          errEl.textContent = 'As senhas não coincidem.';
-          return;
-        }
-
-        errEl.textContent = '';
-        submitNewPassBtn.disabled = true;
-        submitNewPassBtn.textContent = 'Salvando...';
-
-        const { error } = await supabaseClient.auth.updateUser({ password: p1 });
-
-        submitNewPassBtn.disabled = false;
-        submitNewPassBtn.textContent = 'Salvar nova senha';
-
-        if (error) {
-          errEl.textContent = 'Não foi possível atualizar a senha.';
-          return;
-        }
-
-        // Limpa a URL (remove o token) e volta para o login
-        window.history.replaceState({}, '', window.location.pathname);
-        document.getElementById('resetForm').classList.add('gate-hidden');
-        document.getElementById('accessForm').classList.remove('gate-hidden');
-        const infoEl = document.getElementById('accessInfo');
-        infoEl.textContent = 'Senha alterada! Entre com a nova senha.';
-        document.getElementById('accessPassword').value = '';
-      });
-    }
-
-    window.addEventListener('load', async () => {
-      if (window.lucide) lucide.createIcons();
-      handleRecoveryRedirect();
-
-      // Restaura sessão existente do Supabase Auth
-      try {
-        const { data } = await supabaseClient.auth.getSession();
-        const sessionUser = data?.session?.user;
-        if (sessionUser && isAdminUser(sessionUser)) {
-          openOrgApp();
-        }
-      } catch { /* ignora sessão inválida */ }
-
-      // Register PWA Service Worker
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW Registered')).catch(err => console.log('SW Error', err));
-      }
-    });
-
-    function switchTab(tabId) {
-      if (tabId === _currentTab) return;
-      const tabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline', 'docs'];
-      tabs.forEach(t => {
-        const content = document.getElementById(t);
-        const btn = document.getElementById(`btn-${t}`);
-        if (content) content.classList.remove('active');
-        if (btn) {
-          btn.classList.remove('bg-vinho', 'text-white');
-          btn.classList.add('bg-white', 'text-slate-600');
-          btn.setAttribute('aria-selected', 'false');
-        }
-      });
-      const active = document.getElementById(tabId);
-      const activeBtn = document.getElementById(`btn-${tabId}`);
-      if (active) active.classList.add('active');
-      if (activeBtn) {
-        activeBtn.classList.remove('bg-white', 'text-slate-600');
-        activeBtn.classList.add('bg-vinho', 'text-white');
-        activeBtn.setAttribute('aria-selected', 'true');
-        activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      }
-      _currentTab = tabId;
-      history.replaceState(null, '', '#' + tabId);
-      if (tabId === 'dashboard') updateDashboardSummary();
-      if (tabId === 'analytics') updateAnalytics();
-      if (tabId === 'suppliers') fetchSuppliers();
-      if (tabId === 'notes') fetchMoodLinks();
-      if (window.lucide) lucide.createIcons();
-    }
-
-    window.addEventListener('hashchange', () => {
-      const hash = location.hash.slice(1);
-      const validTabs = ['dashboard', 'tasks', 'guests', 'expenses', 'notes', 'audit', 'analytics', 'suppliers', 'timeline', 'docs'];
-      if (validTabs.includes(hash) && hash !== _currentTab) {
-        switchTab(hash);
-      }
-    });
-
-    function checkNavScroll(el) {
-      const wrapper = el.closest('.nav-scroll-wrapper');
-      if (!wrapper) return;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        wrapper.classList.add('no-fade');
-      } else {
-        wrapper.classList.remove('no-fade');
-      }
-    }
-
-    // CALENDAR INTEGRATION FOR TASKS
-    function addToPersonalCalendar(title, date) {
-      if (!date) return;
-      const d = new Date(date + 'T08:00:00');
-      const end = new Date(d.getTime() + 60 * 60 * 1000);
-      const fmt = (dt) => dt.toISOString().replace(/-|:|\.\d\d\d/g, "");
-      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('CASAMENTO: ' + title)}&dates=${fmt(d)}/${fmt(end)}&details=Lembrete de tarefa do painel de organização.`;
-      window.open(url, '_blank');
-    }
-
-    // MOODBOARD LOGIC
-    async function addMoodLink() {
-      const link = document.getElementById('moodLink').value.trim();
-      if (!link) return;
-      const { data, error } = await supabaseClient.from('moodboard').insert([{ url: link }]).select('id').single();
-      if (!error && data?.id) await logAudit('moodboard', data.id, 'INSERT');
-      if (error) console.error('Erro mood:', error);
-      if (!error) { document.getElementById('moodLink').value = ''; fetchMoodLinks(); }
-    }
-    async function fetchMoodLinks() {
-      const { data } = await supabaseClient.from('moodboard').select('*').order('created_at', { ascending: false });
-      const grid = document.getElementById('moodGrid');
-      if (!grid) return;
-      _moodStore.clear();
-      grid.innerHTML = (data || []).map(m => {
-        _moodStore.set(m.id, m);
-        return `
-        <div class="relative group aspect-square bg-slate-100 rounded-lg overflow-hidden border">
-          <img src="${sanitizeAttr(m.url)}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/100x100?text=Link'"/>
-          <button data-action="mood-delete" data-id="${sanitizeAttr(m.id)}" class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-2 h-2"></i></button>
-        </div>
-      `}).join('');
-      if (window.lucide) lucide.createIcons();
-    }
-    async function deleteMood(id) { 
-      showUndoToast('Referência removida', async () => {
-        const { error } = await supabaseClient.from('moodboard').delete().eq('id', id); 
-        if (error) { console.error('Erro delete mood:', error); showToast('Erro ao remover', 'error'); return; }
-        await logAudit('moodboard', id, 'DELETE');
-        fetchMoodLinks(); 
-      });
-    }
-
-    async function fetchTasks() {
-      const { data, error } = await supabaseClient.from('tasks').select('*').order('due_date', { ascending: true, nullsFirst: false });
-      if (error) { console.error('Erro fetch tasks:', error); return; }
-      dashboardState.tasks = data || [];
-      renderTasks();
-    }
-
-    function renderTasks() {
-      const list = document.getElementById('taskList');
-      if (!list) return;
-      let filtered = dashboardState.tasks;
-      if (dashboardState.taskFilter !== 'all') filtered = filtered.filter(t => {
-        if (dashboardState.taskFilter === 'Bia') return t.owner === 'Bia' || t.owner === 'Beatriz';
-        return t.owner === dashboardState.taskFilter;
-      });
-      const now = new Date(); now.setHours(0,0,0,0);
-      _taskStore.clear();
-      list.innerHTML = filtered.map(t => {
-        _taskStore.set(t.id, t);
-        const isDone = t.status === 'concluido';
-        const dueDate = t.due_date ? new Date(t.due_date + 'T12:00:00') : null;
-        const isOverdue = !isDone && dueDate && dueDate < now;
-
-        let borderClass = 'border-slate-200';
-        if (t.owner === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
-        else if (t.owner === 'Bia' || t.owner === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
-
-        let ownerTag = t.owner ? `<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 uppercase ml-2 text-slate-700">${sanitizeHTML(t.owner)}</span>` : '';
-        const prioBadge = t.priority === 'alta' ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 text-red-600 ml-1">ALTA</span>' : t.priority === 'baixa' ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-600 ml-1">BAIXA</span>' : '';
-        const dateStr = t.due_date ? `<span class="text-xs font-medium text-slate-700 ml-auto">${new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR')}</span>` : '';
-        return `<div class="item-card ${isDone ? 'done opacity-60' : ''} ${isOverdue ? 'bg-red-50 border-red-200' : ''} ${borderClass}"><div class="flex items-center gap-3 flex-1"><input type="checkbox" ${isDone ? 'checked' : ''} data-action="task-toggle" data-id="${sanitizeAttr(t.id)}" /><div class="flex flex-col"><span class="${isDone ? 'line-through' : ''}">${sanitizeHTML(t.title)} ${ownerTag}${prioBadge}</span></div>${dateStr}</div><div class="flex gap-2">${t.due_date ? `<button data-action="task-calendar" data-id="${sanitizeAttr(t.id)}" class="p-1 hover:bg-blue-50 rounded" title="Agendar"><i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-blue-500"></i></button>` : ''}<button data-action="task-delete" data-id="${sanitizeAttr(t.id)}" class="p-1 hover:bg-red-50 rounded">🗑️</button></div></div>`;
-      }).join('');
-    }
-    function filterTasks(f) {
-      dashboardState.taskFilter = f;
-      ['all', 'Jefferson', 'Bia', 'Ambos'].forEach(id => {
-        const btn = document.getElementById(`task-filter-${id}`);        if (btn) {
-          btn.classList.toggle('bg-vinho', id === f);
-          btn.classList.toggle('text-white', id === f);
-        }
-      });
-      renderTasks(); 
-    }
-    // LAZY LOAD UTILITIES
-    const _lazyCache = {};
-    function lazyLoad(src) {
-      if (_lazyCache[src]) return _lazyCache[src];
-      _lazyCache[src] = new Promise((resolve, reject) => {
-        const s = document.createElement('script');
-        s.src = src; s.onload = resolve; s.onerror = reject;
-        document.head.appendChild(s);
-      });
-      return _lazyCache[src];
-    }
-    const LAZY = {
-      confetti: 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js',
-      xlsx: 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
-      jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-      jspdfAuto: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js'
-    };
-
-    async function toggleTask(id, status) { 
-      const next = status === 'concluido' ? 'pendente' : 'concluido'; 
-      const { error } = await supabaseClient.from('tasks').update({ status: next }).eq('id', id); 
-      if (error) { console.error('Erro toggle task:', error); showToast('Erro ao atualizar tarefa', 'error'); return; }
-      if (next === 'concluido') { await lazyLoad(LAZY.confetti); confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#1a1a2e', '#c9a96e', '#f5e6d3'] }); }
-      fetchTasks(); 
-    }
-
-    // DASHBOARD SUMMARY LOGIC
-    async function updateDashboardSummary() {
-      // Tarefas Próximas
-      const nextTasks = dashboardState.tasks.filter(t => t.status !== 'concluido').slice(0, 3);
-      document.getElementById('dash-next-tasks').innerHTML = nextTasks.length > 0 ? nextTasks.map(t => {
-        const ownerColor = t.owner === 'Jefferson' ? 'text-blue-500' : 'text-purple-500';
-        return `<div class="p-3 bg-white border border-slate-100 rounded-xl text-xs flex justify-between items-center"><span>${sanitizeHTML(t.title)}</span><span class="font-bold ${ownerColor}">${t.due_date ? new Date(t.due_date + 'T12:00:00').toLocaleDateString('pt-BR') : ''}</span></div>`
-      }).join('') : '<p class="text-xs font-medium text-slate-700 italic text-center py-4">Tudo em dia!</p>';
-      
-      // RSVP
-      const yes = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
-      const no = allGuests.filter(g => g.rsvp_status === 'recusado').length;
-      const maybe = allGuests.filter(g => g.rsvp_status === 'aguardando').length;
-      document.getElementById('dash-rsvp-yes').textContent = yes;
-      document.getElementById('dash-rsvp-maybe').textContent = maybe;
-      document.getElementById('dash-rsvp-no').textContent = no;
-
-      // Financeiro
-      const budget = dashboardState.budget || getBudgetDefault();
-      const spent = dashboardState.expenses.reduce((s, e) => s + parseFloat(e.amount), 0);
-      const percent = Math.min(Math.round((spent / budget) * 100), 100);
-      document.getElementById('dash-spent').textContent = `R$ ${spent.toLocaleString('pt-BR')}`;
-      document.getElementById('dash-budget-progress').style.width = `${percent}%`;
-      document.getElementById('dash-budget-percent').textContent = `${percent}%`;
-
-      // Donut Chart Financeiro
-      const ctxDonut = document.getElementById('dashDonutChart').getContext('2d');
-      if (dashDonutChart) dashDonutChart.destroy();
-      
-      const cats = {}; dashboardState.expenses.forEach(e => { const c = e.category || 'Outros'; cats[c] = (cats[c] || 0) + parseFloat(e.amount); });
-      
-      dashDonutChart = new Chart(ctxDonut, {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(cats),
-          datasets: [{
-            data: Object.values(cats),
-            backgroundColor: ['#1a1a2e', '#c9a96e', '#C5A059', '#10b981', '#f59e0b'],
-            borderWidth: 0
-          }]
-        },
-        options: { 
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          cutout: '70%'
-        }
-      });
-
-      // Evento (usa cache)
-      const timeline = dashboardState.cachedTimeline;
-      const nextEvent = timeline && timeline[0] ? `<p class="text-sm font-bold text-vinho">${timeline[0].event_time.substring(0,5)}</p><p class="text-xs text-slate-700">${timeline[0].description}</p>` : '<p class="text-xs font-medium text-slate-700 text-center">Nenhum evento no cronograma.</p>';
-      document.getElementById('dash-next-event').innerHTML = nextEvent;
-
-      // Mural de Mensagens (Count - usa cache, atualiza a cada 30s)
-      if (!dashboardState._guestbookTs || Date.now() - dashboardState._guestbookTs > 30000) {
-        const { count } = await supabaseClient.from('guestbook').select('*', { count: 'exact', head: true });
-        dashboardState.cachedGuestbookCount = count || 0;
-        dashboardState._guestbookTs = Date.now();
-      }
-      document.getElementById('dash-msg-count').textContent = dashboardState.cachedGuestbookCount;
-    }
-
-    // AUTO-SAVE NOTES
-    let notesTimeout;
-    document.getElementById('meetingNotes').addEventListener('input', () => {
-      clearTimeout(notesTimeout);
-      document.getElementById('notesStatus').textContent = 'Digitando...';
-      notesTimeout = setTimeout(async () => {
-        const notes = document.getElementById('meetingNotes').value;
-        const { error } = await supabaseClient.from(ORG_NOTES_TABLE_NAME).upsert([{ id: 'global', notes }]);
-        if (error) { console.error('Erro save notes:', error); document.getElementById('notesStatus').textContent = 'Erro ao salvar'; return; }
-        document.getElementById('notesStatus').textContent = '✓ Salvo automaticamente';
-        setTimeout(() => { document.getElementById('notesStatus').textContent = ''; }, 2000);
-      }, 1500);
-    });
-    async function deleteTask(id) { 
-      showUndoToast('Tarefa removida', async () => {
-        const { error } = await supabaseClient.from('tasks').delete().eq('id', id); 
-        if (error) { console.error('Erro delete task:', error); showToast('Erro ao deletar tarefa', 'error'); return; }
-        await logAudit('tasks', id, 'DELETE');
-        fetchTasks(); 
-      });
-    }
-    async function addTask() {
-      const title = document.getElementById('newTask').value;
-      const due_date = document.getElementById('taskDue').value || null;
-      const owner = document.getElementById('taskOwner').value || null;
-      const priority = document.getElementById('taskPriority').value || 'media';
-      if (title) { 
-        const { data, error } = await supabaseClient.from('tasks').insert([{ title, status: 'pendente', due_date, owner, priority }]).select('id').single();
-        if (data?.id) await logAudit('tasks', data.id, 'INSERT', null, { title, status: 'pendente', due_date, owner, priority });
-        document.getElementById('newTask').value = '';
-        document.getElementById('taskDue').value = '';
-        document.getElementById('taskOwner').value = '';
-        document.getElementById('taskPriority').value = 'media';
-        fetchTasks(); 
-      }
-    }
-
-    async function fetchGuests() { 
-      const { data, error } = await supabaseClient.from('guests').select('*').order('name', { ascending: true }); 
-      if (error) { console.error('Erro fetch guests:', error); return; }
-      allGuests = data || []; 
-      renderGuestList(); 
-    }
-
-    function shareThankYou(name) {
-      const msg = `❤️ *AGRADECIMENTO* ❤️\n\nOlá, *${name}*!\n\nPassando para dizer que ficamos muito felizes com a sua confirmação. Mal podemos esperar para celebrar esse momento com você!\n\nCom carinho,\nJefferson & Bia`;
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
-    }
-
-    function toggleVipFilter() {
-      dashboardState.vipOnly = !dashboardState.vipOnly;
-      const btn = document.getElementById('guest-filter-vip');
-      if (btn) {
-        btn.classList.toggle('bg-amber-400', dashboardState.vipOnly);
-        btn.classList.toggle('text-white', dashboardState.vipOnly);
-      }
-      renderGuestList();
-    }
-
-    function renderGuestList() {
-      const list = document.getElementById('guestList');
-      if (!list) return;
-
-      let filtered = allGuests;
-
-      if (dashboardState.guestSearch) {
-        filtered = filtered.filter(g => g.name.toLowerCase().includes(dashboardState.guestSearch));
-      }
-      if (dashboardState.guestFilter !== 'all') {
-        filtered = filtered.filter(g => g.rsvp_status === dashboardState.guestFilter);
-      }
-      if (dashboardState.guestOwnerFilter !== 'all') {
-        filtered = filtered.filter(g => {
-          if (dashboardState.guestOwnerFilter === 'Bia') return g.invited_by === 'Bia' || g.invited_by === 'Beatriz';
-          return g.invited_by === dashboardState.guestOwnerFilter;
-        });
-      }
-      if (dashboardState.vipOnly) {
-        filtered = filtered.filter(g => g.is_vip);
-      }
-
-      if (filtered.length === 0) {
-        list.innerHTML = '<p class="text-center py-10 text-slate-700 italic text-sm">Nenhum convidado encontrado com esses filtros.</p>';
-        return;
-      }
-
-      _guestStore.clear();
-      list.innerHTML = filtered.map(g => {
-        _guestStore.set(g.id, g);
-        let borderClass = 'border-slate-200';
-        if (g.invited_by === 'Jefferson') borderClass = 'border-blue-400 border-l-4';
-        else if (g.invited_by === 'Bia' || g.invited_by === 'Beatriz') borderClass = 'border-purple-400 border-l-4';
-
-        const thankBtn = g.rsvp_status === 'confirmado' ? `<button data-action="guest-thank" data-id="${sanitizeAttr(g.id)}" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> Agradecer</button>` : '';
-
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}${g.dietary ? ' • 🍽️ ' + sanitizeHTML(g.dietary) : ''}${g.plus_ones > 0 ? ' • 👥 +' + g.plus_ones : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button data-action="guest-preview" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver</button><button data-action="guest-copy" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-[10px] px-3 py-1 rounded-full">Copiar</button><button data-action="guest-whatsapp" data-id="${sanitizeAttr(g.id)}" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button data-action="guest-edit" data-id="${sanitizeAttr(g.id)}" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">Editar</button><button data-action="guest-delete" data-id="${sanitizeAttr(g.id)}" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
-      }).join('');
-      updateOverviewStats();
-      if (window.lucide) lucide.createIcons();
-    }
-    function toggleEditModal(s) {
-      const modal = document.getElementById('editGuestModal');
-      if (s) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex', 'items-center', 'justify-center');
-        document.getElementById('editGuestName').focus();
-      } else {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex', 'items-center', 'justify-center');
-      }
-    }
-    function editGuest(id, name, phone, owner, status, isVip, partnerName, plusOnes) { 
-      document.getElementById('editGuestId').value = id; 
-      document.getElementById('editGuestName').value = name; 
-      document.getElementById('editGuestPhone').value = phone; 
-      document.getElementById('editGuestOwner').value = owner; 
-      document.getElementById('editGuestStatus').value = status || 'aguardando';
-      document.getElementById('editGuestVip').checked = !!isVip;
-      document.getElementById('editGuestPartner').value = partnerName || '';
-      document.getElementById('editGuestPlusOnes').value = plusOnes || 0;
-      toggleEditModal(true); 
-    }
-    async function saveGuestEdit() {
-      const id = document.getElementById('editGuestId').value;
-      const payload = { 
-        name: document.getElementById('editGuestName').value, 
-        phone: document.getElementById('editGuestPhone').value, 
-        invited_by: document.getElementById('editGuestOwner').value,
-        rsvp_status: document.getElementById('editGuestStatus').value,
-        is_vip: document.getElementById('editGuestVip').checked,
-        partner_name: document.getElementById('editGuestPartner').value.trim() || null,
-        plus_ones: parseInt(document.getElementById('editGuestPlusOnes').value) || 0
-      };
-      const { error } = await supabaseClient.from('guests').update(payload).eq('id', id); 
-      if (error) { console.error('Erro update guest:', error); showToast('Erro ao salvar convidado', 'error'); return; }
-      await logAudit('guests', id, 'UPDATE', null, payload);
-      toggleEditModal(false); fetchGuests();
-    }
-    async function deleteGuest(id) { 
-      showUndoToast('Convidado removido', async () => {
-        const { error } = await supabaseClient.from('guests').delete().eq('id', id); 
-        if (error) { console.error('Erro delete guest:', error); showToast('Erro ao remover convidado', 'error'); return; }
-        await logAudit('guests', id, 'DELETE');
-        fetchGuests(); 
-      });
-    }
-    async function addGuest() {
-      const nameEl = document.getElementById('guestName');
-      const phoneEl = document.getElementById('guestPhone');
-      const ownerEl = document.getElementById('guestOwner');
-      const partnerEl = document.getElementById('guestPartner');
-      const plusOnesEl = document.getElementById('guestPlusOnes');
-      
-      const name = nameEl.value.trim();
-      const phone = phoneEl.value.trim();
-      const invited_by = ownerEl.value;
-      const partner_name = partnerEl.value.trim() || null;
-      const plus_ones = parseInt(plusOnesEl.value) || 0;
-
-      if (!name) { showToastGlobal('Informe o nome do convidado!', 'error'); return; }
-
-      try {
-        const token = window.crypto?.randomUUID ? window.crypto.randomUUID() : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        const { data, error } = await supabaseClient.from('guests').insert([{ name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name, plus_ones }]).select('id').single();
-        if (error) throw error;
-        if (data?.id) await logAudit('guests', data.id, 'INSERT', null, { name, phone, invited_by, invite_token: token, rsvp_status: 'aguardando', partner_name, plus_ones });
-        nameEl.value = ''; phoneEl.value = ''; partnerEl.value = ''; plusOnesEl.value = '';
-        document.getElementById('guestOwner').value = '';
-        fetchGuests();
-      } catch (err) {
-        console.error(err);
-        showToastGlobal('Erro ao cadastrar: ' + (err.message || 'Verifique o console'), 'error');
-      }
-    }
-
-    function generateBroadcastList() {
-      const pending = allGuests.filter(g => g.rsvp_status === 'aguardando');
-      if (pending.length === 0) { showToast('Ninguém pendente! 🎉', 'success'); return; }
-      
-      let text = `📢 *LISTA DE COBRANÇA - RSVP* 📢\n\nOlá! Aqui está a lista de convidados que ainda não confirmaram:\n\n`;
-      pending.forEach((g, i) => {
-        text += `${i+1}. *${g.name}*\n🔗 ${window.location.origin}/rsvp.html?token=${g.invite_token}\n\n`;
-      });
-      
-      const blob = new Blob([text], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Cobranca_RSVP_${new Date().toLocaleDateString('pt-BR')}.txt`;
-      a.click();
-      showToast('Lista gerada com sucesso!', 'success');
-    }
-
-    async function exportToExcel() {
-      await lazyLoad(LAZY.xlsx);
-      if (!window.XLSX) { showToast('Erro ao carregar biblioteca Excel', 'error'); return; }
-      const data = allGuests.map(g => ({
-        Nome: g.name,
-        Telefone: g.phone || '-',
-        Status: g.rsvp_status,
-        'Convidado por': g.invited_by,
-        'Restrição': g.dietary || '-',
-        Link: `${window.location.origin}/rsvp.html?token=${g.invite_token}`
-      }));
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Convidados");
-      XLSX.writeFile(wb, "convidados_casamento.xlsx");
-    }
-
-    async function exportToPDF() {
-      await lazyLoad(LAZY.jspdf);
-      await lazyLoad(LAZY.jspdfAuto);
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.text("Lista de Convidados - Jefferson & Beatriz", 14, 15);
-      const rows = allGuests.map(g => [g.name, g.phone || '-', g.rsvp_status, g.invited_by]);
-      doc.autoTable({
-        startY: 25,
-        head: [['Nome', 'Telefone', 'Status', 'Dono']],
-        body: rows,
-        headStyles: { fillColor: [26, 26, 46] }
-      });
-      doc.save("lista_convidados.pdf");
-    }
-
-    async function shareInviteWhatsApp(name, token) {
-      const link = `${window.location.origin}/convite.html?token=${token}`;
-      const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${name}*!\n\nAcesse seu convite individual e confirme sua presença:\n👉 ${link}`;
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
-    }
-
-    function updateOverviewStats() {
-      const total = allGuests.length, confirmed = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
-      const now = new Date(), nextWeek = new Date(); nextWeek.setDate(now.getDate() + 7);
-      const dueSoonCount = dashboardState.tasks.filter(t => t.due_date && t.status !== 'concluido' && new Date(t.due_date + 'T12:00:00') <= nextWeek).length;
-      document.getElementById('stat-total').textContent = total;
-      document.getElementById('stat-confirmed').textContent = confirmed;
-      document.getElementById('stat-jefferson').textContent = allGuests.filter(g => g.invited_by === 'Jefferson').length;
-      document.getElementById('stat-beatriz').textContent = allGuests.filter(g => g.invited_by === 'Bia' || g.invited_by === 'Beatriz').length;
-      document.getElementById('dueSoonStat').textContent = dueSoonCount;
-      document.getElementById('pendingTasksStat').textContent = dashboardState.tasks.filter(t => t.status !== 'concluido').length;
-      const confirmedAside = document.getElementById('stat-confirmed-aside');
-      if (confirmedAside) confirmedAside.textContent = confirmed;
-    }
-
-    async function fetchExpenses() { const { data, error } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false }); if (error) { console.error('Erro fetch expenses:', error); return; } dashboardState.expenses = data || []; renderExpenses(); updateExpenseStats(); }
-    function renderExpenses() {
-      _expenseStore.clear();
-      document.getElementById('expenseList').innerHTML = dashboardState.expenses.map(e => {
-        _expenseStore.set(e.id, e);
-        return `<div class="flex justify-between p-3 bg-white rounded-xl items-center"><div><p class="font-bold">${sanitizeHTML(e.item)}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(e.category || 'Sem categoria')}</p></div><div class="flex items-center gap-3"><span class="font-bold">R$ ${Number(e.amount).toLocaleString('pt-BR')}</span><button data-action="expense-delete" data-id="${sanitizeAttr(e.id)}" class="text-red-500 text-sm">🗑️</button></div></div>`;
-      }).join('');
-    }
-    async function deleteExpense(id) { 
-      showUndoToast('Gasto removido', async () => {
-        const { error } = await supabaseClient.from('expenses').delete().eq('id', id); 
-        if (error) { console.error('Erro delete expense:', error); showToast('Erro ao remover gasto', 'error'); return; }
-        await logAudit('expenses', id, 'DELETE');
-        fetchExpenses(); 
-      });
-    }
-    async function addExpense() {
-      const item = document.getElementById('expItem').value, cat = document.getElementById('expCategory').value, amount = document.getElementById('expAmount').value;
-      if (item && amount) { 
-        const { data, error } = await supabaseClient.from('expenses').insert([{ item, category: cat, amount: parseFloat(amount) }]).select('id').single();
-        if (data?.id) await logAudit('expenses', data.id, 'INSERT', null, { item, category: cat, amount: parseFloat(amount) });
-        fetchExpenses(); 
-      }
-    }
-    // SETTINGS (budget/savings via Supabase)
-    async function fetchSettings() {
-      const { data, error } = await supabaseClient.from('settings').select('*');
-      if (error) { console.error('Erro fetch settings:', error); return; }
-      if (data) {
-        data.forEach(s => {
-          if (s.key === 'weddingBudget') dashboardState.budget = parseFloat(s.value) || getBudgetDefault();
-          if (s.key === 'weddingSavings') dashboardState.savings = parseFloat(s.value) || 0;
-        });
-      }
-      if (!dashboardState.budget) dashboardState.budget = getBudgetDefault();
-    }
-    async function saveSetting(key, value) {
-      const { error } = await supabaseClient.from('settings').upsert([{ key, value: String(value) }]);
-      if (error) { console.error('Erro save setting:', error); showToast('Erro ao salvar configuração', 'error'); }
-    }
-
-    function toggleBudgetEdit(s) { document.getElementById('budget-edit-container').classList.toggle('hidden', !s); }
-    function saveBudgetFromInput() { const v = document.getElementById('budget-input').value; if (v) { dashboardState.budget = parseFloat(v); saveSetting('weddingBudget', v); toggleBudgetEdit(false); updateExpenseStats(); } }
-    function toggleSavingsEdit(s) { document.getElementById('savings-edit-container').classList.toggle('hidden', !s); }
-    function saveSavingsFromInput() { const v = document.getElementById('savings-input').value; if (v) { dashboardState.savings = parseFloat(v); saveSetting('weddingSavings', v); toggleSavingsEdit(false); updateExpenseStats(); } }
-
-    function updateExpenseStats() {
-      const budget = dashboardState.budget || 0;
-      const savings = dashboardState.savings || 0;
-      const spent = dashboardState.expenses.reduce((s, e) => s + parseFloat(e.amount), 0);
-      
-      // Cálculo de Dívidas Ativas (Pendente + Pago Parcial)
-      const activeDebts = allSuppliers.reduce((sum, s) => {
-        if (s.status === 'Pendente' || s.status === 'Pago Parcial') {
-          return sum + (parseFloat(s.value) || 0);
-        }
-        return sum;
-      }, 0);
-
-      document.getElementById('stat-budget').textContent = `R$ ${budget.toLocaleString('pt-BR')}`;
-      document.getElementById('stat-savings').textContent = `R$ ${savings.toLocaleString('pt-BR')}`;
-      document.getElementById('stat-total-spent').textContent = `R$ ${spent.toLocaleString('pt-BR')}`;
-      document.getElementById('stat-active-debts').textContent = `R$ ${activeDebts.toLocaleString('pt-BR')}`;
-      document.getElementById('stat-remaining').textContent = `R$ ${(budget - savings).toLocaleString('pt-BR')}`;
-      
-      updateExpenseChart(); updateCategoryChart();
-      renderBudgetPlanner();
-    }
-
-    function updateCategoryChart() {
-      const ctx = document.getElementById('categoryChart').getContext('2d');
-      if (categoryChart) categoryChart.destroy();
-      const cats = {}; dashboardState.expenses.forEach(e => { const c = e.category || 'Outros'; cats[c] = (cats[c] || 0) + parseFloat(e.amount); });
-      categoryChart = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(cats), datasets: [{ data: Object.values(cats), backgroundColor: ['#c9a96e', '#c9a96e', '#f5e6d3', '#475569'] }] }, options: { maintainAspectRatio: false } });
-    }
-    function updateExpenseChart() {
-      const ctx = document.getElementById('expenseChart').getContext('2d');
-      if (expenseChart) expenseChart.destroy();
-      const monthly = {}; dashboardState.expenses.forEach(e => { const m = new Date(e.created_at).toLocaleDateString('pt-BR', { month: 'short' }); monthly[m] = (monthly[m] || 0) + parseFloat(e.amount); });
-      expenseChart = new Chart(ctx, { type: 'bar', data: { labels: Object.keys(monthly), datasets: [{ data: Object.values(monthly), backgroundColor: '#c9a96e' }] }, options: { maintainAspectRatio: false } });
-    }
-
-    async function updateAnalytics() {
-      try {
-        const { data: logs } = await supabaseClient.from('rsvp_access_logs').select('*');
-        if (!logs) return;
-        
-        // KPIs
-        const totalAccess = logs.length;
-        const uniqueGuests = new Set(logs.map(l => l.guest_id)).size;
-        
-        const totalConvidados = allGuests.length;
-        const confirmados = allGuests.filter(g => g.rsvp_status === 'confirmado').length;
-        const conversionRate = totalConvidados > 0 ? Math.round((confirmados / totalConvidados) * 100) : 0;
-        
-        const today = new Date().toISOString().split('T')[0];
-        const todayAccess = logs.filter(l => l.access_time && l.access_time.startsWith(today)).length;
-        
-        document.getElementById('analytics-total-access').textContent = totalAccess;
-        document.getElementById('analytics-unique-guests').textContent = uniqueGuests;
-        document.getElementById('analytics-conversion-rate').textContent = `${conversionRate}%`;
-        document.getElementById('analytics-today-access').textContent = todayAccess;
-
-        // Gráfico de Acessos (Últimos 7 dias)
-        const ctxAccess = document.getElementById('accessChart').getContext('2d');
-        if (accessChart) accessChart.destroy();
-        
-        const last7Days = [...Array(7)].map((_, i) => {
-          const d = new Date();
-          d.setDate(d.getDate() - i);
-          return d.toISOString().split('T')[0];
-        }).reverse();
-        
-        const accessByDay = last7Days.map(day => logs.filter(l => l.access_time && l.access_time.startsWith(day)).length);
-        const dayLabels = last7Days.map(day => {
-          const [y, m, d] = day.split('-');
-          return `${d}/${m}`;
-        });
-
-        accessChart = new Chart(ctxAccess, {
-          type: 'line',
-          data: {
-            labels: dayLabels,
-            datasets: [{
-              label: 'Acessos',
-              data: accessByDay,
-              borderColor: '#1a1a2e',
-              backgroundColor: 'rgba(26, 26, 46, 0.1)',
-              tension: 0.3,
-              fill: true
-            }]
-          },
-          options: { maintainAspectRatio: false }
-        });
-
-        // Gráfico de Convidados por Dono
-        const ctxInviter = document.getElementById('inviterChart').getContext('2d');
-        if (inviterChart) inviterChart.destroy();
-        
-        const inviterCounts = { 'Jefferson': 0, 'Bia': 0, 'Ambos': 0 };
-        allGuests.forEach(g => {
-          let owner = g.invited_by;
-          if (owner === 'Beatriz') owner = 'Bia';
-          if (inviterCounts[owner] !== undefined) inviterCounts[owner]++;
-        });
-
-        inviterChart = new Chart(ctxInviter, {
-          type: 'doughnut',
-          data: {
-            labels: Object.keys(inviterCounts),
-            datasets: [{
-              data: Object.values(inviterCounts),
-              backgroundColor: ['#1a1a2e', '#c9a96e', '#94a3b8']
-            }]
-          },
-          options: { maintainAspectRatio: false }
-        });
-
-        // Gráfico de Status RSVP
-        const ctxRsvp = document.getElementById('rsvpChart').getContext('2d');
-        if (rsvpChart) rsvpChart.destroy();
-        
-        const rsvpCounts = { 'Confirmado': 0, 'Aguardando': 0, 'Recusado': 0 };
-        allGuests.forEach(g => {
-          if (g.rsvp_status === 'confirmado') rsvpCounts['Confirmado']++;
-          else if (g.rsvp_status === 'recusado') rsvpCounts['Recusado']++;
-          else rsvpCounts['Aguardando']++;
-        });
-
-        rsvpChart = new Chart(ctxRsvp, {
-          type: 'bar',
-          data: {
-            labels: Object.keys(rsvpCounts),
-            datasets: [{
-              label: 'Convidados',
-              data: Object.values(rsvpCounts),
-              backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
-            }]
-          },
-          options: { maintainAspectRatio: false }
-        });
-
-      } catch(err) {
-        console.error('Erro no Analytics:', err);
-      }
-    }
-    async function loadNotesFromSupabase() { 
-      const meetingNotes = document.getElementById('meetingNotes');
-      if (!meetingNotes) return;
-      const { data } = await supabaseClient.from(ORG_NOTES_TABLE_NAME).select('notes').eq('id', 'global').maybeSingle(); 
-      if (data) meetingNotes.value = data.notes; 
-    }
-
-    // TELA DE CRONOGRAMA
-    async function fetchTimeline() {
-      const { data, error } = await supabaseClient.from('timeline').select('*').order('event_time', { ascending: true });
-      if (error) { console.error('Erro fetch timeline:', error); return; }
-      dashboardState.cachedTimeline = data || [];
-      renderTimeline(dashboardState.cachedTimeline);
-    }
-
-    function renderTimeline(events) {
-      const list = document.getElementById('timelineList');
-      if (!list) return;
-      if (events.length === 0) {
-        list.innerHTML = '<p class="text-sm text-slate-600 italic">Nenhum evento no cronograma ainda.</p>';
-        return;
-      }
-      _timelineStore.clear();
-      list.innerHTML = events.map(ev => {
-        _timelineStore.set(ev.id, ev);
-        return `
-        <div class="relative group">
-          <div class="absolute -left-[1.35rem] top-1 w-3 h-3 bg-vinho rounded-full"></div>
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="font-bold text-vinho text-sm">${ev.event_time.substring(0, 5)}</p>
-              <p class="text-slate-700">${sanitizeHTML(ev.description)}</p>
-            </div>
-            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button data-action="tl-edit" data-id="${sanitizeAttr(ev.id)}" class="text-slate-600 hover:text-vinho text-xs">✏️</button>
-              <button data-action="tl-delete" data-id="${sanitizeAttr(ev.id)}" class="text-red-400 hover:text-red-600 text-xs">✕</button>
-            </div>
-          </div>
-        </div>
-      `}).join('');
-    }
-
-    let _editingTimelineId = null;
-    function editTimelineEvent(id, time, desc) {
-      _editingTimelineId = id;
-      document.getElementById('tlTime').value = time;
-      document.getElementById('tlEvent').value = desc;
-      document.getElementById('tlEvent').focus();
-      showToast('Editando evento...', 'success');
-    }
-
-    async function addTimelineEvent() {
-      const time = document.getElementById('tlTime').value;
-      const desc = document.getElementById('tlEvent').value;
-      if (!time || !desc) { showToast('Preencha hora e descrição!', 'error'); return; }
-
-      if (_editingTimelineId) {
-        const { error } = await supabaseClient.from('timeline').update({ event_time: time, description: desc }).eq('id', _editingTimelineId);
-        if (!error) {
-          await logAudit('timeline', _editingTimelineId, 'UPDATE', null, { event_time: time, description: desc });
-          showToast('Evento atualizado!', 'success');
-        }
-        _editingTimelineId = null;
-      } else {
-        const { data: existing } = await supabaseClient.from('timeline').select('event_time, description').order('event_time');
-        if (existing) {
-          const conflict = existing.find(e => e.event_time === time);
-          if (conflict) { showToast(`Conflito! Já existe evento às ${time}: ${conflict.description}`, 'error'); return; }
-        }
-        const { data, error } = await supabaseClient.from('timeline').insert([{ event_time: time, description: desc }]).select('id').single();
-        if (!error && data?.id) await logAudit('timeline', data.id, 'INSERT', null, { event_time: time, description: desc });
-        if (!error) showToast('Evento adicionado!', 'success');
-      }
-      document.getElementById('tlEvent').value = '';
-      document.getElementById('tlTime').value = '';
-      fetchTimeline();
-    }
-
-    async function deleteTimelineEvent(id) {
-      showUndoToast('Evento removido', async () => {
-        const { error } = await supabaseClient.from('timeline').delete().eq('id', id);
-        if (error) { console.error('Erro delete timeline:', error); showToast('Erro ao excluir evento', 'error'); return; }
-        await logAudit('timeline', id, 'DELETE');
-        fetchTimeline();
-      });
-    }
-
-    function printTimeline() {
-      const events = document.getElementById('timelineList');
-      if (!events || events.children.length === 0) {
-        showToast('Nenhum evento no cronograma para imprimir.', 'error');
-        return;
-      }
-      const printWindow = window.open('', '_blank');
-      const now = new Date().toLocaleDateString('pt-BR');
-      printWindow.document.write(`
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-          <meta charset="UTF-8">
-          <title>Roteiro do Casamento - ${now}</title>
-          <style>
-            body { font-family: 'Georgia', serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; color: #1a1a1a; }
-            .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #1a1a2e; padding-bottom: 20px; }
-            .header h1 { font-family: 'Cormorant Garamond', serif; color: #1a1a2e; margin: 0 0 8px; font-size: 2.5rem; }
-            .header p { color: #c9a96e; margin: 0; font-size: 1.1rem; }
-            .meta { text-align: center; margin-bottom: 30px; color: #666; font-size: 0.9rem; }
-            .timeline { position: relative; padding-left: 30px; }
-            .timeline::before { content: ''; position: absolute; left: 14px; top: 0; bottom: 0; width: 2px; background: #1a1a2e; }
-            .event { position: relative; padding-left: 40px; margin-bottom: 24px; page-break-inside: avoid; }
-            .event::before { content: ''; position: absolute; left: 4px; top: 4px; width: 20px; height: 20px; background: #1a1a2e; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px #1a1a2e; }
-            .event-time { font-weight: bold; color: #1a1a2e; font-size: 1.1rem; margin-bottom: 4px; }
-            .event-desc { color: #333; font-size: 1rem; line-height: 1.5; }
-            @media print { body { padding: 0; } .no-print { display: none; } }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>Jefferson &amp; Beatriz</h1>
-            <p>Roteiro do Dia do Casamento</p>
-          </div>
-          <div class="meta">Gerado em ${new Date().toLocaleString('pt-BR')} | Capela São Maximiliano — Cascavel/PR</div>
-          <div class="timeline">
-            ${Array.from(events.children).map(el => `
-              <div class="event">
-                <div class="event-time">${el.querySelector('p.font-bold')?.textContent || ''}</div>
-                <div class="event-desc">${el.querySelector('p.text-slate-700')?.textContent || ''}</div>
-              </div>
-            `).join('')}
-          </div>
-          <script>
-            window.onload = function() { window.print(); window.onafterprint = function() { window.close(); }; };
-          <\/script>
-        </body>
-        </html>
-      `);
-      printWindow.document.close();
-    }
-
-    async function fetchLogs() { 
-      const { data, error } = await supabaseClient.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(20); 
-      if (error) { console.error('Erro fetch logs:', error); return; }
-      const list = document.getElementById('auditLogs');
-      if (!list) return;
-      if (!data || data.length === 0) {
-        list.innerHTML = '<p class="text-xs font-medium text-slate-700 italic text-center py-4">Nenhum log registrado.</p>';
-        return;
-      }
-      list.innerHTML = data.map(log => {
-        const date = new Date(log.created_at).toLocaleString('pt-BR');
-        const actionMap = { 'INSERT': 'Adicionou', 'UPDATE': 'Editou', 'DELETE': 'Removeu' };
-        const action = actionMap[log.action] || log.action;
-        return `
-          <div class="bg-white/40 p-2.5 rounded-xl border border-white/50 text-[11px] flex flex-col gap-0.5 shadow-sm">
-            <div class="flex justify-between items-center font-bold text-vinho">
-              <span>${log.user_name || 'Alguém'} ${action}</span>
-              <span class="text-xs font-medium text-slate-700 font-normal">${date}</span>
-            </div>
-            <p class="text-slate-600 truncate">Tabela: ${log.table_name}</p>
-          </div>
-        `;
-      }).join('');
-    }
-    function initRealtime() {
-      const tables = { tasks: fetchTasks, guests: fetchGuests, expenses: fetchExpenses, timeline: fetchTimeline };
-      const channel = supabaseClient.channel('db-changes');
-      Object.keys(tables).forEach(table => {
-        channel.on('postgres_changes', { event: '*', schema: 'public', table }, tables[table]);
-      });
-      channel.subscribe();
-    }
-    function previewInvite(token) {
-      window.open(`${window.location.origin}/convite.html?token=${token}`, '_blank');
-    }
-    async function copyInviteLink(token) {
-      const link = `${window.location.origin}/convite.html?token=${token}`;
-      const ok = await copyToClipboard(link);
-      if (ok) showToastGlobal('Link copiado!', 'success');
-      else showToastGlobal('Falha ao copiar link', 'error');
-    }
-
-    async function fetchSuppliers() { 
-      const { data, error } = await supabaseClient.from('suppliers').select('*').order('name', { ascending: true }); 
-      if (error) { console.error('Erro fetch suppliers:', error); return; }
-      allSuppliers = data || [];
-      const list = document.getElementById('supplierList');
-      if (!list) return;
-      
-      _supplierStore.clear();
-      list.innerHTML = allSuppliers.map(s => {
-        _supplierStore.set(s.id, s);
-        const statusColors = {
-          'Quitado': 'bg-emerald-100 text-emerald-700',
-          'Pago Parcial': 'bg-blue-100 text-blue-700',
-          'Pendente': 'bg-amber-100 text-amber-700'
-        };
-        const color = statusColors[s.status] || 'bg-slate-100 text-slate-700';
-        
-        return `
-          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4">
-            <div>
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-bold text-vinho">${sanitizeHTML(s.name)}</h4>
-                <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase ${color}">${sanitizeHTML(s.status || 'Pendente')}</span>
-              </div>
-              <p class="text-xs font-medium text-slate-700 uppercase tracking-widest font-semibold">${sanitizeHTML(s.category || 'Fornecedor')}</p>
-              <div class="flex flex-wrap gap-3 mt-3">
-                ${s.contact ? `<p class="text-xs text-slate-700 flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3"></i> ${sanitizeHTML(s.contact)}</p>` : ''}
-                ${s.map_link ? `<a href="${sanitizeAttr(s.map_link)}" target="_blank" class="text-xs text-blue-500 font-bold flex items-center gap-1 hover:underline"><i data-lucide="map-pin" class="w-3 h-3"></i> Mapa</a>` : ''}
-              </div>
-            </div>
-              <div class="flex justify-between items-center border-t pt-3 mt-auto">
-              <span class="text-lg font-bold text-vinho">R$ ${Number(s.value).toLocaleString('pt-BR')}</span>
-              <div class="flex items-center gap-2">
-                <span class="text-xs">${s.rating ? '⭐'.repeat(s.rating) : ''}</span>
-                <button data-action="supplier-edit" data-id="${sanitizeAttr(s.id)}" class="text-slate-600 hover:text-vinho text-xs">✏️</button>
-                <button data-action="supplier-delete" data-id="${sanitizeAttr(s.id)}" class="text-red-400 hover:text-red-600 text-xs">✕</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-      if (window.lucide) lucide.createIcons();
-      updateExpenseStats();
-    }
-
-    async function deleteSupplier(id) { 
-      showUndoToast('Fornecedor removido', async () => {
-        const { error } = await supabaseClient.from('suppliers').delete().eq('id', id); 
-        if (error) { console.error('Erro delete supplier:', error); showToast('Erro ao remover fornecedor', 'error'); return; }
-        await logAudit('suppliers', id, 'DELETE');
-        fetchSuppliers(); 
-      });
-    }
-
-    let _editingSupplierId = null;
-    function editSupplier(id, name, contact, map_link, category, value, status) {
-      _editingSupplierId = id;
-      document.getElementById('supplierName').value = name;
-      document.getElementById('supplierContact').value = contact;
-      document.getElementById('supplierMap').value = map_link;
-      document.getElementById('supplierCategory').value = category;
-      document.getElementById('supplierValue').value = value;
-      document.getElementById('supplierStatus').value = status;
-      document.getElementById('supplierName').focus();
-      showToast('Editando fornecedor...', 'success');
-    }
-
-    async function addSupplier() { 
-      const name = document.getElementById('supplierName').value;
-      const contact = document.getElementById('supplierContact').value;
-      const map_link = document.getElementById('supplierMap').value;
-      const cat = document.getElementById('supplierCategory').value;
-      const val = document.getElementById('supplierValue').value;
-      const status = document.getElementById('supplierStatus').value;
-
-      if (!name) { showToast('Informe o nome do fornecedor!', 'error'); return; }
-
-      const payload = { name, contact, map_link, category: cat, value: parseFloat(val) || 0, status };
-
-      if (_editingSupplierId) {
-        const { error } = await supabaseClient.from('suppliers').update(payload).eq('id', _editingSupplierId);
-        if (!error) {
-          await logAudit('suppliers', _editingSupplierId, 'UPDATE', null, payload);
-          showToast('Fornecedor atualizado!', 'success');
-        }
-        _editingSupplierId = null;
-      } else {
-        const { data, error } = await supabaseClient.from('suppliers').insert([payload]).select('id').single();
-        if (!error && data?.id) await logAudit('suppliers', data.id, 'INSERT', null, payload);
-        if (!error) showToast('Fornecedor salvo!', 'success');
-        else showToast('Erro ao salvar fornecedor', 'error');
-      }
-
-      document.getElementById('supplierName').value = '';
-      document.getElementById('supplierContact').value = '';
-      document.getElementById('supplierMap').value = '';
-      document.getElementById('supplierValue').value = '';
-      document.getElementById('supplierCategory').value = '';
-      document.getElementById('supplierStatus').value = 'Pendente';
-      fetchSuppliers();
-    }
-    
-    function showToast(message, type = 'success') {
-      showToastGlobal(message, type);
-    }
-
-    function showUndoToast(message, onUndo, duration = 5000) {
-      let t = document.getElementById('undo-toast');
-      if (t) t.remove();
-      t = document.createElement('div');
-      t.id = 'undo-toast';
-      t.style.cssText = 'position:fixed;bottom:6rem;left:50%;transform:translateX(-50%) translateY(20px);padding:0.75rem 1rem;border-radius:1rem;color:white;font-size:0.8rem;font-weight:600;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:9999;opacity:0;transition:all 0.3s;display:flex;align-items:center;gap:0.75rem;background:#1a1a2e;white-space:nowrap;';
-      t.innerHTML = `<span>${message}</span><button id="undo-btn" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:0.3rem 0.75rem;border-radius:0.5rem;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap">Desfazer</button>`;
-      document.body.appendChild(t);
-      requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; });
-      let timer = setTimeout(() => {
-        t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)';
-        setTimeout(() => t.remove(), 300);
-        onUndo();
-      }, duration);
-      document.getElementById('undo-btn').addEventListener('click', () => {
-        clearTimeout(timer);
-        t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)';
-        setTimeout(() => t.remove(), 300);
-        showToastGlobal('Ação desfeita', 'info');
-      });
-    }
-    </script>
-      <!-- FAB (Floating Action Button) -->
-    <div class="fab-container">
-      <div id="fab-menu" class="fab-menu">
-        <div class="fab-item" onclick="quickAction('guest')">
-          <span>Novo Convidado</span>
-          <div class="fab-icon"><i data-lucide="user-plus"></i></div>
-        </div>
-        <div class="fab-item" onclick="quickAction('expense')">
-          <span>Lançar Gasto</span>
-          <div class="fab-icon"><i data-lucide="dollar-sign"></i></div>
-        </div>
-        <div class="fab-item" onclick="quickAction('task')">
-          <span>Nova Tarefa</span>
-          <div class="fab-icon"><i data-lucide="check-square"></i></div>
-        </div>
-        <div class="fab-item" onclick="quickAction('gallery')">
-          <span>Galeria</span>
-          <div class="fab-icon"><i data-lucide="camera"></i></div>
-        </div>
+  <!-- FAB (Floating Action Button) -->
+  <div class="fab-container">
+    <div id="fab-menu" class="fab-menu">
+      <div class="fab-item" onclick="quickAction('guest')">
+        <span>Novo Convidado</span>
+        <div class="fab-icon"><i data-lucide="user-plus"></i></div>
       </div>
-      <div id="fab-main" class="fab-main" onclick="toggleFab()">
-        <i data-lucide="plus" id="fab-icon-plus"></i>
+      <div class="fab-item" onclick="quickAction('expense')">
+        <span>Lançar Gasto</span>
+        <div class="fab-icon"><i data-lucide="dollar-sign"></i></div>
+      </div>
+      <div class="fab-item" onclick="quickAction('task')">
+        <span>Nova Tarefa</span>
+        <div class="fab-icon"><i data-lucide="check-square"></i></div>
+      </div>
+      <div class="fab-item" onclick="quickAction('gallery')">
+        <span>Galeria</span>
+        <div class="fab-icon"><i data-lucide="camera"></i></div>
       </div>
     </div>
+    <div id="fab-main" class="fab-main" onclick="toggleFab()">
+      <i data-lucide="plus" id="fab-icon-plus"></i>
+    </div>
+  </div>
 
-    <script>
-      function toggleFab() {
-        const menu = document.getElementById('fab-menu');
-        const main = document.getElementById('fab-main');
-        menu.classList.toggle('active');
-        main.classList.toggle('active');
-      }
-      
-      function quickAction(type) {
-        toggleFab();
-        switch(type) {
-          case 'guest': switchTab('guests'); break;
-          case 'expense': switchTab('expenses'); break;
-          case 'task': switchTab('tasks'); break;
-          case 'gallery': window.open('gallery.html', '_blank'); return;
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    </script>
+    <script src="./js/organizacao.js"></script>
   </body>
 </html>

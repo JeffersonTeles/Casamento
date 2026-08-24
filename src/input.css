@@ -7,4 +7,20 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  .input-base {
+    @apply w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-vinho bg-white transition-colors text-sm;
+  }
+
+  .btn-primary {
+    @apply bg-vinho text-white px-6 py-3 rounded-xl hover:bg-vinho/90 active:scale-95 transition-all font-bold flex items-center justify-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply bg-slate-100 text-slate-700 px-6 py-3 rounded-xl hover:bg-slate-200 active:scale-95 transition-all font-bold flex items-center justify-center gap-2 border border-slate-200;
+  }
+
+  .card-base {
+    @apply bg-white/95 backdrop-blur-md border border-slate-100 shadow-sm rounded-[1.2rem] p-5 md:p-6;
+  }
 }
