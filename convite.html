@@ -405,8 +405,18 @@
         const { data, error } = await supabaseClient.rpc('get_guest_public_by_token', { p_invite_token: GUEST_TOKEN });
         if (error || !data || data.length === 0) return;
         currentGuest = data[0];
-        const firstName = currentGuest.name.split(' ')[0];
-        document.getElementById('greeting-text').innerHTML = '<strong>' + firstName + '</strong>, você está convidado(a) para celebrar o nosso amor';
+        let greetingNames = currentGuest.name.split(' ')[0];
+        let isPlural = false;
+        if (currentGuest.partner_name && currentGuest.partner_name.trim() !== '') {
+          greetingNames += ' & ' + currentGuest.partner_name.trim().split(' ')[0];
+          isPlural = true;
+        } else if (currentGuest.plus_ones > 0) {
+          greetingNames += ' & Família';
+          isPlural = true;
+        }
+        
+        const inviteText = isPlural ? 'vocês estão convidados' : 'você está convidado(a)';
+        document.getElementById('greeting-text').innerHTML = '<strong>' + greetingNames + '</strong>, ' + inviteText + ' para celebrar o nosso amor';
         
         let fullName = currentGuest.name;
         if (currentGuest.partner_name && currentGuest.partner_name.trim() !== '') {
