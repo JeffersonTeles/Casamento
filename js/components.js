@@ -1,7 +1,13 @@
 class SiteHeader extends HTMLElement {
   connectedCallback() {
+    this.style.display = 'block';
+    this.style.width = '100%';
+    this.style.position = 'sticky';
+    this.style.top = '0';
+    this.style.zIndex = '50';
+
     this.innerHTML = `
-      <header class="w-full bg-white/95 backdrop-blur-sm border-b border-[#c9a96e]/15 sticky top-0 z-20">
+      <header class="w-full bg-white/95 backdrop-blur-sm border-b border-[#c9a96e]/15">
         <nav class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between px-4 py-4 md:py-3 gap-4 md:gap-3">
           <a href="index.html" class="flex items-center gap-2">
             <span class="font-titulo text-2xl text-[#1a1a2e]">Jefferson &amp; Beatriz</span>
