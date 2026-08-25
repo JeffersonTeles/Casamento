@@ -360,14 +360,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
         <p class="success-title">Resposta Registrada!</p>
-        <p class="success-text" id="success-text">Obrigado por confirmar. Mal podemos esperar para celebrar com você!</p>
+        <p class="success-text" id="success-text">Obrigado! Você será redirecionado para o nosso site oficial em alguns segundos com todas as informações...</p>
         <div class="success-actions">
-          <a href="./index.html" class="btn-home">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
-            Página Inicial
+          <a href="./index.html" class="btn-home" style="width: 100%; justify-content: center; background-color: var(--gold); color: white; border-color: var(--gold);">
+            Acessar Site Oficial Agora
           </a>
           <button class="btn-change" onclick="resetForm()">Alterar Resposta</button>
         </div>
@@ -412,7 +408,12 @@
         const firstName = currentGuest.name.split(' ')[0];
         document.getElementById('greeting-text').innerHTML = '<strong>' + firstName + '</strong>, você está convidado(a) para celebrar o nosso amor';
         
-        const fullName = currentGuest.partner_name ? currentGuest.name + ' & ' + currentGuest.partner_name : currentGuest.name;
+        let fullName = currentGuest.name;
+        if (currentGuest.partner_name && currentGuest.partner_name.trim() !== '') {
+          fullName += ' & ' + currentGuest.partner_name.trim();
+        } else if (currentGuest.plus_ones > 0) {
+          fullName += ' & Família';
+        }
         document.getElementById('form-guest-name').textContent = fullName;
 
         if (currentGuest.rsvp_status === 'confirmado' || currentGuest.rsvp_status === 'recusado') {
@@ -491,6 +492,11 @@
         document.getElementById('rsvp-form').classList.remove('active');
         document.getElementById('rsvp-success').classList.add('active');
         document.querySelector('.rsvp-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Redirect to index.html after 5 seconds
+        setTimeout(() => {
+          window.location.href = './index.html';
+        }, 5000);
       } catch (err) {
         console.error('RSVP error:', err);
         showToastGlobal('Erro ao enviar. Por favor, tente novamente.', 'error');

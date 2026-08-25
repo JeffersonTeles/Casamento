@@ -1434,7 +1434,7 @@ function getGuestPersonCount(g) {
 
     async function shareInviteWhatsApp(name, token) {
       const link = `${window.location.origin}/convite.html?token=${token}`;
-      const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${name}*!\n\nAcesse seu convite individual e confirme sua presença:\n👉 ${link}`;
+      const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${name}*!\n\nA confirmação de presença (RSVP) e todas as informações importantes sobre o nosso grande dia (local, horário, lista de presentes, etc.) estão disponíveis no nosso site oficial.\n\nAcesse o link abaixo para abrir o seu convite individual e confirmar sua presença:\n👉 ${link}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
 
