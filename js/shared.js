@@ -16,6 +16,32 @@ const TOAST_DURATION_MS = 3000;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 // === UTILITIES ===
+function setButtonLoading(btn, isLoading, originalText = '') {
+  if (!btn) return;
+  if (isLoading) {
+    btn.dataset.originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.style.pointerEvents = 'none';
+    btn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = '';
+    btn.style.pointerEvents = '';
+    btn.innerHTML = originalText || btn.dataset.originalText || 'Salvar';
+  }
+}
+
+function parseMoney(val) {
+  if (!val) return 0;
+  if (typeof val === 'number') return val;
+  // Remove tudo que não for dígito ou vírgula
+  const cleaned = String(val).replace(/[^\d,]/g, '');
+  // Substitui vírgula por ponto
+  const parsed = parseFloat(cleaned.replace(',', '.'));
+  return isNaN(parsed) ? 0 : parsed;
+}
+
 function getConfig(key, fallback) {
   return WEDDING_CONFIG[key] ?? fallback;
 }

@@ -1507,11 +1507,26 @@ function getGuestPersonCount(g) {
       });
     }
     async function addExpense() {
-      const item = document.getElementById('expItem').value, cat = document.getElementById('expCategory').value, amount = document.getElementById('expAmount').value;
-      if (item && amount) { 
-        const { data, error } = await supabaseClient.from('expenses').insert([{ item, category: cat, amount: parseFloat(amount) }]).select('id').single();
-        if (data?.id) await logAudit('expenses', data.id, 'INSERT', null, { item, category: cat, amount: parseFloat(amount) });
-        fetchExpenses(); 
+      const btn = document.querySelector('button[onclick="addExpense()"]');
+      const itemEl = document.getElementById('expItem'), catEl = document.getElementById('expCategory'), amountEl = document.getElementById('expAmount');
+      const item = itemEl.value.trim(), cat = catEl.value.trim(), amount = parseMoney(amountEl.value);
+      
+      if (item && amount > 0) {
+        setButtonLoading(btn, true);
+        const { data, error } = await supabaseClient.from('expenses').insert([{ item, category: cat, amount }]).select('id').single();
+        if (data?.id) await logAudit('expenses', data.id, 'INSERT', null, { item, category: cat, amount });
+        if (!error) {
+          itemEl.value = '';
+          catEl.value = '';
+          amountEl.value = '';
+          showToastGlobal('Lançamento adicionado!', 'success');
+        } else {
+          showToastGlobal('Erro ao adicionar', 'error');
+        }
+        await fetchExpenses();
+        setButtonLoading(btn, false);
+      } else {
+        showToastGlobal('Preencha a descrição e um valor válido.', 'error');
       }
     }
     // SETTINGS (budget/savings via Supabase)
@@ -2529,14 +2544,17 @@ function getGuestPersonCount(g) {
     }
 
     window.saveExpenseEdit = async function saveExpenseEdit() {
+      const btn = document.querySelector('button[onclick="saveExpenseEdit()"]');
+      setButtonLoading(btn, true);
       const id = document.getElementById('editExpenseId').value;
       const item = document.getElementById('editExpenseItem').value.trim();
       const category = document.getElementById('editExpenseCategory').value.trim();
       const amountRaw = document.getElementById('editExpenseAmount').value;
-      const amount = parseFloat(amountRaw.replace(',', '.'));
+      const amount = parseMoney(amountRaw);
 
-      if (!item || isNaN(amount) || amount < 0) {
+      if (!item || amount < 0) {
         showToastGlobal('Preencha a descrição e um valor válido.', 'error');
+        setButtonLoading(btn, false);
         return;
       }
 
@@ -2549,4 +2567,5 @@ function getGuestPersonCount(g) {
         showToastGlobal('Lançamento atualizado!');
         await fetchExpenses();
       }
+      setButtonLoading(btn, false);
     };
