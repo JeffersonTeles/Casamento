@@ -319,6 +319,10 @@
       </div>
 
       <div class="rsvp-form" id="rsvp-form">
+        <div style="text-align: center; margin-bottom: 1.2rem;">
+          <p style="font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.3rem;">Confirmação para</p>
+          <p id="form-guest-name" style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--gold); font-weight: 600;"></p>
+        </div>
         <div class="rsvp-options">
           <button type="button" class="rsvp-opt" data-status="confirmado" onclick="selectOpt(this)">Vou Comparecer</button>
           <button type="button" class="rsvp-opt" data-status="recusado" onclick="selectOpt(this)">Não Poderei</button>
@@ -407,6 +411,10 @@
         currentGuest = data[0];
         const firstName = currentGuest.name.split(' ')[0];
         document.getElementById('greeting-text').innerHTML = '<strong>' + firstName + '</strong>, você está convidado(a) para celebrar o nosso amor';
+        
+        const fullName = currentGuest.partner_name ? currentGuest.name + ' & ' + currentGuest.partner_name : currentGuest.name;
+        document.getElementById('form-guest-name').textContent = fullName;
+
         if (currentGuest.rsvp_status === 'confirmado' || currentGuest.rsvp_status === 'recusado') {
           document.getElementById('rsvp-initial').style.display = 'none';
           document.getElementById('rsvp-form').classList.remove('active');
