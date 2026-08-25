@@ -1576,7 +1576,7 @@ function getGuestPersonCount(g) {
       document.getElementById('stat-active-debts').textContent = `R$ ${activeDebts.toLocaleString('pt-BR')}`;
       document.getElementById('stat-remaining').textContent = `R$ ${remaining.toLocaleString('pt-BR')}`;
       const elSuppliersTotal = document.getElementById('stat-suppliers-total');
-      if (elSuppliersTotal) elSuppliersTotal.textContent = `R$ ${suppliersTotalCalc.toLocaleString('pt-BR')}`;
+      if (elSuppliersTotal) elSuppliersTotal.textContent = `R$ ${suppliersTotal.toLocaleString('pt-BR')}`;
       
       // Atualizar dashboard resumo financeiro
       const dashSpent = document.getElementById('dash-spent');
