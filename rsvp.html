@@ -7,9 +7,9 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="./css/output.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" integrity="sha256-z1Kf6JgMvm8t0+OTDs+WNS7T09cSM7Z2Dk+Sf4m5S58=" crossorigin="anonymous" defer></script>
-  <script src="./js/config.js"></script>
-  <script src="./js/sanitize.js"></script>
-  <script src="./js/shared.js"></script>
+  <script src="./js/config.js" defer></script>
+  <script src="./js/sanitize.js" defer></script>
+  <script src="./js/shared.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -184,7 +184,7 @@
           <svg class="w-8 h-8 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
         </div>
       <p class="text-red-600 font-medium text-lg mb-2">Convite não encontrado</p>
-      <p class="text-sm text-slate-500">Verifique se o link está correto ou entre em contato com o casal.</p>
+      <p class="text-sm text-slate-500" id="error-message-text">Verifique se o link está correto ou entre em contato com o casal.</p>
     </div>
   </div>
 
@@ -377,7 +377,8 @@
 
       try {
         const { data, error } = await supabaseClient.rpc('get_guest_public_by_token', { p_invite_token: token });
-        if (error || !data || data.length === 0) { showError(); return; }
+        if (error) { showError(error.message || JSON.stringify(error)); return; }
+        if (!data || data.length === 0) { showError('Token não encontrado no banco de dados.'); return; }
 
         guestData = data[0];
 
@@ -406,13 +407,16 @@
           document.getElementById('invite-container').classList.remove('hidden');
         }
       } catch (err) {
-        showError();
+        showError(err.message || String(err));
       }
     }
 
-    function showError() {
+    function showError(msg) {
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('error').classList.remove('hidden');
+      if (msg) {
+        document.getElementById('error-message-text').textContent = 'Detalhe técnico: ' + msg;
+      }
     }
 
     function showRsvpForm() {
