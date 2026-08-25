@@ -2,9 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>Convite — Jefferson & Beatriz</title>
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1a1a2e" />
   <link rel="stylesheet" href="./css/output.css" />
   <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -13,175 +14,160 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --navy: #1a2a44;
-      --navy-light: #2a3d5c;
       --gold: #b8976a;
       --gold-light: #d4c4a0;
-      --blush: #f0e0d4;
-      --rose: #e8b4b8;
-      --rose-deep: #c97b84;
-      --coral: #e07a5f;
-      --sage: #7a9a6d;
-      --sage-dark: #5a7a4d;
-      --cream: #fdfbf7;
+      --gold-dark: #a38558;
       --text: #2c2825;
       --text-soft: #6a625a;
       --text-faint: #a09890;
+      --cream: #fdfbf7;
+      --navy: #1a2a44;
     }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Montserrat', sans-serif;
-      background: #e8e4de;
+      background: linear-gradient(180deg, #fafaf8 0%, #f5f3f0 50%, #fafaf8 100%);
       min-height: 100vh;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 1.5rem;
+      padding: 1rem;
     }
 
-    /* === ENVELOPE FRAME === */
-    .envelope {
-      width: 100%; max-width: 520px;
-      background: var(--navy);
-      position: relative;
-      padding: 18px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15);
-      animation: envelopeIn 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
-      opacity: 0; transform: translateY(30px) scale(0.97);
+    .wrapper {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      animation: cardIn 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+      opacity: 0;
+      transform: translateY(30px) scale(0.97);
     }
-    @keyframes envelopeIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes cardIn { to { opacity: 1; transform: translateY(0) scale(1); } }
 
-    .card {
-      background: white;
-      position: relative;
-      overflow: hidden;
+    .invite-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 1rem 1rem 0 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
 
-    /* === FLORAL CORNERS (watercolor style) === */
-    .floral-corner {
-      position: absolute;
-      width: 260px; height: 260px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .floral-tl { top: -10px; left: -10px; }
-    .floral-tr { top: -10px; right: -10px; transform: scaleX(-1); }
-    .floral-bl { bottom: -10px; left: -10px; transform: scaleY(-1); }
-    .floral-br { bottom: -10px; right: -10px; transform: scale(-1,-1); }
-
-    .floral-corner svg { width: 100%; height: 100%; }
-
-    /* === CARD BODY === */
     .card-body {
-      padding: 5rem 2.5rem 3rem;
+      background: var(--cream);
+      padding: 1.5rem 1.5rem 2rem;
       text-align: center;
-      position: relative;
-      z-index: 1;
+      border-radius: 0 0 1rem 1rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
     }
-
-    .pre-title {
-      font-size: 0.55rem; letter-spacing: 0.45em; text-transform: uppercase;
-      color: var(--text-faint); margin-bottom: 1.8rem;
-    }
-
-    .names { margin-bottom: 1.8rem; }
-    .name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 3.2rem; font-weight: 300; color: var(--text);
-      line-height: 1.1; letter-spacing: -0.01em;
-    }
-    .amp {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem; font-style: italic; font-weight: 300;
-      color: var(--gold); display: block; margin: 0.15rem 0;
-    }
-
-    /* === DIVIDERS === */
-    .divider {
-      display: flex; align-items: center; justify-content: center;
-      gap: 12px; margin: 1.5rem auto; max-width: 200px;
-    }
-    .divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-light), transparent); }
-    .divider svg { width: 8px; height: 8px; color: var(--gold); opacity: 0.5; flex-shrink: 0; }
 
     .greeting {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.15rem; font-style: italic; font-weight: 400;
-      color: var(--text-soft); line-height: 1.6; margin-bottom: 1.5rem;
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--text-soft);
+      margin-bottom: 1rem;
+      line-height: 1.5;
     }
 
-    /* === DETAILS === */
-    .details { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
-    .detail-label {
-      font-size: 0.45rem; letter-spacing: 0.35em; text-transform: uppercase;
-      color: var(--text-faint); margin-bottom: 0.3rem;
-    }
-    .detail-value {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.15rem; font-weight: 500; color: var(--text); line-height: 1.3;
-    }
-    .detail-accent { color: var(--gold); }
-
-    /* === VENUE === */
-    .venue {
-      background: linear-gradient(135deg, #faf8f5 0%, #f5f0ea 100%);
-      margin: 1.8rem -2.5rem; padding: 1.8rem 2.5rem;
-      border-top: 1px solid rgba(184,151,106,0.12);
-      border-bottom: 1px solid rgba(184,151,106,0.12);
-    }
-    .venue-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem; font-weight: 600; color: var(--text); margin-bottom: 0.3rem;
-    }
-    .venue-address { font-size: 0.65rem; color: var(--text-soft); line-height: 1.6; margin-bottom: 1rem; }
-    .venue-maps { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
-    .map-btn {
-      font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--gold); text-decoration: none; border: 1px solid var(--gold-light);
-      padding: 0.5rem 1rem; transition: all 0.3s; background: white;
-    }
-    .map-btn:hover { background: var(--gold); color: white; border-color: var(--gold); }
-
-    .dresscode {
-      font-size: 0.6rem; color: var(--text-faint); font-style: italic;
-      margin: 1.5rem 0; padding: 0.8rem 1.2rem;
-      background: rgba(184,151,106,0.04); border-radius: 4px;
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+      margin: 1rem auto;
     }
 
-    /* === RSVP === */
     .rsvp-trigger {
-      display: inline-block; padding: 0.9rem 2.8rem;
-      background: var(--gold); color: white; border: none;
-      font-family: 'Montserrat', sans-serif; font-size: 0.55rem;
-      font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase;
-      cursor: pointer; transition: all 0.4s ease; margin-top: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: var(--gold);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(184,151,106,0.3);
+      width: 100%;
+      justify-content: center;
     }
-    .rsvp-trigger:hover { background: #a38558; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(184,151,106,0.3); }
+    .rsvp-trigger:hover {
+      background: var(--gold-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 25px rgba(184,151,106,0.4);
+    }
+    .rsvp-trigger svg { width: 16px; height: 16px; }
 
-    .rsvp-form { display: none; text-align: left; margin-top: 1.5rem; }
-    .rsvp-form.active { display: block; animation: formUp 0.5s ease; }
-    @keyframes formUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.8rem;
+      padding: 0.5rem 1.2rem;
+      background: transparent;
+      color: var(--text-faint);
+      border: 1.5px solid #e0dbd5;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .home-link:hover { border-color: var(--gold-light); color: var(--gold); }
+    .home-link svg { width: 12px; height: 12px; }
 
-    .rsvp-options { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .rsvp-form { display: none; text-align: left; margin-top: 1rem; }
+    .rsvp-form.active { display: block; animation: formUp 0.4s ease; }
+    @keyframes formUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .rsvp-options { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
     .rsvp-opt {
-      flex: 1; padding: 0.75rem 0.5rem; text-align: center;
-      border: 1.5px solid #e0dbd5; background: transparent;
-      font-family: 'Montserrat', sans-serif; font-size: 0.55rem;
-      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-soft);
-      cursor: pointer; transition: all 0.3s;
+      flex: 1;
+      padding: 0.9rem 0.5rem;
+      text-align: center;
+      border: 2px solid #e0dbd5;
+      background: transparent;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.3s;
     }
-    .rsvp-opt:hover { border-color: var(--gold-light); }
-    .rsvp-opt.selected { border-color: var(--gold); background: rgba(184,151,106,0.06); color: var(--gold); }
+    .rsvp-opt:hover { border-color: var(--gold-light); background: rgba(184,151,106,0.03); }
+    .rsvp-opt.selected { border-color: var(--gold); background: rgba(184,151,106,0.08); color: var(--gold); font-weight: 600; }
 
-    .field { margin-bottom: 0.75rem; }
+    .field { margin-bottom: 0.9rem; }
     .field-label {
-      display: block; font-size: 0.45rem; letter-spacing: 0.25em;
-      text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.35rem;
+      display: block;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 0.35rem;
+      font-weight: 500;
     }
     .field-input {
-      width: 100%; padding: 0.75rem 0.9rem;
-      border: 1.5px solid #e0dbd5; background: #faf8f5;
-      font-family: 'Montserrat', sans-serif; font-size: 0.7rem;
-      color: var(--text); outline: none; transition: border-color 0.3s;
+      width: 100%;
+      padding: 0.85rem 0.9rem;
+      border: 2px solid #e0dbd5;
+      background: #faf8f5;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.3s;
     }
     .field-input:focus { border-color: var(--gold); }
     .field-input::placeholder { color: var(--text-faint); }
@@ -190,51 +176,116 @@
     .plus-ones.active { display: block; }
 
     .submit-btn {
-      width: 100%; padding: 0.85rem; background: var(--gold); color: white;
-      border: none; font-family: 'Montserrat', sans-serif; font-size: 0.55rem;
-      font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
-      cursor: pointer; transition: all 0.3s; margin-top: 0.5rem;
+      width: 100%;
+      padding: 0.95rem;
+      background: var(--gold);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 0.5rem;
+      box-shadow: 0 4px 15px rgba(184,151,106,0.3);
     }
-    .submit-btn:hover { background: #a38558; }
-    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit-btn:hover { background: var(--gold-dark); transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-    .rsvp-success { display: none; text-align: center; padding: 1.5rem 0; }
-    .rsvp-success.active { display: block; animation: formUp 0.6s ease; }
+    .rsvp-success { display: none; text-align: center; padding: 1rem 0; }
+    .rsvp-success.active { display: block; animation: formUp 0.5s ease; }
     .success-check {
-      width: 50px; height: 50px; border: 1.5px solid var(--gold-light);
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      width: 56px;
+      height: 56px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin: 0 auto 1rem;
+      background: rgba(184,151,106,0.08);
     }
-    .success-check svg { width: 20px; height: 20px; color: var(--gold); }
+    .success-check svg { width: 24px; height: 24px; color: var(--gold); }
     .success-title {
-      font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;
-      font-weight: 500; color: var(--gold); margin-bottom: 0.3rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 0.4rem;
     }
-    .success-text { font-size: 0.7rem; color: var(--text-soft); line-height: 1.6; }
+    .success-text {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      line-height: 1.6;
+      max-width: 280px;
+      margin: 0 auto;
+    }
 
-    /* === RESPONSIVE === */
-    @media (max-width: 480px) {
-      body { padding: 0.75rem; }
-      .envelope { padding: 10px; }
-      .card-body { padding: 4rem 1.5rem 2rem; }
-      .venue { margin: 1.5rem -1.5rem; padding: 1.5rem; }
-      .name { font-size: 2.6rem; }
-      .details { gap: 1rem; }
-      .rsvp-options { flex-direction: column; }
-      .venue-maps { flex-direction: column; align-items: center; }
-      .map-btn { width: 100%; max-width: 180px; text-align: center; }
-      .floral-corner { width: 180px; height: 180px; }
+    .success-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 1.2rem;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.7rem 1.8rem;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.55rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .btn-home:hover { background: #2a3d5c; transform: translateY(-1px); }
+    .btn-home svg { width: 14px; height: 14px; }
+
+    .btn-change {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.5rem 1.2rem;
+      background: transparent;
+      color: var(--text-faint);
+      border: 1.5px solid #e0dbd5;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-change:hover { border-color: var(--gold-light); color: var(--gold); }
+
+    @media (max-width: 380px) {
+      body { padding: 0.5rem; }
+      .card-body { padding: 1.2rem 1rem 1.5rem; }
+      .greeting { font-size: 1rem; }
+      .rsvp-trigger { padding: 0.9rem 2rem; font-size: 0.65rem; }
     }
     @media (min-width: 640px) {
-      .envelope { max-width: 540px; padding: 22px; }
-      .card-body { padding: 5.5rem 3rem 3rem; }
-      .venue { margin: 2rem -3rem; padding: 2rem 3rem; }
-      .name { font-size: 3.8rem; }
-      .floral-corner { width: 300px; height: 300px; }
+      .wrapper { max-width: 560px; }
+      .card-body { padding: 2rem 3rem 2.5rem; }
+      .greeting { font-size: 1.3rem; }
     }
     @media print {
       body { background: white; padding: 0; }
-      .envelope { box-shadow: none; animation: none; opacity: 1; transform: none; }
+      .card-body { display: none; }
+      .wrapper { animation: none; opacity: 1; transform: none; box-shadow: none; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -242,300 +293,87 @@
   </style>
 </head>
 <body>
-  <div class="envelope">
-    <div class="card">
-      <!-- Floral Top-Left -->
-      <div class="floral-corner floral-tl">
-        <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Leaves cluster -->
-          <g opacity="0.7">
-            <path d="M20 280 C30 240 50 200 40 160 C35 140 25 120 30 100" stroke="#5a7a4d" stroke-width="2" fill="none"/>
-            <path d="M40 160 C55 155 65 140 60 120" stroke="#5a7a4d" stroke-width="1.5" fill="none"/>
-            <path d="M25 200 C40 195 50 180 45 165" stroke="#5a7a4d" stroke-width="1.2" fill="none"/>
-            <ellipse cx="35" cy="105" rx="18" ry="28" transform="rotate(-30 35 105)" fill="#7a9a6d" opacity="0.5"/>
-            <ellipse cx="28" cy="135" rx="15" ry="22" transform="rotate(-20 28 135)" fill="#7a9a6d" opacity="0.4"/>
-            <ellipse cx="42" cy="170" rx="12" ry="18" transform="rotate(-15 42 170)" fill="#5a7a4d" opacity="0.35"/>
-            <ellipse cx="55" cy="125" rx="10" ry="16" transform="rotate(-40 55 125)" fill="#7a9a6d" opacity="0.3"/>
-          </g>
-          <!-- Small navy rose bud -->
-          <g opacity="0.6">
-            <circle cx="45" cy="95" r="12" fill="#1a2a44" opacity="0.4"/>
-            <circle cx="45" cy="95" r="8" fill="#2a3d5c" opacity="0.5"/>
-            <circle cx="45" cy="95" r="4" fill="#3a5070" opacity="0.6"/>
-            <path d="M38 88 C42 82 48 82 52 88" stroke="#1a2a44" stroke-width="1" fill="none" opacity="0.5"/>
-            <path d="M40 92 C44 86 50 86 54 92" stroke="#1a2a44" stroke-width="0.8" fill="none" opacity="0.4"/>
-          </g>
-          <!-- Pink rose -->
-          <g opacity="0.65">
-            <circle cx="70" cy="60" r="16" fill="#e8b4b8" opacity="0.5"/>
-            <circle cx="70" cy="60" r="11" fill="#e8b4b8" opacity="0.6"/>
-            <circle cx="70" cy="60" r="7" fill="#db9aa0" opacity="0.7"/>
-            <circle cx="70" cy="60" r="3.5" fill="#c97b84" opacity="0.8"/>
-            <path d="M60 52 C65 46 75 46 80 52" stroke="#c97b84" stroke-width="0.8" fill="none" opacity="0.5"/>
-            <path d="M58 58 C63 50 77 50 82 58" stroke="#c97b84" stroke-width="0.6" fill="none" opacity="0.4"/>
-            <path d="M62 65 C67 58 73 58 78 65" stroke="#c97b84" stroke-width="0.6" fill="none" opacity="0.3"/>
-          </g>
-          <!-- Small blush bud -->
-          <g opacity="0.5">
-            <circle cx="100" cy="35" r="9" fill="#f0e0d4" opacity="0.5"/>
-            <circle cx="100" cy="35" r="5.5" fill="#e8cfc0" opacity="0.6"/>
-            <circle cx="100" cy="35" r="2.5" fill="#dbb8a8" opacity="0.7"/>
-          </g>
-          <!-- Tiny berries -->
-          <g opacity="0.4">
-            <circle cx="85" cy="80" r="3" fill="#c97b84" opacity="0.6"/>
-            <circle cx="90" cy="72" r="2.5" fill="#c97b84" opacity="0.5"/>
-            <circle cx="80" cy="75" r="2" fill="#db9aa0" opacity="0.5"/>
-          </g>
-          <!-- Extra leaves -->
-          <g opacity="0.4">
-            <ellipse cx="95" cy="50" rx="8" ry="14" transform="rotate(-50 95 50)" fill="#7a9a6d" opacity="0.35"/>
-            <ellipse cx="55" cy="80" rx="7" ry="12" transform="rotate(-35 55 80)" fill="#5a7a4d" opacity="0.3"/>
-          </g>
-        </svg>
+  <div class="wrapper">
+    <img class="invite-image" src="./img/convite-casamento.jpeg" alt="Convite de Casamento — Beatriz & Jefferson" />
+
+    <div class="card-body">
+      <p class="greeting" id="greeting-text">Você está convidado(a) para celebrar o nosso amor</p>
+
+      <div class="divider"></div>
+
+      <div id="rsvp-initial">
+        <button class="rsvp-trigger" onclick="showRSVPForm()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          Confirmar Presença
+        </button>
+        <a href="./index.html" class="home-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Página Inicial
+        </a>
       </div>
 
-      <!-- Floral Top-Right (mirrored) -->
-      <div class="floral-corner floral-tr">
-        <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g opacity="0.7">
-            <path d="M20 280 C30 240 50 200 40 160 C35 140 25 120 30 100" stroke="#5a7a4d" stroke-width="2" fill="none"/>
-            <path d="M40 160 C55 155 65 140 60 120" stroke="#5a7a4d" stroke-width="1.5" fill="none"/>
-            <ellipse cx="35" cy="105" rx="18" ry="28" transform="rotate(-30 35 105)" fill="#7a9a6d" opacity="0.5"/>
-            <ellipse cx="28" cy="135" rx="15" ry="22" transform="rotate(-20 28 135)" fill="#7a9a6d" opacity="0.4"/>
-            <ellipse cx="55" cy="125" rx="10" ry="16" transform="rotate(-40 55 125)" fill="#7a9a6d" opacity="0.3"/>
-          </g>
-          <g opacity="0.6">
-            <circle cx="45" cy="95" r="12" fill="#1a2a44" opacity="0.4"/>
-            <circle cx="45" cy="95" r="8" fill="#2a3d5c" opacity="0.5"/>
-            <circle cx="45" cy="95" r="4" fill="#3a5070" opacity="0.6"/>
-            <path d="M38 88 C42 82 48 82 52 88" stroke="#1a2a44" stroke-width="1" fill="none" opacity="0.5"/>
-          </g>
-          <g opacity="0.65">
-            <circle cx="70" cy="60" r="16" fill="#e8b4b8" opacity="0.5"/>
-            <circle cx="70" cy="60" r="11" fill="#e8b4b8" opacity="0.6"/>
-            <circle cx="70" cy="60" r="7" fill="#db9aa0" opacity="0.7"/>
-            <circle cx="70" cy="60" r="3.5" fill="#c97b84" opacity="0.8"/>
-          </g>
-          <g opacity="0.5">
-            <circle cx="100" cy="35" r="9" fill="#f0e0d4" opacity="0.5"/>
-            <circle cx="100" cy="35" r="5.5" fill="#e8cfc0" opacity="0.6"/>
-            <circle cx="100" cy="35" r="2.5" fill="#dbb8a8" opacity="0.7"/>
-          </g>
-          <g opacity="0.4">
-            <circle cx="85" cy="80" r="3" fill="#c97b84" opacity="0.6"/>
-            <circle cx="90" cy="72" r="2.5" fill="#c97b84" opacity="0.5"/>
-          </g>
-        </svg>
-      </div>
-
-      <!-- Floral Bottom-Left (large, dominant) -->
-      <div class="floral-corner floral-bl">
-        <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Main stem -->
-          <g opacity="0.75">
-            <path d="M10 290 C20 250 35 210 30 170 C27 150 20 130 25 100 C28 85 35 70 45 55" stroke="#5a7a4d" stroke-width="2.5" fill="none"/>
-            <path d="M30 170 C45 165 55 150 50 130" stroke="#5a7a4d" stroke-width="1.8" fill="none"/>
-            <path d="M25 210 C40 205 50 190 45 175" stroke="#5a7a4d" stroke-width="1.5" fill="none"/>
-            <path d="M35 140 C50 135 60 120 55 105" stroke="#5a7a4d" stroke-width="1.2" fill="none"/>
-          </g>
-          <!-- Large leaves -->
-          <g opacity="0.6">
-            <ellipse cx="28" cy="105" rx="22" ry="34" transform="rotate(-25 28 105)" fill="#7a9a6d" opacity="0.5"/>
-            <ellipse cx="20" cy="145" rx="18" ry="28" transform="rotate(-15 20 145)" fill="#5a7a4d" opacity="0.4"/>
-            <ellipse cx="40" cy="175" rx="16" ry="24" transform="rotate(-10 40 175)" fill="#7a9a6d" opacity="0.45"/>
-            <ellipse cx="50" cy="130" rx="14" ry="20" transform="rotate(-35 50 130)" fill="#7a9a6d" opacity="0.35"/>
-            <ellipse cx="32" cy="220" rx="13" ry="20" transform="rotate(-8 32 220)" fill="#5a7a4d" opacity="0.3"/>
-            <ellipse cx="60" cy="110" rx="10" ry="16" transform="rotate(-45 60 110)" fill="#7a9a6d" opacity="0.3"/>
-          </g>
-          <!-- Large navy blue rose (main flower) -->
-          <g opacity="0.7">
-            <circle cx="50" cy="55" r="24" fill="#1a2a44" opacity="0.45"/>
-            <circle cx="50" cy="55" r="18" fill="#1a2a44" opacity="0.55"/>
-            <circle cx="50" cy="55" r="13" fill="#2a3d5c" opacity="0.65"/>
-            <circle cx="50" cy="55" r="8" fill="#2a3d5c" opacity="0.75"/>
-            <circle cx="50" cy="55" r="4" fill="#3a5070" opacity="0.85"/>
-            <path d="M36 44 C42 36 58 36 64 44" stroke="#1a2a44" stroke-width="1.2" fill="none" opacity="0.6"/>
-            <path d="M34 50 C40 40 60 40 66 50" stroke="#1a2a44" stroke-width="1" fill="none" opacity="0.5"/>
-            <path d="M36 56 C42 48 58 48 64 56" stroke="#1a2a44" stroke-width="0.8" fill="none" opacity="0.4"/>
-            <path d="M38 62 C44 54 56 54 62 62" stroke="#2a3d5c" stroke-width="0.8" fill="none" opacity="0.35"/>
-          </g>
-          <!-- Pink rose -->
-          <g opacity="0.65">
-            <circle cx="85" cy="30" r="18" fill="#e8b4b8" opacity="0.5"/>
-            <circle cx="85" cy="30" r="13" fill="#e8b4b8" opacity="0.6"/>
-            <circle cx="85" cy="30" r="9" fill="#db9aa0" opacity="0.7"/>
-            <circle cx="85" cy="30" r="5" fill="#c97b84" opacity="0.8"/>
-            <path d="M74 22 C80 15 90 15 96 22" stroke="#c97b84" stroke-width="0.8" fill="none" opacity="0.5"/>
-            <path d="M72 28 C78 20 92 20 98 28" stroke="#c97b84" stroke-width="0.6" fill="none" opacity="0.4"/>
-            <path d="M75 35 C81 28 89 28 95 35" stroke="#c97b84" stroke-width="0.6" fill="none" opacity="0.3"/>
-          </g>
-          <!-- Coral/salmon flower -->
-          <g opacity="0.55">
-            <circle cx="115" cy="15" r="11" fill="#e07a5f" opacity="0.45"/>
-            <circle cx="115" cy="15" r="7" fill="#e07a5f" opacity="0.55"/>
-            <circle cx="115" cy="15" r="3.5" fill="#d06a4f" opacity="0.65"/>
-          </g>
-          <!-- Blush buds -->
-          <g opacity="0.5">
-            <circle cx="130" cy="40" r="8" fill="#f0e0d4" opacity="0.5"/>
-            <circle cx="130" cy="40" r="5" fill="#e8cfc0" opacity="0.6"/>
-            <circle cx="130" cy="40" r="2.5" fill="#dbb8a8" opacity="0.7"/>
-          </g>
-          <g opacity="0.45">
-            <circle cx="65" cy="10" r="7" fill="#f0e0d4" opacity="0.45"/>
-            <circle cx="65" cy="10" r="4" fill="#e8cfc0" opacity="0.55"/>
-            <circle cx="65" cy="10" r="2" fill="#dbb8a8" opacity="0.65"/>
-          </g>
-          <!-- Berries -->
-          <g opacity="0.45">
-            <circle cx="100" cy="55" r="3.5" fill="#c97b84" opacity="0.6"/>
-            <circle cx="105" cy="47" r="3" fill="#c97b84" opacity="0.5"/>
-            <circle cx="95" cy="50" r="2.5" fill="#db9aa0" opacity="0.5"/>
-            <circle cx="108" cy="60" r="2" fill="#c97b84" opacity="0.4"/>
-          </g>
-          <!-- Small filler leaves -->
-          <g opacity="0.35">
-            <ellipse cx="105" cy="35" rx="8" ry="13" transform="rotate(-50 105 35)" fill="#7a9a6d" opacity="0.35"/>
-            <ellipse cx="75" cy="75" rx="7" ry="11" transform="rotate(-40 75 75)" fill="#5a7a4d" opacity="0.3"/>
-            <ellipse cx="120" cy="28" rx="6" ry="10" transform="rotate(-55 120 28)" fill="#7a9a6d" opacity="0.25"/>
-          </g>
-        </svg>
-      </div>
-
-      <!-- Floral Bottom-Right (mirrored) -->
-      <div class="floral-corner floral-br">
-        <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g opacity="0.75">
-            <path d="M10 290 C20 250 35 210 30 170 C27 150 20 130 25 100 C28 85 35 70 45 55" stroke="#5a7a4d" stroke-width="2.5" fill="none"/>
-            <path d="M30 170 C45 165 55 150 50 130" stroke="#5a7a4d" stroke-width="1.8" fill="none"/>
-            <path d="M25 210 C40 205 50 190 45 175" stroke="#5a7a4d" stroke-width="1.5" fill="none"/>
-          </g>
-          <g opacity="0.6">
-            <ellipse cx="28" cy="105" rx="22" ry="34" transform="rotate(-25 28 105)" fill="#7a9a6d" opacity="0.5"/>
-            <ellipse cx="20" cy="145" rx="18" ry="28" transform="rotate(-15 20 145)" fill="#5a7a4d" opacity="0.4"/>
-            <ellipse cx="40" cy="175" rx="16" ry="24" transform="rotate(-10 40 175)" fill="#7a9a6d" opacity="0.45"/>
-          </g>
-          <g opacity="0.7">
-            <circle cx="50" cy="55" r="24" fill="#1a2a44" opacity="0.45"/>
-            <circle cx="50" cy="55" r="18" fill="#1a2a44" opacity="0.55"/>
-            <circle cx="50" cy="55" r="13" fill="#2a3d5c" opacity="0.65"/>
-            <circle cx="50" cy="55" r="8" fill="#2a3d5c" opacity="0.75"/>
-            <circle cx="50" cy="55" r="4" fill="#3a5070" opacity="0.85"/>
-            <path d="M36 44 C42 36 58 36 64 44" stroke="#1a2a44" stroke-width="1.2" fill="none" opacity="0.6"/>
-            <path d="M34 50 C40 40 60 40 66 50" stroke="#1a2a44" stroke-width="1" fill="none" opacity="0.5"/>
-          </g>
-          <g opacity="0.65">
-            <circle cx="85" cy="30" r="18" fill="#e8b4b8" opacity="0.5"/>
-            <circle cx="85" cy="30" r="13" fill="#e8b4b8" opacity="0.6"/>
-            <circle cx="85" cy="30" r="9" fill="#db9aa0" opacity="0.7"/>
-            <circle cx="85" cy="30" r="5" fill="#c97b84" opacity="0.8"/>
-          </g>
-          <g opacity="0.55">
-            <circle cx="115" cy="15" r="11" fill="#e07a5f" opacity="0.45"/>
-            <circle cx="115" cy="15" r="7" fill="#e07a5f" opacity="0.55"/>
-            <circle cx="115" cy="15" r="3.5" fill="#d06a4f" opacity="0.65"/>
-          </g>
-          <g opacity="0.5">
-            <circle cx="130" cy="40" r="8" fill="#f0e0d4" opacity="0.5"/>
-            <circle cx="130" cy="40" r="5" fill="#e8cfc0" opacity="0.6"/>
-            <circle cx="130" cy="40" r="2.5" fill="#dbb8a8" opacity="0.7"/>
-          </g>
-          <g opacity="0.45">
-            <circle cx="100" cy="55" r="3.5" fill="#c97b84" opacity="0.6"/>
-            <circle cx="105" cy="47" r="3" fill="#c97b84" opacity="0.5"/>
-          </g>
-        </svg>
-      </div>
-
-      <!-- Card Content -->
-      <div class="card-body">
-        <p class="pre-title">Convite de Casamento</p>
-
-        <div class="names">
-          <p class="name">Jefferson</p>
-          <span class="amp">&amp;</span>
-          <p class="name">Beatriz</p>
+      <div class="rsvp-form" id="rsvp-form">
+        <div class="rsvp-options">
+          <button type="button" class="rsvp-opt" data-status="confirmado" onclick="selectOpt(this)">Vou Comparecer</button>
+          <button type="button" class="rsvp-opt" data-status="recusado" onclick="selectOpt(this)">Não Poderei</button>
         </div>
-
-        <div class="divider">
-          <div class="divider-line"></div>
-          <svg viewBox="0 0 12 12" fill="none"><path d="M6 0L7.5 4.5L12 6L7.5 7.5L6 12L4.5 7.5L0 6L4.5 4.5Z" fill="currentColor"/></svg>
-          <div class="divider-line"></div>
-        </div>
-
-        <p class="greeting" id="guest-greeting">Você está convidado(a) para celebrar o nosso amor</p>
-
-        <div class="divider">
-          <div class="divider-line"></div>
-          <svg viewBox="0 0 12 12" fill="none"><path d="M6 0L7.5 4.5L12 6L7.5 7.5L6 12L4.5 7.5L0 6L4.5 4.5Z" fill="currentColor"/></svg>
-          <div class="divider-line"></div>
-        </div>
-
-        <div class="details">
-          <div>
-            <p class="detail-label">Data</p>
-            <p class="detail-value">Sábado,<br/><span class="detail-accent">06 de Fevereiro</span><br/>de 2027</p>
-          </div>
-          <div>
-            <p class="detail-label">Horário</p>
-            <p class="detail-value"><span class="detail-accent">08h00</span></p>
-          </div>
-        </div>
-
-        <div class="venue">
-          <p class="venue-name">Capela São Maximiliano</p>
-          <p class="venue-address">Rua Siqueira Campos, 1234<br/>Bairro Country — Cascavel, PR</p>
-          <div class="venue-maps">
-            <a href="https://www.google.com/maps/search/?api=1&query=Capela+S%C3%A3o+Maximiliano+Cascavel+PR" target="_blank" rel="noopener noreferrer" class="map-btn">Google Maps</a>
-            <a href="https://www.waze.com/ul?q=Capela+S%C3%A3o+Maximiliano+Cascavel+PR" target="_blank" rel="noopener noreferrer" class="map-btn">Waze</a>
-          </div>
-        </div>
-
-        <p class="dresscode">Traje sugerido: Social / Livre — Sem cores brancas</p>
-
-        <div class="divider">
-          <div class="divider-line"></div>
-          <svg viewBox="0 0 12 12" fill="none"><path d="M6 0L7.5 4.5L12 6L7.5 7.5L6 12L4.5 7.5L0 6L4.5 4.5Z" fill="currentColor"/></svg>
-          <div class="divider-line"></div>
-        </div>
-
-        <div id="rsvp-initial">
-          <button class="rsvp-trigger" onclick="showRSVPForm()">Confirmar Presença</button>
-        </div>
-
-        <div class="rsvp-form" id="rsvp-form">
-          <div class="rsvp-options">
-            <button type="button" class="rsvp-opt" data-status="confirmado" onclick="selectOpt(this)">Vou Comparecer</button>
-            <button type="button" class="rsvp-opt" data-status="recusado" onclick="selectOpt(this)">Não Poderei</button>
-          </div>
-          <div class="plus-ones" id="plus-ones-group">
-            <div class="field">
-              <label class="field-label" for="rsvp-plusones">Acompanhantes</label>
-              <select class="field-input" id="rsvp-plusones">
-                <option value="0">Sem acompanhantes</option>
-                <option value="1">+1</option>
-                <option value="2">+2</option>
-              </select>
-            </div>
-          </div>
+        <div class="plus-ones" id="plus-ones-group">
           <div class="field">
-            <label class="field-label" for="rsvp-dietary">Restrição Alimentar</label>
-            <input type="text" class="field-input" id="rsvp-dietary" placeholder="Opcional" />
+            <label class="field-label" for="rsvp-plusones">Quantas pessoas irão com você?</label>
+            <select class="field-input" id="rsvp-plusones">
+              <option value="0">Só eu</option>
+              <option value="1">Eu + 1</option>
+              <option value="2">Eu + 2</option>
+              <option value="3">Eu + 3</option>
+            </select>
           </div>
-          <div class="field">
-            <label class="field-label" for="rsvp-message">Recado para os Noivos</label>
-            <input type="text" class="field-input" id="rsvp-message" placeholder="Opcional" />
-          </div>
-          <button class="submit-btn" id="submit-btn" onclick="submitRSVP()">Enviar</button>
         </div>
+        <div class="field">
+          <label class="field-label" for="rsvp-message">Quer deixar um recado?</label>
+          <input type="text" class="field-input" id="rsvp-message" placeholder="Mensagem para os noivos..." />
+        </div>
+        <button class="submit-btn" id="submit-btn" onclick="submitRSVP()">Enviar Resposta</button>
+      </div>
 
-        <div class="rsvp-success" id="rsvp-success">
-          <div class="success-check">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-          </div>
-          <p class="success-title">Resposta Enviada!</p>
-          <p class="success-text" id="success-text">Obrigado por confirmar. Mal podemos esperar para te ver!</p>
+      <div class="rsvp-success" id="rsvp-success">
+        <div class="success-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <p class="success-title">Resposta Registrada!</p>
+        <p class="success-text" id="success-text">Obrigado por confirmar. Mal podemos esperar para celebrar com você!</p>
+        <div class="success-actions">
+          <a href="./index.html" class="btn-home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Página Inicial
+          </a>
+          <button class="btn-change" onclick="resetForm()">Alterar Resposta</button>
+        </div>
+      </div>
+
+      <div id="already-confirmed" style="display:none; text-align:center; padding:1rem 0;">
+        <div class="success-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <p class="success-title">Você já confirmou sua presença!</p>
+        <p class="success-text" id="confirmed-text">Estamos muito felizes em saber que você vai estar lá!</p>
+        <div class="success-actions">
+          <a href="./index.html" class="btn-home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Página Inicial
+          </a>
+          <button class="btn-change" onclick="showChangeForm()">Alterar Resposta</button>
         </div>
       </div>
     </div>
@@ -558,13 +396,13 @@
         if (error || !data || data.length === 0) return;
         currentGuest = data[0];
         const firstName = currentGuest.name.split(' ')[0];
-        document.getElementById('guest-greeting').textContent = `${firstName}, você está convidado(a)`;
+        document.getElementById('greeting-text').innerHTML = '<strong>' + firstName + '</strong>, você está convidado(a) para celebrar o nosso amor';
         if (currentGuest.rsvp_status === 'confirmado' || currentGuest.rsvp_status === 'recusado') {
           document.getElementById('rsvp-initial').style.display = 'none';
           document.getElementById('rsvp-form').classList.remove('active');
-          document.getElementById('rsvp-success').classList.add('active');
+          document.getElementById('already-confirmed').style.display = 'block';
           if (currentGuest.rsvp_status === 'recusado') {
-            document.getElementById('success-text').textContent = 'Sentimos muito. Estaremos pensando em você!';
+            document.getElementById('confirmed-text').textContent = 'Sentimos muito que não poderá comparecer. Estaremos pensando em você!';
           }
         }
         await supabaseClient.from('rsvp_access_logs').insert([{
@@ -576,39 +414,61 @@
     function showRSVPForm() {
       document.getElementById('rsvp-initial').style.display = 'none';
       document.getElementById('rsvp-form').classList.add('active');
-      window.scrollTo({ top: document.getElementById('rsvp-form').offsetTop - 40, behavior: 'smooth' });
+      document.querySelector('.rsvp-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function selectOpt(btn) {
-      document.querySelectorAll('.rsvp-opt').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('.rsvp-opt').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
       selectedStatus = btn.dataset.status;
       document.getElementById('plus-ones-group').classList.toggle('active', selectedStatus === 'confirmado');
     }
 
+    function resetForm() {
+      document.getElementById('rsvp-success').classList.remove('active');
+      document.getElementById('rsvp-form').classList.add('active');
+      selectedStatus = null;
+      document.querySelectorAll('.rsvp-opt').forEach(function(b) { b.classList.remove('selected'); });
+      document.getElementById('plus-ones-group').classList.remove('active');
+      var btn = document.getElementById('submit-btn');
+      btn.disabled = false;
+      btn.textContent = 'Enviar Resposta';
+    }
+
+    function showChangeForm() {
+      document.getElementById('already-confirmed').style.display = 'none';
+      document.getElementById('rsvp-form').classList.add('active');
+      selectedStatus = null;
+      document.querySelectorAll('.rsvp-opt').forEach(function(b) { b.classList.remove('selected'); });
+      document.getElementById('plus-ones-group').classList.remove('active');
+      var btn = document.getElementById('submit-btn');
+      btn.disabled = false;
+      btn.textContent = 'Enviar Resposta';
+      document.querySelector('.rsvp-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     async function submitRSVP() {
-      if (!selectedStatus) { showToastGlobal('Selecione se você comparecerá.', 'error'); return; }
-      if (!currentGuest) { showToastGlobal('Erro: convidado não identificado.', 'error'); return; }
-      if (!checkRsvpRateLimit(GUEST_TOKEN)) { showToastGlobal('Aguarde antes de enviar novamente.', 'error'); return; }
-      const btn = document.getElementById('submit-btn');
+      if (!selectedStatus) { showToastGlobal('Por favor, selecione se você comparecerá.', 'error'); return; }
+      if (!currentGuest) {         showToastGlobal('Erro: convidado não identificado.', 'error'); return; }
+      if (!checkRsvpRateLimit(GUEST_TOKEN)) { showToastGlobal('Aguarde um momento antes de enviar novamente.', 'error'); return; }
+      var btn = document.getElementById('submit-btn');
       btn.disabled = true; btn.textContent = 'Enviando...';
       try {
-        const { error } = await supabaseClient.rpc('confirm_guest_rsvp', {
+        var { error } = await supabaseClient.rpc('confirm_guest_rsvp', {
           p_invite_token: GUEST_TOKEN, p_rsvp_status: selectedStatus,
           p_plus_ones: parseInt(document.getElementById('rsvp-plusones').value) || 0
         });
         if (error) throw error;
-        const dietary = document.getElementById('rsvp-dietary').value.trim();
-        if (dietary) await supabaseClient.from('guests').update({ dietary }).eq('invite_token', GUEST_TOKEN);
-        const msg = document.getElementById('rsvp-message').value.trim();
+        var msg = document.getElementById('rsvp-message').value.trim();
         sendPushNotification(currentGuest.name, selectedStatus, parseInt(document.getElementById('rsvp-plusones').value) || 0, msg);
         setRsvpRateLimit(GUEST_TOKEN);
         document.getElementById('rsvp-form').classList.remove('active');
         document.getElementById('rsvp-success').classList.add('active');
+        document.querySelector('.rsvp-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
       } catch (err) {
         console.error('RSVP error:', err);
-        showToastGlobal('Erro ao enviar. Tente novamente.', 'error');
-        btn.disabled = false; btn.textContent = 'Enviar';
+        showToastGlobal('Erro ao enviar. Por favor, tente novamente.', 'error');
+        btn.disabled = false; btn.textContent = 'Enviar Resposta';
       }
     }
 

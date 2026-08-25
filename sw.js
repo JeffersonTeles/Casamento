@@ -1,4 +1,4 @@
-const CACHE_NAME = 'casamento-v8';
+const CACHE_NAME = 'casamento-v10';
 const ASSETS = [
   '/',
   '/index.html',
@@ -38,6 +38,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+
+  // Deixa requests externos passarem direto (CDN, fonts, etc.)
+  if (url.origin !== self.location.origin) return;
 
   // Nunca cachear config (pode mudar a cada deploy sem novo SW)
   if (NETWORK_ONLY.includes(url.pathname)) {

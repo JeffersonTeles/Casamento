@@ -292,15 +292,7 @@ function getGuestPersonCount(g) {
           deleteExpense(id);
         } else if (action === 'expense-edit') {
           const e = _expenseStore.get(id) || Array.from(_expenseStore.values()).find(x => String(x.id) === String(id));
-          if (e) {
-            const novoValor = prompt(`Editar valor do gasto: ${e.item}\nValor atual: R$ ${e.amount}`, e.amount);
-            if (novoValor !== null) {
-              const val = parseFloat(novoValor.replace(',', '.'));
-              if (!isNaN(val) && val >= 0) {
-                supabaseClient.from('expenses').update({ amount: val }).eq('id', e.id).then(() => fetchExpenses());
-              }
-            }
-          }
+          if (e) openExpenseEditModal(e);
         } else if (action === 'budget-edit') {
           const b = _budgetStore.get(id) || Array.from(_budgetStore.values()).find(x => String(x.id) === String(id));
           const spent = btn.dataset.spent ? parseFloat(btn.dataset.spent) : 0;
@@ -848,10 +840,17 @@ function getGuestPersonCount(g) {
       document.getElementById('editTaskPriority').value = t.priority || 'media';
       document.getElementById('editTaskOwner').value = t.owner || '';
       document.getElementById('editTaskStatus').value = t.status || 'pendente';
-      document.getElementById('editTaskModal').classList.remove('hidden');
+      toggleTaskEditModal(true);
     }
     function toggleTaskEditModal(show) {
-      document.getElementById('editTaskModal').classList.toggle('hidden', !show);
+      const modal = document.getElementById('editTaskModal');
+      if (show) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex', 'items-center', 'justify-center');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'items-center', 'justify-center');
+      }
     }
     async function saveTaskEdit() {
       const id = document.getElementById('editTaskId').value;
@@ -1434,7 +1433,7 @@ function getGuestPersonCount(g) {
     }
 
     async function shareInviteWhatsApp(name, token) {
-      const link = `${window.location.origin}/convite.html?token=${token}`;
+      const link = `${window.location.origin}/rsvp.html?token=${token}`;
       const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${name}*!\n\nAcesse seu convite individual e confirme sua presença:\n👉 ${link}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
@@ -1935,10 +1934,10 @@ function getGuestPersonCount(g) {
       channel.subscribe();
     }
     function previewInvite(token) {
-      window.open(`${window.location.origin}/convite.html?token=${token}`, '_blank');
+      window.open(`${window.location.origin}/rsvp.html?token=${token}`, '_blank');
     }
     async function copyInviteLink(token) {
-      const link = `${window.location.origin}/convite.html?token=${token}`;
+      const link = `${window.location.origin}/rsvp.html?token=${token}`;
       const ok = await copyToClipboard(link);
       if (ok) showToastGlobal('Link copiado!', 'success');
       else showToastGlobal('Falha ao copiar link', 'error');
@@ -2507,3 +2506,47 @@ function getGuestPersonCount(g) {
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+
+    function toggleExpenseEditModal(show) {
+      const modal = document.getElementById('expenseEditModal');
+      if (show) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex', 'items-center', 'justify-center');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'items-center', 'justify-center');
+      }
+    }
+
+    window.toggleExpenseEditModal = toggleExpenseEditModal;
+
+    function openExpenseEditModal(e) {
+      document.getElementById('editExpenseId').value = e.id;
+      document.getElementById('editExpenseItem').value = e.item || '';
+      document.getElementById('editExpenseCategory').value = e.category || '';
+      document.getElementById('editExpenseAmount').value = e.amount || '';
+      toggleExpenseEditModal(true);
+    }
+
+    window.saveExpenseEdit = async function saveExpenseEdit() {
+      const id = document.getElementById('editExpenseId').value;
+      const item = document.getElementById('editExpenseItem').value.trim();
+      const category = document.getElementById('editExpenseCategory').value.trim();
+      const amountRaw = document.getElementById('editExpenseAmount').value;
+      const amount = parseFloat(amountRaw.replace(',', '.'));
+
+      if (!item || isNaN(amount) || amount < 0) {
+        showToastGlobal('Preencha a descrição e um valor válido.', 'error');
+        return;
+      }
+
+      toggleExpenseEditModal(false);
+      const { error } = await supabaseClient.from('expenses').update({ item, category, amount }).eq('id', id);
+      if (error) {
+        showToastGlobal('Erro ao atualizar lançamento.', 'error');
+        console.error('Update expense error:', error);
+      } else {
+        showToastGlobal('Lançamento atualizado!');
+        await fetchExpenses();
+      }
+    };

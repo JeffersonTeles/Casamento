@@ -159,7 +159,7 @@
     let db = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      const WEDDING_DATE = new Date(2027, 1, 6, 8, 0, 0);
+      const WEDDING_DATE = getWeddingDate();
       const now = new Date();
       if (now < WEDDING_DATE) {
         document.getElementById('galleryLocked').classList.remove('hidden');

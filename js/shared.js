@@ -25,7 +25,7 @@ function getPixKey() {
 }
 
 function getVenue() {
-  return getConfig('venue', { name: 'Capela São Maximiliano', address: 'Rua Siqueira Campos, 1234 — Country, Cascavel, PR', query: 'Capela+S%C3%A3o+Maximiliano+Cascavel+PR' });
+  return getConfig('venue', { name: 'Capela São Maximiliano Maria Kolbe', address: 'R. Frei Maximiliano kolbe, 970 — Cascavel, PR', query: 'Capela+S%C3%A3o+Maximiliano+Maria+Kolbe+Cascavel+PR' });
 }
 
 function getWeddingDate() {
@@ -110,6 +110,14 @@ async function logAccess(guestId) {
       access_time: new Date().toISOString(),
     }]);
   } catch (err) { console.warn('Log de acesso falhou:', err); }
+}
+
+// === GUEST PERSON COUNT ===
+function getGuestPersonCount(g) {
+  if (!g) return 0;
+  const partnerCount = String(g.partner_name || '').trim() ? 1 : 0;
+  const plusOnes = Number(g.plus_ones || 0);
+  return 1 + partnerCount + plusOnes;
 }
 
 // === RSVP SHARED ===

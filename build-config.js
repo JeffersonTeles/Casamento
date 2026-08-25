@@ -36,9 +36,9 @@ const config = {
   // Wedding constants (public, not secrets)
   pixKey: '44999277915',
   venue: {
-    name: 'Capela São Maximiliano',
-    address: 'Rua Siqueira Campos, 1234 — Country, Cascavel, PR',
-    query: 'Capela+S%C3%A3o+Maximiliano+Cascavel+PR',
+    name: 'Capela São Maximiliano Maria Kolbe',
+    address: 'R. Frei Maximiliano kolbe, 970 — Cascavel, PR',
+    query: 'Capela+S%C3%A3o+Maximiliano+Maria+Kolbe+Cascavel+PR',
   },
   weddingDate: '2027-02-06T08:00:00',
   rsvpDeadline: '20 de Dezembro de 2026',

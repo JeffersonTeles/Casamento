@@ -881,6 +881,32 @@
     </div>
   </div>
 
+  <!-- Modal de Edição de Despesa -->
+  <div id="expenseEditModal" role="dialog" aria-modal="true" aria-labelledby="expenseEditModalTitle" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden p-4">
+    <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md p-8">
+      <h3 id="expenseEditModalTitle" class="text-2xl font-titulo text-vinho mb-6">Editar Lançamento</h3>
+      <div class="space-y-4">
+        <input type="hidden" id="editExpenseId" />
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Descrição</label>
+          <input type="text" id="editExpenseItem" placeholder="Descrição do gasto" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Categoria</label>
+          <input list="categories" id="editExpenseCategory" placeholder="Categoria" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Valor</label>
+          <input type="number" id="editExpenseAmount" placeholder="Valor R$" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:border-vinho" />
+        </div>
+        <div class="flex gap-3 pt-4">
+          <button onclick="toggleExpenseEditModal(false)" class="flex-1 p-3 rounded-xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">Cancelar</button>
+          <button onclick="saveExpenseEdit()" class="flex-1 bg-vinho text-white p-3 rounded-xl font-bold shadow-lg hover:opacity-90 transition-all">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- FAB (Floating Action Button) -->
   <div class="fab-container">
     <div id="fab-menu" class="fab-menu">
@@ -908,3 +934,4 @@
 
   </body>
 </html>
+
