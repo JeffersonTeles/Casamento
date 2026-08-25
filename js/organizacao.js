@@ -1441,7 +1441,7 @@ function getGuestPersonCount(g) {
       }
 
       const link = `${window.location.origin}/convite.html?token=${g.invite_token}`;
-      const msg = `*CONVITE DE CASAMENTO*\n\nOlá, *${displayName}*!\n\nA confirmação de presença (RSVP) e todas as informações importantes sobre o nosso grande dia (local, horário, lista de presentes, etc.) estão disponíveis no nosso site oficial.\n\nAcesse o link abaixo para abrir o seu convite individual e confirmar sua presença:\n👉 ${link}`;
+      const msg = `*CONVITE DE CASAMENTO*\r\n\r\nOlá, *${displayName}*!\r\n\r\nA confirmação de presença (RSVP) e todas as informações importantes sobre o nosso grande dia (local, horário, lista de presentes, etc.) estão disponíveis no nosso site oficial.\r\n\r\nAcesse o link abaixo para abrir o seu convite individual e confirmar sua presença:\r\n👉 ${link}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
 
