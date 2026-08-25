@@ -253,6 +253,7 @@ function getGuestPersonCount(g) {
         if (!btn) return;
         const action = btn.dataset.action;
         const id = btn.dataset.id;
+        console.log('[DEBUG] Clique capturado:', action, 'id:', id, '_guestStore size:', _guestStore.size);
 
         if (action === 'guest-edit') {
           const g = _guestStore.get(id) || Array.from(_guestStore.values()).find(x => String(x.id) === String(id));
