@@ -1370,7 +1370,7 @@ function getGuestPersonCount(g) {
       
       let text = `📢 *LISTA DE COBRANÇA - RSVP* 📢\n\nOlá! Aqui está a lista de convidados que ainda não confirmaram:\n\n`;
       pending.forEach((g, i) => {
-        text += `${i+1}. *${g.name}*\n🔗 ${window.location.origin}/rsvp.html?token=${g.invite_token}\n\n`;
+        text += `${i+1}. *${g.name}*\n🔗 ${window.location.origin}/convite.html?token=${g.invite_token}\n\n`;
       });
       
       const blob = new Blob([text], { type: 'text/plain' });
@@ -1397,7 +1397,7 @@ function getGuestPersonCount(g) {
           'Convidado por': g.invited_by,
           'VIP': g.is_vip ? 'Sim' : 'Não',
           'Restrição alimentar': g.dietary || '-',
-          'Link convite': `${window.location.origin}/rsvp.html?token=${g.invite_token}`
+          'Link convite': `${window.location.origin}/convite.html?token=${g.invite_token}`
         };
       });
       const ws = XLSX.utils.json_to_sheet(data);
@@ -1433,7 +1433,7 @@ function getGuestPersonCount(g) {
     }
 
     async function shareInviteWhatsApp(name, token) {
-      const link = `${window.location.origin}/rsvp.html?token=${token}`;
+      const link = `${window.location.origin}/convite.html?token=${token}`;
       const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${name}*!\n\nAcesse seu convite individual e confirme sua presença:\n👉 ${link}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
@@ -1949,10 +1949,10 @@ function getGuestPersonCount(g) {
       channel.subscribe();
     }
     function previewInvite(token) {
-      window.open(`${window.location.origin}/rsvp.html?token=${token}`, '_blank');
+      window.open(`${window.location.origin}/convite.html?token=${token}`, '_blank');
     }
     async function copyInviteLink(token) {
-      const link = `${window.location.origin}/rsvp.html?token=${token}`;
+      const link = `${window.location.origin}/convite.html?token=${token}`;
       const ok = await copyToClipboard(link);
       if (ok) showToastGlobal('Link copiado!', 'success');
       else showToastGlobal('Falha ao copiar link', 'error');
