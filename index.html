@@ -373,10 +373,25 @@
       const endDate = '20270206T123000Z';   // 06/02/2027 às 09:30 (cerimônia ~1h30)
       const location = 'Capela São Maximiliano Maria Kolbe, R. Frei Maximiliano kolbe, 970 - Cascavel - PR';
       const description = 'Casamento de Jefferson & Beatriz. Sua presença é muito importante para nós!';
-      
-      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&location=${encodeURIComponent(location)}&details=${encodeURIComponent(description)}`;
-      
-      window.open(url, '_blank');
+      const icsData = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Casamento Jefferson e Beatriz//PT-BR
+BEGIN:VEVENT
+DTSTART:${startDate}
+DTEND:${endDate}
+SUMMARY:${title}
+LOCATION:${location}
+DESCRIPTION:${description}
+END:VEVENT
+END:VCALENDAR`;
+
+      const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute('download', 'casamento_jefferson_beatriz.ics');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   </script>
 <script>
