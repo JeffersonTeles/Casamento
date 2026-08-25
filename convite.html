@@ -333,6 +333,16 @@
               <option value="3">Eu + 3</option>
             </select>
           </div>
+          <div class="field" style="margin-top: 1rem;">
+            <label class="field-label" for="rsvp-lunch">Almoço por Adesão</label>
+            <p style="font-size: 0.65rem; color: var(--text-soft); margin-bottom: 0.6rem; line-height: 1.4;">
+              Após a cerimônia, nos reuniremos para um almoço. <strong>A participação é de livre e espontânea vontade e o valor será pago individualmente (por adesão)</strong>, pois os noivos não irão bancar o almoço.
+            </p>
+            <select class="field-input" id="rsvp-lunch">
+              <option value="sim">Sim, participarei do almoço</option>
+              <option value="nao">Não, irei apenas à cerimônia</option>
+            </select>
+          </div>
         </div>
         <div class="field">
           <label class="field-label" for="rsvp-message">Quer deixar um recado?</label>
@@ -459,8 +469,16 @@
           p_plus_ones: parseInt(document.getElementById('rsvp-plusones').value) || 0
         });
         if (error) throw error;
-        var msg = document.getElementById('rsvp-message').value.trim();
-        sendPushNotification(currentGuest.name, selectedStatus, parseInt(document.getElementById('rsvp-plusones').value) || 0, msg);
+        
+        var baseMsg = document.getElementById('rsvp-message').value.trim();
+        var finalMsg = baseMsg;
+        if (selectedStatus === 'confirmado') {
+          var lunchOpt = document.getElementById('rsvp-lunch').value;
+          var lunchText = lunchOpt === 'sim' ? '[Almoço: SIM]' : '[Almoço: NÃO]';
+          finalMsg = baseMsg ? lunchText + ' - ' + baseMsg : lunchText;
+        }
+        
+        sendPushNotification(currentGuest.name, selectedStatus, parseInt(document.getElementById('rsvp-plusones').value) || 0, finalMsg);
         setRsvpRateLimit(GUEST_TOKEN);
         document.getElementById('rsvp-form').classList.remove('active');
         document.getElementById('rsvp-success').classList.add('active');
