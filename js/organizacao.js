@@ -268,7 +268,7 @@ function getGuestPersonCount(g) {
           if (g) copyInviteLink(g.invite_token);
         } else if (action === 'guest-whatsapp') {
           const g = _guestStore.get(id) || Array.from(_guestStore.values()).find(x => String(x.id) === String(id));
-          if (g) shareInviteWhatsApp(g.name, g.invite_token);
+          if (g) shareInviteWhatsApp(g);
         } else if (action === 'guest-thank') {
           const g = _guestStore.get(id) || Array.from(_guestStore.values()).find(x => String(x.id) === String(id));
           if (g) shareThankYou(g.name);
@@ -1432,9 +1432,16 @@ function getGuestPersonCount(g) {
       doc.save("lista_convidados.pdf");
     }
 
-    async function shareInviteWhatsApp(name, token) {
-      const link = `${window.location.origin}/convite.html?token=${token}`;
-      const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${name}*!\n\nA confirmação de presença (RSVP) e todas as informações importantes sobre o nosso grande dia (local, horário, lista de presentes, etc.) estão disponíveis no nosso site oficial.\n\nAcesse o link abaixo para abrir o seu convite individual e confirmar sua presença:\n👉 ${link}`;
+    async function shareInviteWhatsApp(g) {
+      let displayName = g.name.split(' ')[0];
+      if (g.partner_name && g.partner_name.trim() !== '') {
+        displayName += ' & ' + g.partner_name.trim().split(' ')[0];
+      } else if (g.plus_ones > 0) {
+        displayName += ' & Família';
+      }
+
+      const link = `${window.location.origin}/convite.html?token=${g.invite_token}`;
+      const msg = `💍 *CONVITE DE CASAMENTO* 💍\n\nOlá, *${displayName}*!\n\nA confirmação de presença (RSVP) e todas as informações importantes sobre o nosso grande dia (local, horário, lista de presentes, etc.) estão disponíveis no nosso site oficial.\n\nAcesse o link abaixo para abrir o seu convite individual e confirmar sua presença:\n👉 ${link}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
 
