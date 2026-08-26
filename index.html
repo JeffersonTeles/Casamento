@@ -141,6 +141,37 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+    /* Enhanced Glassmorphism Hover */
+    .premium-glass {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .premium-glass:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px -10px rgba(201, 169, 110, 0.2);
+      border-color: rgba(201, 169, 110, 0.4);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-content {
+      background: #fafaf8; border-radius: 1.5rem; padding: 2rem; width: 90%; max-width: 400px;
+      transform: translateY(20px) scale(0.95); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+
     .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
 
     .delay-100 { transition-delay: 100ms; }
@@ -207,7 +238,7 @@
         </div>
 
         <div class="mt-8 w-full max-w-2xl reveal-up delay-300">
-          <button onclick="addToGoogleCalendar()" class="flex items-center justify-center gap-2 rounded-2xl bg-slate-50 border-2 border-slate-100 px-6 py-4 text-sm font-bold text-[#1a1a2e] hover:scale-[1.02] transition-all w-full">
+          <button onclick="openCalendarModal()" class="flex items-center justify-center gap-2 rounded-2xl bg-slate-50 border-2 border-slate-100 px-6 py-4 text-sm font-bold text-[#1a1a2e] hover:scale-[1.02] transition-all w-full">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Adicionar ao Calendário
           </button>
@@ -217,7 +248,7 @@
       <div class="relative flex items-center justify-center md:justify-end order-1 md:order-2">
         <div class="relative">
           <div class="h-80 w-60 md:h-96 md:w-72 overflow-hidden rounded-[2.5rem] bg-slate-50 shadow-2xl shadow-slate-300/40 border-2 border-white/80">
-            <img src="./img/foto-dashboard.jpeg" alt="Jefferson e Beatriz juntos" class="h-full w-full object-cover object-top" loading="lazy" width="240" height="320" />
+            <img src="./img/foto-dashboard.jpeg" alt="Jefferson e Beatriz juntos" class="h-full w-full object-cover object-top parallax-img" loading="lazy" width="240" height="320" style="transform: scale(1.1);" />
           </div>
           <div class="hidden md:block absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm rounded-2xl px-5 py-2.5 shadow-lg text-[0.7rem] text-vinho border border-slate-100">
             <p class="font-semibold">“Um dia para guardar para sempre.”</p>
@@ -322,6 +353,27 @@
 
   </main>
 
+  <!-- Calendar Modal -->
+  <div id="calendar-modal" class="modal-overlay" onclick="closeCalendarModal(event)">
+    <div class="modal-content text-center">
+      <h3 class="font-titulo text-2xl text-vinho mb-2">Salvar a Data</h3>
+      <p class="text-sm text-zinc-600 mb-6">Escolha o seu calendário preferido.</p>
+      
+      <div class="flex flex-col gap-3">
+        <button onclick="addToGoogleCalendar()" class="w-full flex items-center justify-center gap-2 bg-[#1a1a2e] text-white px-5 py-3 rounded-full text-sm font-bold hover:bg-[#1a1a2e]/90 transition-all">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Google Agenda
+        </button>
+        <button onclick="downloadICS()" class="w-full flex items-center justify-center gap-2 bg-white border-2 border-[#1a1a2e]/10 text-vinho px-5 py-3 rounded-full text-sm font-bold hover:bg-slate-50 transition-all">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Apple / Outlook (.ics)
+        </button>
+      </div>
+      
+      <button onclick="closeCalendarModal(true)" class="mt-6 text-xs text-zinc-500 hover:text-vinho uppercase tracking-widest font-bold">Cancelar</button>
+    </div>
+  </div>
+
   <footer class="mt-6 border-t border-slate-100 bg-white/60">
     <div
       class="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[0.7rem] text-zinc-600">
@@ -354,6 +406,16 @@
       phoneEl.classList.remove('blur-sm');
       if (btn) btn.classList.add('hidden');
     }
+    function openCalendarModal() {
+      document.getElementById('calendar-modal').classList.add('active');
+    }
+
+    function closeCalendarModal(e) {
+      if (e === true || e.target.id === 'calendar-modal') {
+        document.getElementById('calendar-modal').classList.remove('active');
+      }
+    }
+
     function addToGoogleCalendar() {
       const title = 'Casamento de Jefferson & Beatriz';
       const startDate = '20270206T110000Z'; // 06/02/2027 às 08:00 (UTC-3)
@@ -364,6 +426,38 @@
       const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&location=${encodeURIComponent(location)}&details=${encodeURIComponent(description)}`;
       
       window.open(url, '_blank');
+      closeCalendarModal(true);
+    }
+
+    function downloadICS() {
+      const title = 'Casamento de Jefferson & Beatriz';
+      const location = 'Capela São Maximiliano Maria Kolbe, Cascavel - PR';
+      const description = 'Sua presença é muito importante para nós!';
+      const startDate = '20270206T110000Z';
+      const endDate = '20270206T123000Z';
+
+      const icsData = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Casamento Jefferson e Beatriz//PT-BR
+BEGIN:VEVENT
+UID:${new Date().getTime()}@casamento
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${startDate}
+DTEND:${endDate}
+SUMMARY:${title}
+DESCRIPTION:${description}
+LOCATION:${location}
+END:VEVENT
+END:VCALENDAR`;
+
+      const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute('download', 'casamento-jefferson-beatriz.ics');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      closeCalendarModal(true);
     }
   </script>
 <script>
@@ -382,9 +476,21 @@
       elements.forEach(el => revealObserver.observe(el));
     }
 
+    // Parallax Effect
+    function initParallax() {
+      const img = document.querySelector('.parallax-img');
+      if (img) {
+        window.addEventListener('scroll', () => {
+          const scrollY = window.scrollY;
+          img.style.transform = `scale(1.1) translateY(${scrollY * 0.1}px)`;
+        });
+      }
+    }
+
     // Init
     window.addEventListener("DOMContentLoaded", () => {
       initAnimations();
+      initParallax();
       const preloader = document.getElementById('preloader');
       if (preloader) { preloader.classList.add('fade-out'); setTimeout(() => preloader.remove(), 700); }
     });
