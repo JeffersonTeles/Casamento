@@ -56,3 +56,9 @@ console.log('js/config.js gerado com sucesso.');
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('AVISO: Supabase URL/chave anon nao configurados. Configure REACT_APP_SUPABASE_URL e REACT_APP_SUPABASE_ANON_KEY no ambiente da Vercel.');
 }
+if (adminEmails.length === 0) {
+  console.error('ERRO CRITICO DE SEGURANCA: Nenhum email de admin configurado! Acesso ao painel administrativo sera BLOQUEADO.');
+  console.error('  Configure REACT_APP_ADMIN_EMAIL e/ou REACT_APP_SECOND_ADMIN_EMAIL nas variaveis de ambiente da Vercel.');
+} else {
+  console.log(`Admins configurados (${adminEmails.length}): ${adminEmails.join(', ')}`);
+}

@@ -415,7 +415,10 @@ function getGuestPersonCount(g) {
     function isAdminUser(user) {
       if (!user?.email) return false;
       const email = String(user.email).trim().toLowerCase();
-      if (ADMIN_EMAILS.length === 0) return true;
+      if (ADMIN_EMAILS.length === 0) {
+        console.error('🚨 [SEGURANÇA] Nenhum email de admin configurado! Acesso administrativo BLOQUEADO.');
+        return false;
+      }
       return ADMIN_EMAILS.includes(email);
     }
 

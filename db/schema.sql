@@ -25,22 +25,22 @@ create table if not exists public.guests (
 );
 alter table public.guests enable row level security;
 
--- Convidados só são lidos/escritos por usuários autenticados (admin)
+-- Convidados só são lidos/escritos por admin
 drop policy if exists "guests_select_admin" on public.guests;
 create policy "guests_select_admin" on public.guests
-  for select to authenticated using (true);
+  for select to authenticated using (public.is_admin());
 
 drop policy if exists "guests_insert_admin" on public.guests;
 create policy "guests_insert_admin" on public.guests
-  for insert to authenticated with check (true);
+  for insert to authenticated with check (public.is_admin());
 
 drop policy if exists "guests_update_admin" on public.guests;
 create policy "guests_update_admin" on public.guests
-  for update to authenticated using (true) with check (true);
+  for update to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "guests_delete_admin" on public.guests;
 create policy "guests_delete_admin" on public.guests
-  for delete to authenticated using (true);
+  for delete to authenticated using (public.is_admin());
 
 -- ---------- TASKS ----------
 create table if not exists public.tasks (
@@ -48,6 +48,7 @@ create table if not exists public.tasks (
   title text not null,
   status text not null default 'pendente',
   due_date date,
+  owner text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -55,7 +56,7 @@ alter table public.tasks enable row level security;
 
 drop policy if exists "tasks_admin" on public.tasks;
 create policy "tasks_admin" on public.tasks
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- EXPENSES ----------
 create table if not exists public.expenses (
@@ -72,7 +73,7 @@ alter table public.expenses enable row level security;
 
 drop policy if exists "expenses_admin" on public.expenses;
 create policy "expenses_admin" on public.expenses
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- BUDGET_CATEGORIES ----------
 create table if not exists public.budget_categories (
@@ -86,7 +87,7 @@ alter table public.budget_categories enable row level security;
 
 drop policy if exists "budget_admin" on public.budget_categories;
 create policy "budget_admin" on public.budget_categories
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- PLANNER_NOTES ----------
 create table if not exists public.planner_notes (
@@ -100,7 +101,7 @@ alter table public.planner_notes enable row level security;
 
 drop policy if exists "planner_notes_admin" on public.planner_notes;
 create policy "planner_notes_admin" on public.planner_notes
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- AUDIT_LOGS ----------
 create table if not exists public.audit_logs (
@@ -117,7 +118,7 @@ alter table public.audit_logs enable row level security;
 
 drop policy if exists "audit_logs_admin" on public.audit_logs;
 create policy "audit_logs_admin" on public.audit_logs
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- SUPPLIERS ----------
 create table if not exists public.suppliers (
@@ -126,13 +127,15 @@ create table if not exists public.suppliers (
   category text,
   value numeric default 0,
   status text not null default 'ativo',
+  contact text,
+  map_link text,
   created_at timestamptz not null default now()
 );
 alter table public.suppliers enable row level security;
 
 drop policy if exists "suppliers_admin" on public.suppliers;
 create policy "suppliers_admin" on public.suppliers
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- ADMIN_ACCESS ----------
 create table if not exists public.admin_access (
@@ -141,9 +144,49 @@ create table if not exists public.admin_access (
 );
 alter table public.admin_access enable row level security;
 
+-- ---------- FUNCAO is_admin() ----------
+-- Valida se o usuario autenticado esta na tabela admin_access.
+-- Usa SECURITY DEFINER para evitar recursao infinita (RLS de admin_access depender dela).
+create or replace function public.is_admin()
+returns boolean
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+declare
+  v_email text;
+  v_exists boolean;
+begin
+  -- Extrai email do JWT do usuario autenticado (Supabase Auth)
+  select auth.jwt() ->> 'email' into v_email;
+
+  -- Retorna falso imediatamente se nao ha email ou nao ha usuario logado
+  if v_email is null or v_email = '' then
+    return false;
+  end if;
+
+  -- Normaliza para lowercase e trim
+  v_email := lower(trim(v_email));
+
+  -- Usa consulta direta (sem passar por RLS desta tabela, pois SECURITY DEFINER
+  -- roda como owner da funcao = owner da tabela = bypass de RLS)
+  select exists (select 1 from public.admin_access where lower(trim(email)) = v_email)
+    into v_exists;
+
+  return v_exists;
+end;
+$$;
+
+-- Politicas de admin_access:
+-- Usuarios admin podem ver toda a tabela. Usuarios autenticados NAO admin NAO veem nada.
+-- (Nao usamos is_admin() aqui para evitar recursao — checamos por JWT direto, ou
+--  deixamos apenas o service_role/postgres manipular via seed.)
 drop policy if exists "admin_access_admin" on public.admin_access;
 create policy "admin_access_admin" on public.admin_access
-  for all to authenticated using (true) with check (true);
+  for all to authenticated
+  using (lower(trim(auth.email())) = lower(trim(email)) or public.is_admin())
+  with check (public.is_admin());
 
 -- ---------- GIFTS ----------
 create table if not exists public.gifts (
@@ -167,7 +210,25 @@ create policy "gifts_select_public" on public.gifts
 
 drop policy if exists "gifts_admin" on public.gifts;
 create policy "gifts_admin" on public.gifts
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+-- ---------- DOCUMENTS ----------
+create table if not exists public.documents (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  url text not null,
+  type text not null,
+  size_bytes bigint,
+  notes text,
+  created_by text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table public.documents enable row level security;
+
+drop policy if exists "documents_admin" on public.documents;
+create policy "documents_admin" on public.documents
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- GUEST_VIEWS ----------
 create table if not exists public.guest_views (
@@ -182,7 +243,7 @@ alter table public.guest_views enable row level security;
 
 drop policy if exists "guest_views_admin" on public.guest_views;
 create policy "guest_views_admin" on public.guest_views
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- RSVP_ACCESS_LOGS ----------
 -- Somente o admin grava logs. Leituras restritas a autenticados.
@@ -195,7 +256,7 @@ alter table public.rsvp_access_logs enable row level security;
 
 drop policy if exists "rsvp_logs_select_admin" on public.rsvp_access_logs;
 create policy "rsvp_logs_select_admin" on public.rsvp_access_logs
-  for select to authenticated using (true);
+  for select to authenticated using (public.is_admin());
 
 drop policy if exists "rsvp_logs_insert_anon" on public.rsvp_access_logs;
 create policy "rsvp_logs_insert_anon" on public.rsvp_access_logs
@@ -212,7 +273,25 @@ alter table public.timeline enable row level security;
 
 drop policy if exists "timeline_admin" on public.timeline;
 create policy "timeline_admin" on public.timeline
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+-- ---------- HOME_ITEMS ----------
+create table if not exists public.home_items (
+  id uuid primary key default gen_random_uuid(),
+  category text not null,
+  item text not null,
+  owned boolean not null default false,
+  assigned_to text,
+  notes text,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table public.home_items enable row level security;
+
+drop policy if exists "home_items_admin" on public.home_items;
+create policy "home_items_admin" on public.home_items
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- MOODBOARD ----------
 create table if not exists public.moodboard (
@@ -224,7 +303,7 @@ alter table public.moodboard enable row level security;
 
 drop policy if exists "moodboard_admin" on public.moodboard;
 create policy "moodboard_admin" on public.moodboard
-  for all to authenticated using (true) with check (true);
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- GUESTBOOK (público) ----------
 -- O livro de recados deve permitir leitura e inserção anônimas,
@@ -247,11 +326,11 @@ create policy "guestbook_insert_public" on public.guestbook
 
 drop policy if exists "guestbook_update_admin" on public.guestbook;
 create policy "guestbook_update_admin" on public.guestbook
-  for update to authenticated using (true) with check (true);
+  for update to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "guestbook_delete_admin" on public.guestbook;
 create policy "guestbook_delete_admin" on public.guestbook
-  for delete to authenticated using (true);
+  for delete to authenticated using (public.is_admin());
 
 -- ============================================================
 -- FUNÇÕES RPC (usadas pelo rsvp.html)
@@ -292,3 +371,58 @@ end;
 $$;
 
 grant execute on function public.confirm_guest_rsvp(text, text) to anon, authenticated;
+
+-- ============================================================
+-- VIEW: Estatísticas do Dashboard (fonte única da verdade)
+-- Substitui múltiplas queries separadas no carregamento inicial
+-- ============================================================
+drop view if exists public.v_dashboard_stats;
+create view public.v_dashboard_stats as
+select
+  count(*) as total_registros,
+  sum(case when rsvp_status = 'confirmado' then 1 else 0 end) as registros_confirmados,
+  sum(case when rsvp_status = 'aguardando' then 1 else 0 end) as registros_pendentes,
+  sum(case when rsvp_status = 'recusado' then 1 else 0 end) as registros_recusados,
+
+  sum(case
+    when partner_name is not null and trim(partner_name) != '' then
+      1 + 1 + coalesce(plus_ones, 0)
+    when plus_ones is not null and plus_ones > 0 then
+      1 + coalesce(plus_ones, 0)
+    else
+      1
+  end) as total_pessoas_estimadas,
+
+  sum(case
+    when rsvp_status = 'confirmado' then
+      case
+        when partner_name is not null and trim(partner_name) != '' then 1 + 1 + coalesce(plus_ones, 0)
+        when plus_ones is not null and plus_ones > 0 then 1 + coalesce(plus_ones, 0)
+        else 1
+      end
+    else 0
+  end) as pessoas_confirmadas,
+
+  sum(case
+    when rsvp_status = 'aguardando' then
+      case
+        when partner_name is not null and trim(partner_name) != '' then 1 + 1 + coalesce(plus_ones, 0)
+        when plus_ones is not null and plus_ones > 0 then 1 + coalesce(plus_ones, 0)
+        else 1
+      end
+    else 0
+  end) as pessoas_pendentes,
+
+  sum(case
+    when rsvp_status = 'recusado' then
+      case
+        when partner_name is not null and trim(partner_name) != '' then 1 + 1 + coalesce(plus_ones, 0)
+        when plus_ones is not null and plus_ones > 0 then 1 + coalesce(plus_ones, 0)
+        else 1
+      end
+    else 0
+  end) as pessoas_recusadas
+from public.guests;
+
+-- Grants necessários na view (como referencia tabela guests, herda RLS da tabela)
+grant select on public.v_dashboard_stats to authenticated;
