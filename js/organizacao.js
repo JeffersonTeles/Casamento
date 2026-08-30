@@ -257,7 +257,7 @@ function getGuestPersonCount(g) {
 
         if (action === 'guest-edit') {
           const g = _guestStore.get(id) || Array.from(_guestStore.values()).find(x => String(x.id) === String(id));
-          if (g) editGuest(g.id, g.name, g.phone || '', g.invited_by, g.rsvp_status, g.is_vip, g.partner_name || '', g.plus_ones || 0);
+          if (g) editGuest(g.id, g.name, g.phone || '', g.invited_by, g.rsvp_status, g.is_vip, g.partner_name || '', g.plus_ones || 0, g.rsvp_lunch || '');
         } else if (action === 'guest-delete') {
           deleteGuest(id);
         } else if (action === 'guest-preview') {
@@ -346,7 +346,7 @@ function getGuestPersonCount(g) {
 
     function setGuestFilter(f) {
       dashboardState.guestFilter = f;
-      ['all', 'confirmado', 'aguardando', 'recusado', 'with-partner', 'with-plus'].forEach(id => {
+      ['all', 'confirmado', 'aguardando', 'recusado', 'lunch-sim', 'lunch-nao', 'lunch-missing', 'with-partner', 'with-plus'].forEach(id => {
         const btn = document.getElementById(`guest-filter-${id}`);
         if (btn) {
           btn.classList.toggle('bg-vinho', id === f);
@@ -1227,6 +1227,13 @@ function getGuestPersonCount(g) {
       if (dashboardState.vipOnly) {
         filtered = filtered.filter(g => g.is_vip);
       }
+      if (dashboardState.guestFilter === 'lunch-sim') {
+        filtered = filtered.filter(g => g.rsvp_lunch === 'sim');
+      } else if (dashboardState.guestFilter === 'lunch-nao') {
+        filtered = filtered.filter(g => g.rsvp_status === 'confirmado' && g.rsvp_lunch === 'nao');
+      } else if (dashboardState.guestFilter === 'lunch-missing') {
+        filtered = filtered.filter(g => g.rsvp_status === 'confirmado' && !g.rsvp_lunch);
+      }
 
       if (filtered.length === 0) {
         list.innerHTML = '<p class="text-center py-10 text-slate-700 italic text-sm">Nenhum convidado encontrado com esses filtros.</p>';
@@ -1242,7 +1249,7 @@ function getGuestPersonCount(g) {
 
         const thankBtn = g.rsvp_status === 'confirmado' ? `<button data-action="guest-thank" data-id="${sanitizeAttr(g.id)}" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1">❤️ Agradecer</button>` : '';
 
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}${g.dietary ? ' • 🍽️ ' + sanitizeHTML(g.dietary) : ''}${g.plus_ones > 0 ? ' • 👥 +' + g.plus_ones : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button data-action="guest-preview" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full">👁 Ver</button><button data-action="guest-copy" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-[10px] px-3 py-1 rounded-full">Copiar</button><button data-action="guest-whatsapp" data-id="${sanitizeAttr(g.id)}" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button data-action="guest-edit" data-id="${sanitizeAttr(g.id)}" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">✏️ Editar</button><button data-action="guest-delete" data-id="${sanitizeAttr(g.id)}" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}${g.rsvp_lunch ? ' • 🍽️ Almoço: ' + (g.rsvp_lunch === 'sim' ? 'Sim' : 'Não') : ''}${g.plus_ones > 0 ? ' • 👥 +' + g.plus_ones : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button data-action="guest-preview" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full">👁 Ver</button><button data-action="guest-copy" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-[10px] px-3 py-1 rounded-full">Copiar</button><button data-action="guest-whatsapp" data-id="${sanitizeAttr(g.id)}" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button data-action="guest-edit" data-id="${sanitizeAttr(g.id)}" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">✏️ Editar</button><button data-action="guest-delete" data-id="${sanitizeAttr(g.id)}" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
       if (window.lucide) lucide.createIcons();
@@ -1273,7 +1280,7 @@ function getGuestPersonCount(g) {
       if (ep) ep.addEventListener('input', updateEditPersonCount);
       if (eo) eo.addEventListener('input', updateEditPersonCount);
     });
-    function editGuest(id, name, phone, owner, status, isVip, partnerName, plusOnes) { 
+    function editGuest(id, name, phone, owner, status, isVip, partnerName, plusOnes, rsvpLunch) { 
       document.getElementById('editGuestId').value = id; 
       document.getElementById('editGuestName').value = name; 
       document.getElementById('editGuestPhone').value = phone; 
@@ -1282,10 +1289,15 @@ function getGuestPersonCount(g) {
       document.getElementById('editGuestVip').checked = !!isVip;
       document.getElementById('editGuestPartner').value = partnerName || '';
       document.getElementById('editGuestPlusOnes').value = plusOnes || 0;
+      var lunchEl = document.getElementById('editGuestLunch');
+      if (lunchEl) lunchEl.value = rsvpLunch || 'nao';
       toggleEditModal(true); 
     }
     async function saveGuestEdit() {
       const id = document.getElementById('editGuestId').value;
+      var lunchVal = document.getElementById('editGuestStatus').value === 'confirmado'
+        ? (document.getElementById('editGuestLunch').value === 'sim' ? 'sim' : 'nao')
+        : null;
       const payload = { 
         name: document.getElementById('editGuestName').value, 
         phone: document.getElementById('editGuestPhone').value, 
@@ -1293,7 +1305,8 @@ function getGuestPersonCount(g) {
         rsvp_status: document.getElementById('editGuestStatus').value,
         is_vip: document.getElementById('editGuestVip').checked,
         partner_name: document.getElementById('editGuestPartner').value.trim() || null,
-        plus_ones: parseInt(document.getElementById('editGuestPlusOnes').value) || 0
+        plus_ones: parseInt(document.getElementById('editGuestPlusOnes').value) || 0,
+        rsvp_lunch: lunchVal
       };
       const { error } = await supabaseClient.from('guests').update(payload).eq('id', id); 
       if (error) { console.error('Erro update guest:', error); showToast('Erro ao salvar convidado', 'error'); return; }
@@ -1394,6 +1407,7 @@ function getGuestPersonCount(g) {
           Nome: g.name,
           Telefone: g.phone || '-',
           Status: g.rsvp_status,
+          Almoço: g.rsvp_lunch === 'sim' ? 'Sim' : (g.rsvp_lunch === 'nao' ? 'Não' : '-'),
           'Total pessoas': total,
           'Parceiro(a)': g.partner_name || '-',
           'Acompanhantes': g.plus_ones || 0,
@@ -1406,8 +1420,8 @@ function getGuestPersonCount(g) {
       const ws = XLSX.utils.json_to_sheet(data);
       ws['!cols'] = [
         { wch: 30 }, { wch: 16 }, { wch: 12 }, { wch: 12 },
-        { wch: 20 }, { wch: 14 }, { wch: 14 }, { wch: 6 },
-        { wch: 20 }, { wch: 50 }
+        { wch: 12 }, { wch: 20 }, { wch: 14 }, { wch: 14 },
+        { wch: 6 }, { wch: 20 }, { wch: 50 }
       ];
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Convidados");
@@ -1424,10 +1438,10 @@ function getGuestPersonCount(g) {
       doc.setFontSize(10);
       const totalPessoas = allGuests.reduce((sum, g) => sum + getGuestPersonCount(g), 0);
       doc.text(`Total: ${allGuests.length} convites | ${totalPessoas} pessoas`, 14, 22);
-      const rows = allGuests.map(g => [g.name, g.phone || '-', g.rsvp_status, g.invited_by, g.partner_name || '-', String(g.plus_ones || 0), String(getGuestPersonCount(g))]);
+      const rows = allGuests.map(g => [g.name, g.phone || '-', g.rsvp_status, g.rsvp_lunch === 'sim' ? 'Sim' : (g.rsvp_lunch === 'nao' ? 'Não' : '-'), g.invited_by, g.partner_name || '-', String(g.plus_ones || 0), String(getGuestPersonCount(g))]);
       doc.autoTable({
         startY: 28,
-        head: [['Nome', 'Telefone', 'Status', 'Dono', 'Parceiro', 'Acomp.', 'Total']],
+        head: [['Nome', 'Telefone', 'Status', 'Almoço', 'Dono', 'Parceiro', 'Acomp.', 'Total']],
         body: rows,
         headStyles: { fillColor: [26, 26, 46] },
         styles: { fontSize: 8 }
@@ -1498,6 +1512,16 @@ function getGuestPersonCount(g) {
       if (pendingCount) pendingCount.textContent = maybe;
       const totalPeopleEl = document.getElementById('dash-rsvp-total-people');
       if (totalPeopleEl) totalPeopleEl.textContent = totalPeople;
+
+      const lunchSimPeople = allGuests.filter(g => g.rsvp_status === 'confirmado' && g.rsvp_lunch === 'sim').reduce((sum, g) => sum + getGuestPersonCount(g), 0);
+      const lunchNaoPeople = allGuests.filter(g => g.rsvp_status === 'confirmado' && g.rsvp_lunch === 'nao').reduce((sum, g) => sum + getGuestPersonCount(g), 0);
+      const lunchMissingPeople = allGuests.filter(g => g.rsvp_status === 'confirmado' && !g.rsvp_lunch).reduce((sum, g) => sum + getGuestPersonCount(g), 0);
+      const lunchSimEl = document.getElementById('dash-lunch-sim');
+      if (lunchSimEl) lunchSimEl.textContent = lunchSimPeople;
+      const lunchNaoEl = document.getElementById('dash-lunch-nao');
+      if (lunchNaoEl) lunchNaoEl.textContent = lunchNaoPeople + ' não irão ao almoço';
+      const lunchMissingEl = document.getElementById('dash-lunch-missing');
+      if (lunchMissingEl) lunchMissingEl.textContent = lunchMissingPeople + ' ainda não responderam o almoço';
     }
 
     async function fetchExpenses() { const { data, error } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false }); if (error) { console.error('Erro fetch expenses:', error); return; } dashboardState.expenses = data || []; renderExpenses(); updateExpenseStats(); renderBudgetPlanner(); }

@@ -20,6 +20,7 @@ create table if not exists public.guests (
   partner_name text,
   plus_ones integer default 0,
   is_vip boolean default false,
+  rsvp_lunch text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -338,15 +339,15 @@ create policy "guestbook_delete_admin" on public.guestbook
 -- ============================================================
 
 -- Retorna dados públicos de um convidado pelo token do convite.
--- Inclui is_vip, partner_name e partner_token para convites personalizados.
+-- Inclui is_vip, partner_name, partner_token e rsvp_lunch para convites personalizados.
 drop function if exists public.get_guest_public_by_token(text);
 create or replace function public.get_guest_public_by_token(p_invite_token text)
-returns table (id uuid, name text, rsvp_status text, invite_token text, is_vip boolean, partner_name text, partner_token text)
+returns table (id uuid, name text, rsvp_status text, invite_token text, is_vip boolean, partner_name text, partner_token text, rsvp_lunch text)
 language sql security definer
 set search_path = public
 as $$
   select g.id, g.name, g.rsvp_status, g.invite_token, g.is_vip,
-         g.partner_name, p.invite_token as partner_token
+         g.partner_name, p.invite_token as partner_token, g.rsvp_lunch
   from public.guests g
   left join public.guests p on g.partner_id = p.id
   where g.invite_token = p_invite_token
@@ -356,21 +357,22 @@ $$;
 grant execute on function public.get_guest_public_by_token(text) to anon, authenticated;
 
 -- Confirma/atualiza o RSVP de um convidado via token.
-drop function if exists public.confirm_guest_rsvp(text, text);
-create or replace function public.confirm_guest_rsvp(p_invite_token text, p_rsvp_status text, p_plus_ones integer default 0)
+drop function if exists public.confirm_guest_rsvp(text, text, integer, text);
+create or replace function public.confirm_guest_rsvp(p_invite_token text, p_rsvp_status text, p_plus_ones integer default 0, p_rsvp_lunch text default null)
 returns boolean
 language plpgsql security definer
 set search_path = public
 as $$
 begin
   update public.guests
-  set rsvp_status = p_rsvp_status, plus_ones = p_plus_ones, updated_at = now()
+  set rsvp_status = p_rsvp_status, plus_ones = p_plus_ones, rsvp_lunch = p_rsvp_lunch, updated_at = now()
   where invite_token = p_invite_token;
   return found;
 end;
 $$;
 
 grant execute on function public.confirm_guest_rsvp(text, text) to anon, authenticated;
+grant execute on function public.confirm_guest_rsvp(text, text, integer, text) to anon, authenticated;
 
 -- ============================================================
 -- VIEW: Estatísticas do Dashboard (fonte única da verdade)

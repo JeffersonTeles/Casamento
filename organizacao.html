@@ -200,6 +200,15 @@
                     <p class="text-lg font-bold text-vinho" id="dash-rsvp-total-people">0</p>
                   </div>
                 </div>
+                <div class="mt-3 p-3 bg-amber-50 rounded-2xl border border-amber-200">
+                  <p class="text-[9px] uppercase text-amber-700 font-bold">🍽️ Almoço por Adesão</p>
+                  <div class="flex items-baseline justify-center gap-1 mt-1">
+                    <p class="text-2xl font-bold text-amber-700" id="dash-lunch-sim">0</p>
+                    <p class="text-[10px] text-amber-600 font-semibold">pessoas confirmaram o almoço</p>
+                  </div>
+                  <p class="text-[10px] text-amber-500" id="dash-lunch-nao">0 não irão ao almoço</p>
+                  <p class="text-[10px] text-amber-500 mt-0.5 font-semibold" id="dash-lunch-missing">0 ainda não responderam o almoço</p>
+                </div>
               </div>
             </div>
 
@@ -329,6 +338,9 @@
             <button onclick="setGuestFilter('confirmado')" id="guest-filter-confirmado" class="mini-pill text-[10px] px-2.5 py-1">Confirmados</button>
             <button onclick="setGuestFilter('aguardando')" id="guest-filter-aguardando" class="mini-pill text-[10px] px-2.5 py-1">Aguardando</button>
             <button onclick="setGuestFilter('recusado')" id="guest-filter-recusado" class="mini-pill text-[10px] px-2.5 py-1">Recusados</button>
+            <button onclick="setGuestFilter('lunch-sim')" id="guest-filter-lunch-sim" class="mini-pill text-[10px] px-2.5 py-1">🍽️ Almoço Sim</button>
+            <button onclick="setGuestFilter('lunch-nao')" id="guest-filter-lunch-nao" class="mini-pill text-[10px] px-2.5 py-1">🍽️ Almoço Não</button>
+            <button onclick="setGuestFilter('lunch-missing')" id="guest-filter-lunch-missing" class="mini-pill text-[10px] px-2.5 py-1">⏳ Sem Almoço</button>
             <button onclick="setGuestOwnerFilter('Jefferson')" id="owner-filter-Jefferson" class="mini-pill text-[10px] px-2.5 py-1">Jeff</button>
             <button onclick="setGuestOwnerFilter('Bia')" id="owner-filter-Bia" class="mini-pill text-[10px] px-2.5 py-1">Bia</button>
           </div>
@@ -832,6 +844,13 @@
             <option value="confirmado">Confirmado</option>
             <option value="recusado">Recusado</option>
           </select>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Almoço por Adesão</label>
+            <select id="editGuestLunch" class="w-full p-3 rounded-xl border border-slate-200 bg-white">
+              <option value="sim">Sim, participará do almoço</option>
+              <option value="nao">Não, apenas cerimônia</option>
+            </select>
+          </div>
           <select id="editGuestOwner" class="w-full p-3 rounded-xl border border-slate-200 bg-white"><option value="Jefferson">Jefferson</option><option value="Bia">Bia</option><option value="Ambos">Ambos</option></select>
           <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-amber-50 transition-colors">
             <input type="checkbox" id="editGuestVip" class="w-5 h-5 accent-amber-500 rounded" />

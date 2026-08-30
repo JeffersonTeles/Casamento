@@ -473,9 +473,13 @@
     function showChangeForm() {
       document.getElementById('already-confirmed').style.display = 'none';
       document.getElementById('rsvp-form').classList.add('active');
-      selectedStatus = null;
-      document.querySelectorAll('.rsvp-opt').forEach(function(b) { b.classList.remove('selected'); });
-      document.getElementById('plus-ones-group').classList.remove('active');
+      selectedStatus = currentGuest.rsvp_status;
+      document.querySelectorAll('.rsvp-opt').forEach(function(b) {
+        b.classList.toggle('selected', b.dataset.status === selectedStatus);
+      });
+      document.getElementById('plus-ones-group').classList.toggle('active', selectedStatus === 'confirmado');
+      var lunchSelect = document.getElementById('rsvp-lunch');
+      if (lunchSelect && currentGuest.rsvp_lunch) lunchSelect.value = currentGuest.rsvp_lunch;
       var btn = document.getElementById('submit-btn');
       btn.disabled = false;
       btn.textContent = 'Enviar Resposta';
@@ -489,9 +493,14 @@
       var btn = document.getElementById('submit-btn');
       btn.disabled = true; btn.textContent = 'Enviando...';
       try {
+        var rsvpLunch = null;
+        if (selectedStatus === 'confirmado') {
+          rsvpLunch = document.getElementById('rsvp-lunch').value;
+        }
         var { error } = await supabaseClient.rpc('confirm_guest_rsvp', {
           p_invite_token: GUEST_TOKEN, p_rsvp_status: selectedStatus,
-          p_plus_ones: parseInt(document.getElementById('rsvp-plusones').value) || 0
+          p_plus_ones: parseInt(document.getElementById('rsvp-plusones').value) || 0,
+          p_rsvp_lunch: rsvpLunch
         });
         if (error) throw error;
         
