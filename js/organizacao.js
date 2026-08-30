@@ -1214,7 +1214,7 @@ function getGuestPersonCount(g) {
           filtered = filtered.filter(g => g.partner_name && g.partner_name.trim());
         } else if (dashboardState.guestFilter === 'with-plus') {
           filtered = filtered.filter(g => Number(g.plus_ones || 0) > 0);
-        } else {
+        } else if (dashboardState.guestFilter !== 'lunch-sim' && dashboardState.guestFilter !== 'lunch-nao' && dashboardState.guestFilter !== 'lunch-missing') {
           filtered = filtered.filter(g => g.rsvp_status === dashboardState.guestFilter);
         }
       }
