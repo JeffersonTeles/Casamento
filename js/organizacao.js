@@ -1228,7 +1228,7 @@ function getGuestPersonCount(g) {
         filtered = filtered.filter(g => g.is_vip);
       }
       if (dashboardState.guestFilter === 'lunch-sim') {
-        filtered = filtered.filter(g => g.rsvp_lunch === 'sim');
+        filtered = filtered.filter(g => g.rsvp_status === 'confirmado' && g.rsvp_lunch === 'sim');
       } else if (dashboardState.guestFilter === 'lunch-nao') {
         filtered = filtered.filter(g => g.rsvp_status === 'confirmado' && g.rsvp_lunch === 'nao');
       } else if (dashboardState.guestFilter === 'lunch-missing') {
@@ -1249,7 +1249,7 @@ function getGuestPersonCount(g) {
 
         const thankBtn = g.rsvp_status === 'confirmado' ? `<button data-action="guest-thank" data-id="${sanitizeAttr(g.id)}" class="bg-rose-50 text-rose-600 text-[10px] px-3 py-1 rounded-full flex items-center gap-1">❤️ Agradecer</button>` : '';
 
-        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}${g.rsvp_lunch ? ' • 🍽️ Almoço: ' + (g.rsvp_lunch === 'sim' ? 'Sim' : 'Não') : ''}${g.plus_ones > 0 ? ' • 👥 +' + g.plus_ones : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button data-action="guest-preview" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full">👁 Ver</button><button data-action="guest-copy" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-[10px] px-3 py-1 rounded-full">Copiar</button><button data-action="guest-whatsapp" data-id="${sanitizeAttr(g.id)}" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button data-action="guest-edit" data-id="${sanitizeAttr(g.id)}" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">✏️ Editar</button><button data-action="guest-delete" data-id="${sanitizeAttr(g.id)}" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
+        return `<div class="item-card ${g.rsvp_status === 'confirmado' ? 'confirmed' : ''} ${borderClass}"><div class="flex-1"><p class="font-bold flex items-center gap-2">${sanitizeHTML(g.name)} ${g.is_vip ? '⭐' : ''}</p><p class="text-xs font-medium text-slate-700 uppercase">${sanitizeHTML(g.invited_by)} • ${sanitizeHTML(g.rsvp_status)}${g.partner_name ? ' • 💑 ' + sanitizeHTML(g.partner_name) : ''}${g.rsvp_lunch ? ' • 🍽️ Almoço: ' + (g.rsvp_lunch === 'sim' ? 'Sim' : 'Não') : (g.rsvp_status === 'confirmado' ? ' • ⏳ Almoço?' : '')}${g.plus_ones > 0 ? ' • 👥 +' + g.plus_ones : ''}</p></div><div class="flex flex-wrap gap-1">${thankBtn}<button data-action="guest-preview" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-full">👁 Ver</button><button data-action="guest-copy" data-id="${sanitizeAttr(g.id)}" class="bg-slate-100 text-slate-700 text-[10px] px-3 py-1 rounded-full">Copiar</button><button data-action="guest-whatsapp" data-id="${sanitizeAttr(g.id)}" class="bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full">Whats</button><button data-action="guest-edit" data-id="${sanitizeAttr(g.id)}" class="bg-amber-100 text-[10px] px-3 py-1 rounded-full">✏️ Editar</button><button data-action="guest-delete" data-id="${sanitizeAttr(g.id)}" class="text-red-500 text-[10px] px-3 py-1 rounded-full">🗑️</button></div></div>`;
       }).join('');
       updateOverviewStats();
       if (window.lucide) lucide.createIcons();
@@ -1290,13 +1290,13 @@ function getGuestPersonCount(g) {
       document.getElementById('editGuestPartner').value = partnerName || '';
       document.getElementById('editGuestPlusOnes').value = plusOnes || 0;
       var lunchEl = document.getElementById('editGuestLunch');
-      if (lunchEl) lunchEl.value = rsvpLunch || 'nao';
+      if (lunchEl) lunchEl.value = rsvpLunch || '';
       toggleEditModal(true); 
     }
     async function saveGuestEdit() {
       const id = document.getElementById('editGuestId').value;
       var lunchVal = document.getElementById('editGuestStatus').value === 'confirmado'
-        ? (document.getElementById('editGuestLunch').value === 'sim' ? 'sim' : 'nao')
+        ? (document.getElementById('editGuestLunch').value || null)
         : null;
       const payload = { 
         name: document.getElementById('editGuestName').value, 
