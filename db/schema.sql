@@ -283,19 +283,62 @@ create policy "timeline_admin" on public.timeline
 -- ---------- HOME_ITEMS ----------
 create table if not exists public.home_items (
   id uuid primary key default gen_random_uuid(),
-  category text not null,
-  item text not null,
-  owned boolean not null default false,
-  assigned_to text,
+  name text not null,
+  category text,
+  status text not null default 'precisamos',   -- 'temos' | 'precisamos' | 'possivel'
+  priority text not null default 'Média',        -- 'Alta' | 'Média' | 'Baixa'
+  price numeric default 0,
   notes text,
-  sort_order integer not null default 0,
+  buy_link text,
+  link_title text,
+  link_image text,
+  link_description text,
+  link_domain text,
+  is_gift boolean default true,
+  is_gifted boolean default false,
+  gifted_by text,
+  gifted_at timestamptz,
+  gifted_message text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 alter table public.home_items enable row level security;
 
+drop policy if exists "home_items_select_public" on public.home_items;
+create policy "home_items_select_public" on public.home_items
+  for select to anon, authenticated using (true);
+
 drop policy if exists "home_items_admin" on public.home_items;
 create policy "home_items_admin" on public.home_items
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+-- ---------- GIFT_CONTRIBUTIONS (Mercado Pago) ----------
+create table if not exists public.gift_contributions (
+  id uuid primary key default gen_random_uuid(),
+  item_id uuid references public.home_items(id) on delete set null,
+  item_name text not null,
+  donor_name text not null,
+  donor_message text,
+  amount numeric not null,
+  payment_method text default 'mercadopago',
+  payment_status text not null default 'pending', -- 'pending' | 'approved' | 'rejected' | 'cancelled'
+  mp_payment_id text,
+  mp_preference_id text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table public.gift_contributions enable row level security;
+
+drop policy if exists "gift_contributions_select_approved" on public.gift_contributions;
+create policy "gift_contributions_select_approved" on public.gift_contributions
+  for select to anon, authenticated using (payment_status = 'approved' or public.is_admin());
+
+drop policy if exists "gift_contributions_insert_public" on public.gift_contributions;
+create policy "gift_contributions_insert_public" on public.gift_contributions
+  for insert to anon, authenticated with check (true);
+
+drop policy if exists "gift_contributions_all_admin" on public.gift_contributions;
+create policy "gift_contributions_all_admin" on public.gift_contributions
   for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- ---------- MOODBOARD ----------

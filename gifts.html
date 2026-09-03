@@ -3,22 +3,23 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Lista de presentes - Jefferson &amp; Beatriz</title>
+  <title>Lista de Presentes — Jefferson &amp; Beatriz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="description"
-    content="Lista de presentes do casamento de Jefferson & Beatriz. Contribua com o nosso enxoval através de PIX." />
-  <meta property="og:title" content="Presentes — Jefferson & Beatriz" />
-  <meta property="og:description" content="Sua presença é o maior presente. Se quiser nos homenagear, nosso PIX está disponível." />
+    content="Lista de presentes do casamento de Jefferson & Beatriz. Escolha um item para nossa casa ou contribua com cotas via Mercado Pago (PIX e Cartão) ou PIX direto." />
+  <meta property="og:title" content="Lista de Presentes — Jefferson & Beatriz" />
+  <meta property="og:description" content="Sua presença é o maior presente. Mas se quiser nos presentear, criamos nossa lista de presentes com muito carinho!" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#1a1a2e" />
 
   <link rel="stylesheet" href="./css/output.css" />
   <script src="./js/components.js?v=2" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   
   <style>
     body {
@@ -26,14 +27,33 @@
     }
     
     .premium-glass {
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
     }
     
     .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
     .reveal.active { opacity: 1; transform: translateY(0); }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
     @media (max-width: 640px) {
       .font-titulo { font-size: 2.25rem !important; line-height: 1.1 !important; }
@@ -44,118 +64,543 @@
 <body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 min-h-screen">
   <site-header></site-header>
 
-  <main class="max-w-3xl mx-auto px-4 py-16">
-    <section class="reveal active text-center">
-      <h1 class="font-titulo text-4xl text-vinho">Presentes</h1>
-      <p class="mt-6 text-base text-zinc-600 leading-relaxed">
-        Sua presença é o nosso maior presente. Mas, se desejar nos presentear de alguma forma, 
-        você pode contribuir com qualquer valor para nos ajudar com o <strong>enxoval da nossa casa</strong>.
+  <main class="max-w-5xl mx-auto px-4 py-12 md:py-16">
+    
+    <!-- Banner de Sucesso pós-pagamento -->
+    <div id="payment-success-banner" class="hidden mb-10 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-3xl shadow-xl animate-fade-in text-center">
+      <span class="text-3xl mb-2 block">🎉 ❤️ 🥂</span>
+      <h3 class="text-xl md:text-2xl font-titulo font-bold">Muito obrigado pelo presente!</h3>
+      <p class="text-sm opacity-95 mt-1 max-w-xl mx-auto">
+        Seu pagamento foi confirmado com sucesso. Seu carinho e sua bênção tornam o nosso sonho ainda mais especial!
       </p>
-    </section>
+    </div>
 
-    <section class="reveal active mt-12">
-      <h2 class="text-sm font-bold text-vinho tracking-[0.2em] uppercase mb-6 text-center">
-        Sugestões de presentes
-      </h2>
-
-      <div class="grid gap-6 md:grid-cols-2">
-        <article class="premium-glass rounded-3xl p-6 flex flex-col justify-between border border-vinho/5">
-          <div class="flex-1">
-            <p class="text-[0.65rem] uppercase tracking-widest text-vinho/80 mb-2 font-bold">Casa</p>
-            <h3 class="font-titulo text-xl text-vinho mb-2">Jogo de cama king</h3>
-            <p class="text-sm text-zinc-600 leading-relaxed">Para deixar nossos dias mais confortáveis e cheios de aconchego.</p>
-          </div>
-          <p class="mt-4 text-xs font-bold text-vinho/80 italic">Sugestão: R$ 250,00 via PIX</p>
-        </article>
-
-        <article class="premium-glass rounded-3xl p-6 flex flex-col justify-between border border-vinho/5">
-          <div class="flex-1">
-            <p class="text-[0.65rem] uppercase tracking-widest text-vinho/80 mb-2 font-bold">Cozinha</p>
-            <h3 class="font-titulo text-xl text-vinho mb-2">Conjunto de panelas</h3>
-            <p class="text-sm text-zinc-600 leading-relaxed">Para muitas receitas, jantares a dois e momentos especiais.</p>
-          </div>
-          <p class="mt-4 text-xs font-bold text-vinho/80 italic">Sugestão: R$ 400,00 via PIX</p>
-        </article>
-
-        <article class="premium-glass rounded-3xl p-6 flex flex-col justify-between border border-vinho/5">
-          <div class="flex-1">
-            <p class="text-[0.65rem] uppercase tracking-widest text-vinho/80 mb-2 font-bold">Decoração</p>
-            <h3 class="font-titulo text-xl text-vinho mb-2">Quadro decorativo</h3>
-            <p class="text-sm text-zinc-600 leading-relaxed">Para dar um toque especial ao nosso cantinho favorito da casa.</p>
-          </div>
-          <p class="mt-4 text-xs font-bold text-vinho/80 italic">Sugestão: R$ 180,00 via PIX</p>
-        </article>
-
-        <article class="bg-vinho/5 rounded-3xl p-6 flex flex-col justify-between border border-vinho/10">
-          <div class="flex-1">
-            <p class="text-[0.65rem] uppercase tracking-widest text-vinho/80 mb-2 font-bold">Lua de Mel</p>
-            <h3 class="font-titulo text-xl text-vinho mb-2">Cota Viagem</h3>
-            <p class="text-sm text-zinc-600 leading-relaxed">Ajude a tornar nossa lua de mel inesquecível com uma contribuição especial.</p>
-          </div>
-          <p class="mt-4 text-xs font-bold text-vinho/80 italic">Sugestão: O valor que desejar</p>
-        </article>
+    <!-- Introdução -->
+    <section class="reveal active text-center max-w-2xl mx-auto">
+      <span class="text-xs uppercase tracking-[0.3em] text-vinho/80 font-bold block mb-2">Nosso Novo Lar &amp; Sonhos</span>
+      <h1 class="font-titulo text-4xl md:text-5xl text-vinho">Lista de Presentes</h1>
+      <p class="mt-4 text-sm md:text-base text-zinc-600 leading-relaxed">
+        A sua presença no nosso casamento é o que mais importa! Mas se desejar nos homenagear, 
+        você pode escolher um item para a nossa casa ou cotas de lua de mel.
+      </p>
+      <div class="mt-4 inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 text-xs font-semibold px-4 py-2 rounded-full border border-emerald-200">
+        <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Pagamento seguro via Mercado Pago (PIX e Cartão em até 12x)
       </div>
-
-      <p class="mt-8 text-sm text-zinc-600 text-center max-w-lg mx-auto italic leading-relaxed">
-        Fique à vontade para escolher qualquer valor ou presente. O importante é o seu carinho e a sua presença em nosso coração!
-      </p>
     </section>
 
-    <section class="reveal active mt-12">
-      <div class="premium-glass rounded-[2.5rem] p-8 md:p-12 max-w-lg mx-auto" style="text-align:center">
-        <p class="text-xs font-bold text-vinho uppercase tracking-widest mb-4">Chave PIX (Telefone)</p>
+    <!-- Filtros de Categoria e Busca -->
+    <section class="reveal active mt-10">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <!-- Categorias -->
+        <div id="category-filters" class="flex flex-wrap items-center justify-center md:justify-start gap-2 overflow-x-auto pb-2 max-w-full">
+          <button type="button" onclick="filterCategory('todas')" class="cat-btn active px-4 py-2 rounded-full text-xs font-bold transition-all bg-vinho text-white shadow-sm">
+            Todas
+          </button>
+          <button type="button" onclick="filterCategory('Cozinha')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
+            🍳 Cozinha
+          </button>
+          <button type="button" onclick="filterCategory('Quarto')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
+            🛏️ Quarto
+          </button>
+          <button type="button" onclick="filterCategory('Sala')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
+            🛋️ Sala
+          </button>
+          <button type="button" onclick="filterCategory('Eletrodomésticos')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
+            🔌 Eletros
+          </button>
+          <button type="button" onclick="filterCategory('Cotas')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
+            ✈️ Cotas &amp; Lua de Mel
+          </button>
+        </div>
 
+        <!-- Busca -->
+        <div class="w-full md:w-64">
+          <input type="text" id="searchInput" oninput="filterItems()" placeholder="Buscar presente..." class="w-full bg-white border border-slate-200 rounded-full px-4 py-2 text-xs outline-none focus:border-vinho" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Vitrine de Itens de Presentes -->
+    <section class="reveal active mt-8">
+      <div id="gifts-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Carregando skeleton -->
+        <div class="col-span-full py-12 text-center text-zinc-400">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-vinho mb-3"></div>
+          <p class="text-xs uppercase tracking-widest font-bold">Carregando lista de presentes...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mural de Mensagens e Recados Recebidos -->
+    <section id="mural-section" class="reveal active mt-16 hidden">
+      <div class="text-center mb-8">
+        <span class="text-xs uppercase tracking-[0.25em] text-vinho/80 font-bold block mb-1">Mural de Afeto</span>
+        <h2 class="font-titulo text-3xl text-vinho">Recados dos Padrinhos &amp; Convidados</h2>
+      </div>
+      <div id="mural-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Preenchido via JS -->
+      </div>
+    </section>
+
+    <!-- Seção de Chave PIX Direta (Caso o convidado prefira enviar direto pelo banco dele) -->
+    <section class="reveal active mt-20">
+      <div class="premium-glass rounded-[2.5rem] p-8 md:p-12 max-w-lg mx-auto text-center border border-vinho/10">
+        <span class="text-xs font-bold text-vinho uppercase tracking-widest block mb-2">Prefere enviar diretamente?</span>
+        <h3 class="font-titulo text-2xl text-vinho mb-4">Chave PIX dos Noivos</h3>
+        
         <!-- Seletor de Chaves PIX -->
         <div id="gifts-pix-tabs" class="flex justify-center gap-2 mb-6"></div>
         
         <div id="pix-container" class="cursor-pointer" onclick="revealPix()" style="display:flex;flex-direction:column;align-items:center">
-          <div id="qr-placeholder" class="bg-slate-100 w-48 h-48 md:w-64 md:h-64 rounded-3xl flex flex-col items-center justify-center border border-dashed border-vinho/20 mb-6">
-            <i data-lucide="lock" class="w-12 h-12 text-vinho/80 mb-3"></i>
-            <p class="text-[10px] text-vinho/80 uppercase font-bold tracking-widest">Clique para revelar</p>
+          <div id="qr-placeholder" class="bg-slate-100 w-48 h-48 md:w-60 md:h-60 rounded-3xl flex flex-col items-center justify-center border border-dashed border-vinho/20 mb-6">
+            <svg class="w-10 h-10 text-vinho/80 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <p class="text-[10px] text-vinho/80 uppercase font-bold tracking-widest">Clique para ver o QR Code</p>
           </div>
           
-          <div id="qr-real" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6 animate-fade-in">
-            <img id="qr-img" src="" alt="QR Code PIX" class="w-48 h-48 md:w-64 md:h-64" loading="lazy" width="250" height="250" />
+          <div id="qr-real" class="hidden bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-6 animate-fade-in">
+            <img id="qr-img" src="" alt="QR Code PIX" class="w-48 h-48 md:w-60 md:h-60" loading="lazy" width="240" height="240" />
           </div>
         </div>
 
-        <div class="space-y-3" style="max-width:280px;margin-left:auto;margin-right:auto">
+        <div class="space-y-3 max-w-xs mx-auto">
           <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
             <p id="gifts-pix-label" class="text-[0.65rem] text-vinho/80 uppercase font-bold tracking-tight mb-1">Telefone (Chave PIX)</p>
-            <p id="pix-number" class="text-xl font-mono text-vinho font-bold tracking-tighter blur-sm select-none">00000000000</p>
+            <p id="pix-number" class="text-lg font-mono text-vinho font-bold tracking-tight blur-sm select-none">••••••••••</p>
           </div>
 
           <button id="btnPix"
-            class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-vinho px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-vinho/20 hover:scale-[1.02] transition-all disabled:opacity-50"
+            class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-vinho px-6 py-3.5 text-xs font-bold text-white shadow-xl shadow-vinho/20 hover:scale-[1.02] transition-all disabled:opacity-50"
             type="button" disabled>
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
             Copiar Chave PIX
           </button>
         </div>
 
-        <p class="mt-6 text-sm font-medium text-zinc-600 italic">
-          Agradecemos imensamente por todo o carinho e por fazer parte da nossa história!
+        <p class="mt-6 text-xs text-zinc-500 italic">
+          Ao fazer a transferência direta, você pode nos mandar uma mensagem no WhatsApp para sabermos que foi você!
         </p>
       </div>
     </section>
+
   </main>
 
-  <footer class="mt-12 border-t border-slate-100 bg-white/60">
+  <!-- Modal de Presentear / Mercado Pago Checkout -->
+  <div id="checkoutModal" class="modal-backdrop" onclick="closeCheckoutModal(event)">
+    <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl relative border border-slate-100 text-left" onclick="event.stopPropagation()">
+      <button type="button" onclick="closeCheckoutModal(true)" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+      
+      <div class="mb-4">
+        <span class="text-[10px] uppercase tracking-widest text-vinho font-bold block" id="modalCategoryTag">Presente</span>
+        <h3 class="font-titulo text-2xl text-vinho font-bold mt-1" id="modalItemTitle">Jogo de Panelas</h3>
+      </div>
+
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-5 flex items-center justify-between">
+        <span class="text-xs text-zinc-500 font-medium">Valor da contribuição:</span>
+        <div id="modalPriceContainer">
+          <span class="text-lg font-bold text-vinho" id="modalItemPrice">R$ 250,00</span>
+        </div>
+      </div>
+
+      <!-- Formulário do Doador -->
+      <form id="giftForm" onsubmit="submitGiftPayment(event)" class="space-y-4">
+        <input type="hidden" id="modalItemId" value="" />
+        <input type="hidden" id="modalItemPriceRaw" value="0" />
+
+        <!-- Se for valor customizável -->
+        <div id="customPriceInputGroup" class="hidden">
+          <label class="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Qual valor deseja presentear?</label>
+          <div class="relative">
+            <span class="absolute left-4 top-3 text-sm font-bold text-zinc-400">R$</span>
+            <input type="number" id="customAmountInput" step="0.01" min="10" placeholder="100,00" class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-vinho text-sm font-bold text-vinho" />
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button type="button" onclick="setCustomVal(50)" class="px-3 py-1 bg-slate-100 hover:bg-vinho hover:text-white rounded-lg text-xs font-medium transition-all">R$ 50</button>
+            <button type="button" onclick="setCustomVal(100)" class="px-3 py-1 bg-slate-100 hover:bg-vinho hover:text-white rounded-lg text-xs font-medium transition-all">R$ 100</button>
+            <button type="button" onclick="setCustomVal(200)" class="px-3 py-1 bg-slate-100 hover:bg-vinho hover:text-white rounded-lg text-xs font-medium transition-all">R$ 200</button>
+            <button type="button" onclick="setCustomVal(500)" class="px-3 py-1 bg-slate-100 hover:bg-vinho hover:text-white rounded-lg text-xs font-medium transition-all">R$ 500</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Seu Nome / Família *</label>
+          <input type="text" id="donorName" required placeholder="Ex: Tio Carlos e Família" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-vinho text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Mensagem de Carinho aos Noivos (Opcional)</label>
+          <textarea id="donorMessage" rows="3" placeholder="Deixe um recado especial para o Jefferson e a Beatriz..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-vinho text-sm resize-none"></textarea>
+        </div>
+
+        <div id="payment-error-msg" class="hidden text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200 font-medium"></div>
+
+        <button type="submit" id="btnSubmitPayment" class="w-full bg-vinho text-white py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-vinho/20 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Pagar com Mercado Pago (PIX ou Cartão)
+        </button>
+
+        <p class="text-[11px] text-zinc-400 text-center">
+          Você será redirecionado para o ambiente seguro do Mercado Pago.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <footer class="mt-16 border-t border-slate-100 bg-white/60">
     <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[0.7rem] text-zinc-600">
       <span>Com carinho, Jefferson &amp; Beatriz</span>
       <span>Que esse seja apenas o começo de muitas comemorações.</span>
     </div>
   </footer>
 
-  <script src="https://unpkg.com/lucide@0.344.0" integrity="sha256-fJc75Q6pL2naKY4BfgHo5qBo+LWZ7ghwQRgfFRyO8JI=" crossorigin="anonymous" defer></script>
-  <script src="./js/config.js" defer></script>
-  <script src="./js/shared.js" defer></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/shared.js"></script>
   <script>
+    let allGifts = [];
+    let selectedCategory = 'todas';
     let currentGiftsPixIdx = 0;
     let isGiftsPixRevealed = false;
+    let supabaseClient = null;
 
+    // Inicialização do Supabase
+    function getSupabase() {
+      if (supabaseClient) return supabaseClient;
+      if (window.supabase && window.WEDDING_CONFIG?.supabaseUrl && window.WEDDING_CONFIG?.supabaseAnonKey) {
+        supabaseClient = window.supabase.createClient(
+          window.WEDDING_CONFIG.supabaseUrl,
+          window.WEDDING_CONFIG.supabaseAnonKey
+        );
+      }
+      return supabaseClient;
+    }
+
+    // Carregar presentes do Supabase
+    async function loadGifts() {
+      const client = getSupabase();
+      if (!client) {
+        renderGifts(getFallbackGifts());
+        return;
+      }
+
+      try {
+        const { data, error } = await client
+          .from('home_items')
+          .select('*')
+          .eq('is_gift', true)
+          .order('priority', { ascending: true })
+          .order('created_at', { ascending: false });
+
+        if (error || !data || data.length === 0) {
+          allGifts = getFallbackGifts();
+        } else {
+          allGifts = data;
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar presentes do banco, usando catálogo padrão:', err);
+        allGifts = getFallbackGifts();
+      }
+
+      renderGifts(allGifts);
+      loadMural();
+    }
+
+    // Carregar mural de recados
+    async function loadMural() {
+      const client = getSupabase();
+      if (!client) return;
+
+      try {
+        const { data, error } = await client
+          .from('gift_contributions')
+          .select('donor_name, donor_message, item_name, created_at')
+          .eq('payment_status', 'approved')
+          .neq('donor_message', '')
+          .order('created_at', { ascending: false })
+          .limit(9);
+
+        if (!error && data && data.length > 0) {
+          const muralSection = document.getElementById('mural-section');
+          const muralGrid = document.getElementById('mural-grid');
+          if (muralSection && muralGrid) {
+            muralSection.classList.remove('hidden');
+            muralGrid.innerHTML = data.map(m => `
+              <div class="premium-glass rounded-2xl p-5 border border-vinho/10 flex flex-col justify-between">
+                <p class="text-xs text-zinc-600 italic mb-3">"${escapeHTML(m.donor_message)}"</p>
+                <div class="border-t border-slate-100 pt-2 flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-vinho">${escapeHTML(m.donor_name)}</span>
+                  <span class="text-zinc-400 font-medium">${escapeHTML(m.item_name)}</span>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        console.warn('Mural:', err);
+      }
+    }
+
+    function getFallbackGifts() {
+      return [
+        {
+          id: 'cota-lua-de-mel',
+          name: 'Cota Lua de Mel / Viagem dos Noivos ✈️',
+          category: 'Cotas',
+          price: 150,
+          is_custom_price: true,
+          link_image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop&q=80',
+          notes: 'Ajude a tornar nossa viagem inesquecível com o valor que desejar!'
+        },
+        {
+          id: 'jogo-panelas',
+          name: 'Conjunto de Panelas Antiaderente',
+          category: 'Cozinha',
+          price: 380,
+          link_image: 'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80',
+          notes: 'Para os melhores jantares e receitas do nosso novo lar.'
+        },
+        {
+          id: 'jogo-cama-king',
+          name: 'Jogo de Cama King 400 Fios',
+          category: 'Quarto',
+          price: 260,
+          link_image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600&auto=format&fit=crop&q=80',
+          notes: 'Para noites de descanso cheias de aconchego.'
+        },
+        {
+          id: 'airfryer',
+          name: 'Fritadeira Air Fryer Digital',
+          category: 'Eletrodomésticos',
+          price: 350,
+          link_image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80',
+          notes: 'Praticidade total no dia a dia da nossa cozinha.'
+        },
+        {
+          id: 'jantar-romantico',
+          name: 'Jantar Romântico na Lua de Mel 🍷',
+          category: 'Cotas',
+          price: 200,
+          link_image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80',
+          notes: 'Um brinde ao amor com uma refeição especial.'
+        },
+        {
+          id: 'faqueiro-inox',
+          name: 'Faqueiro Inox Completo 48 Peças',
+          category: 'Cozinha',
+          price: 190,
+          link_image: 'https://images.unsplash.com/photo-1584346133934-a3afd2a33c4c?w=600&auto=format&fit=crop&q=80',
+          notes: 'Para receber a família e os amigos com muito carinho.'
+        }
+      ];
+    }
+
+    function renderGifts(items) {
+      const grid = document.getElementById('gifts-grid');
+      if (!grid) return;
+
+      let filtered = items;
+      if (selectedCategory !== 'todas') {
+        filtered = filtered.filter(x => (x.category || '').toLowerCase() === selectedCategory.toLowerCase());
+      }
+
+      const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      if (q) {
+        filtered = filtered.filter(x => (x.name || '').toLowerCase().includes(q) || (x.category || '').toLowerCase().includes(q));
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center text-zinc-400">
+            <p class="text-sm font-medium">Nenhum presente encontrado nesta categoria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Adicionar sempre um card de Cota Livre se não estiver na busca
+      let html = '';
+      
+      filtered.forEach(item => {
+        const isGifted = item.is_gifted || item.status === 'temos';
+        const priceFormatted = item.price > 0 ? formatMoney(item.price) : 'Valor à sua escolha';
+        const img = item.link_image || getDefaultCategoryImg(item.category);
+        const giftedBadge = isGifted ? `
+          <div class="absolute top-3 right-3 bg-emerald-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md flex items-center gap-1">
+            <span>🎁 Presenteado ${item.gifted_by ? `por ${escapeHTML(item.gifted_by)}` : ''}</span>
+          </div>
+        ` : '';
+
+        const actionButtons = isGifted ? `
+          <div class="w-full bg-emerald-50 text-emerald-700 text-center py-2.5 rounded-2xl text-xs font-bold border border-emerald-100">
+            ❤️ Este presente já foi escolhido!
+          </div>
+        ` : `
+          <div class="flex items-center gap-2 mt-auto">
+            <button type="button" onclick="openCheckoutModal('${escapeAttr(item.id)}', '${escapeAttr(item.name)}', ${item.price || 0}, '${escapeAttr(item.category || '')}', ${Boolean(item.is_custom_price)})" class="flex-1 bg-vinho text-white py-2.5 rounded-2xl text-xs font-bold shadow-md shadow-vinho/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
+              <span>🎁 Presentear</span>
+            </button>
+            ${item.buy_link ? `
+              <a href="${escapeAttr(item.buy_link)}" target="_blank" rel="noopener noreferrer" title="Ver produto na loja" class="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all shrink-0">
+                🛒
+              </a>
+            ` : ''}
+          </div>
+        `;
+
+        html += `
+          <article class="premium-glass rounded-3xl overflow-hidden flex flex-col justify-between border border-slate-100 transition-all hover:shadow-xl relative group">
+            <div class="relative h-48 w-full bg-slate-100 overflow-hidden">
+              <img src="${img}" alt="${escapeHTML(item.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&auto=format&fit=crop&q=80'" />
+              ${giftedBadge}
+              <div class="absolute bottom-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-vinho uppercase tracking-wider">
+                ${escapeHTML(item.category || 'Casa')}
+              </div>
+            </div>
+
+            <div class="p-5 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-base text-zinc-900 line-clamp-2 mb-1">${escapeHTML(item.name)}</h3>
+                ${item.notes ? `<p class="text-xs text-zinc-500 line-clamp-2 mb-3 leading-relaxed">${escapeHTML(item.notes)}</p>` : '<div class="mb-3"></div>'}
+              </div>
+
+              <div class="pt-2 border-t border-slate-100/80 mb-4 flex items-baseline justify-between">
+                <span class="text-[10px] uppercase font-bold text-zinc-400">Valor sugerido:</span>
+                <span class="text-base font-bold text-vinho">${priceFormatted}</span>
+              </div>
+
+              ${actionButtons}
+            </div>
+          </article>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    function getDefaultCategoryImg(cat) {
+      const map = {
+        'Cozinha': 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80',
+        'Quarto': 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600&auto=format&fit=crop&q=80',
+        'Sala': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80',
+        'Eletrodomésticos': 'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80',
+        'Cotas': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop&q=80',
+      };
+      return map[cat] || 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&auto=format&fit=crop&q=80';
+    }
+
+    function filterCategory(cat) {
+      selectedCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => {
+        const text = b.textContent.trim().toLowerCase();
+        if (cat === 'todas' && text.includes('todas')) {
+          b.className = 'cat-btn active px-4 py-2 rounded-full text-xs font-bold transition-all bg-vinho text-white shadow-sm';
+        } else if (text.includes(cat.toLowerCase())) {
+          b.className = 'cat-btn active px-4 py-2 rounded-full text-xs font-bold transition-all bg-vinho text-white shadow-sm';
+        } else {
+          b.className = 'cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50';
+        }
+      });
+      renderGifts(allGifts);
+    }
+
+    function filterItems() {
+      renderGifts(allGifts);
+    }
+
+    // Modal de Checkout
+    function openCheckoutModal(id, title, price, category, isCustom) {
+      document.getElementById('modalItemId').value = id;
+      document.getElementById('modalItemTitle').textContent = title;
+      document.getElementById('modalCategoryTag').textContent = category || 'Presente';
+      document.getElementById('modalItemPriceRaw').value = price;
+
+      const priceContainer = document.getElementById('modalPriceContainer');
+      const customGroup = document.getElementById('customPriceInputGroup');
+      const errEl = document.getElementById('payment-error-msg');
+      errEl.classList.add('hidden');
+
+      if (isCustom || price <= 0) {
+        priceContainer.innerHTML = '<span class="text-sm font-bold text-vinho">Valor Livre</span>';
+        customGroup.classList.remove('hidden');
+        document.getElementById('customAmountInput').value = price > 0 ? price : 100;
+      } else {
+        priceContainer.innerHTML = `<span class="text-lg font-bold text-vinho">${formatMoney(price)}</span>`;
+        customGroup.classList.add('hidden');
+      }
+
+      document.getElementById('checkoutModal').classList.add('active');
+    }
+
+    function closeCheckoutModal(force) {
+      if (force === true || force.target?.id === 'checkoutModal') {
+        document.getElementById('checkoutModal').classList.remove('active');
+      }
+    }
+
+    function setCustomVal(val) {
+      const input = document.getElementById('customAmountInput');
+      if (input) input.value = val;
+    }
+
+    async function submitGiftPayment(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitPayment');
+      const errEl = document.getElementById('payment-error-msg');
+      errEl.classList.add('hidden');
+
+      const itemId = document.getElementById('modalItemId').value;
+      const itemName = document.getElementById('modalItemTitle').textContent;
+      let price = parseFloat(document.getElementById('modalItemPriceRaw').value) || 0;
+      
+      const customGroup = document.getElementById('customPriceInputGroup');
+      if (!customGroup.classList.contains('hidden')) {
+        price = parseFloat(document.getElementById('customAmountInput').value) || 0;
+      }
+
+      if (price <= 0 || isNaN(price)) {
+        errEl.textContent = 'Por favor, informe um valor válido para presentear.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const donorName = document.getElementById('donorName').value.trim();
+      const donorMessage = document.getElementById('donorMessage').value.trim();
+
+      const origText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<div class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Gerando pagamento...';
+
+      try {
+        const res = await fetch('/api/create-gift-preference', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            itemId,
+            itemName,
+            itemPrice: price,
+            donorName,
+            donorMessage,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.initPoint) {
+          throw new Error(data.error || 'Não foi possível conectar com o Mercado Pago.');
+        }
+
+        // Redireciona para o checkout do Mercado Pago
+        window.location.href = data.initPoint;
+      } catch (err) {
+        console.error('Erro checkout:', err);
+        errEl.textContent = err.message || 'Erro ao processar pagamento. Tente novamente.';
+        errEl.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerHTML = origText;
+      }
+    }
+
+    // Seção Chave PIX Direta
     function renderGiftsPix() {
-      const keys = typeof getPixKeys === 'function' ? getPixKeys() : [{ name: 'Jefferson', key: getPixKey(), formatted: '(44) 99927-7915' }];
+      const keys = typeof getPixKeys === 'function' ? getPixKeys() : [{ name: 'Beatriz', key: getPixKey(), formatted: '(45) 99837-8691' }];
       const current = keys[currentGiftsPixIdx] || keys[0];
       if (!current) return;
 
@@ -173,7 +618,7 @@
 
       if (isGiftsPixRevealed) {
         const qrImg = document.getElementById('qr-img');
-        if (qrImg) qrImg.src = `https://quickchart.io/qr?size=250&text=${encodeURIComponent(current.key)}`;
+        if (qrImg) qrImg.src = `https://quickchart.io/qr?size=240&text=${encodeURIComponent(current.key)}&margin=1`;
         const pix = document.getElementById('pix-number');
         if (pix) {
           pix.textContent = current.formatted || current.key;
@@ -197,10 +642,6 @@
       renderGiftsPix();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      renderGiftsPix();
-    });
-
     const btnPix = document.getElementById('btnPix');
     if (btnPix) {
       btnPix.addEventListener('click', async () => {
@@ -217,10 +658,42 @@
       });
     }
 
-    function reveal() { initScrollReveal(); }
+    function formatMoney(val) {
+      return (val || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function escapeHTML(str) {
+      return String(str || '').replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag] || tag));
+    }
+
+    function escapeAttr(str) {
+      return String(str || '').replace(/"/g, '&quot;');
+    }
+
+    // Inicialização da Página
+    document.addEventListener('DOMContentLoaded', () => {
+      renderGiftsPix();
+      loadGifts();
+
+      // Checa retorno do Mercado Pago
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('status') === 'success') {
+        const banner = document.getElementById('payment-success-banner');
+        if (banner) {
+          banner.classList.remove('hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    });
+
     window.addEventListener('load', () => {
       initScrollReveal();
-      if (window.lucide) lucide.createIcons();
     });
   </script>
 </body>
