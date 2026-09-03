@@ -48,14 +48,14 @@ function getConfig(key, fallback) {
 
 function getPixKey() {
   const keys = getPixKeys();
-  return keys[0]?.key || getConfig('pixKey', '44999277915');
+  return keys[0]?.key || getConfig('pixKey', '45998378691');
 }
 
 function getPixKeys() {
   const keys = getConfig('pixKeys', null);
   if (Array.isArray(keys) && keys.length > 0) return keys;
-  const single = getConfig('pixKey', '44999277915');
-  return [{ name: 'Jefferson', key: single, formatted: '(44) 99927-7915' }];
+  const single = getConfig('pixKey', '45998378691');
+  return [{ name: 'Beatriz', key: single, formatted: '(45) 99837-8691' }];
 }
 
 function getVenue() {

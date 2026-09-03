@@ -34,10 +34,10 @@ const config = {
   adminEmails,
   adminUsers,
   // Wedding constants (public, not secrets)
-  pixKey: '44999277915',
+  pixKey: '45998378691',
   pixKeys: [
-    { name: 'Jefferson', key: '44999277915', formatted: '(44) 99927-7915' },
-    { name: 'Beatriz', key: '45998378691', formatted: '(45) 99837-8691' }
+    { name: 'Beatriz', key: '45998378691', formatted: '(45) 99837-8691' },
+    { name: 'Jefferson', key: '44999277915', formatted: '(44) 99927-7915' }
   ],
   venue: {
     name: 'Capela São Maximiliano Maria Kolbe',
