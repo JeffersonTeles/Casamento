@@ -276,27 +276,50 @@
 
     // Carregar presentes do Supabase
     async function loadGifts() {
-      const client = getSupabase();
-      if (!client) {
-        renderGifts(getFallbackGifts());
-        return;
-      }
+      const config = window.WEDDING_CONFIG || {};
+      const url = config.supabaseUrl || 'https://ysadooisujkjindusjbu.supabase.co';
+      const key = config.supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8';
 
       try {
-        const { data, error } = await client
-          .from('home_items')
-          .select('*')
-          .eq('is_gift', true)
-          .order('priority', { ascending: true })
-          .order('created_at', { ascending: false });
+        const res = await fetch(`${url}/rest/v1/home_items?select=*&order=created_at.desc`, {
+          headers: {
+            'apikey': key,
+            'Authorization': `Bearer ${key}`
+          }
+        });
 
-        if (error || !data || data.length === 0) {
-          allGifts = getFallbackGifts();
-        } else {
-          allGifts = data;
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            // Adiciona as cotas especiais de Lua de Mel
+            const cotas = [
+              {
+                id: 'cota-lua-de-mel',
+                name: 'Cota Lua de Mel / Viagem dos Noivos ✈️',
+                category: 'Cotas',
+                price: 150,
+                is_custom_price: true,
+                link_image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop&q=80',
+                notes: 'Contribua com o valor que desejar para tornar nossa viagem inesquecível!'
+              },
+              {
+                id: 'jantar-romantico',
+                name: 'Jantar Romântico na Lua de Mel 🍷',
+                category: 'Cotas',
+                price: 200,
+                is_custom_price: true,
+                link_image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80',
+                notes: 'Um brinde ao nosso amor com uma refeição especial.'
+              }
+            ];
+            allGifts = [...cotas, ...data];
+          }
         }
       } catch (err) {
         console.warn('Erro ao carregar presentes do banco, usando catálogo padrão:', err);
+      }
+
+      if (!allGifts || allGifts.length === 0) {
         allGifts = getFallbackGifts();
       }
 
