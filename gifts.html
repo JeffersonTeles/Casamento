@@ -103,7 +103,10 @@
 
     <section class="reveal active mt-12">
       <div class="premium-glass rounded-[2.5rem] p-8 md:p-12 max-w-lg mx-auto" style="text-align:center">
-        <p class="text-xs font-bold text-vinho uppercase tracking-widest mb-6">Chave PIX (Telefone)</p>
+        <p class="text-xs font-bold text-vinho uppercase tracking-widest mb-4">Chave PIX (Telefone)</p>
+
+        <!-- Seletor de Chaves PIX -->
+        <div id="gifts-pix-tabs" class="flex justify-center gap-2 mb-6"></div>
         
         <div id="pix-container" class="cursor-pointer" onclick="revealPix()" style="display:flex;flex-direction:column;align-items:center">
           <div id="qr-placeholder" class="bg-slate-100 w-48 h-48 md:w-64 md:h-64 rounded-3xl flex flex-col items-center justify-center border border-dashed border-vinho/20 mb-6">
@@ -118,7 +121,7 @@
 
         <div class="space-y-3" style="max-width:280px;margin-left:auto;margin-right:auto">
           <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-            <p class="text-[0.65rem] text-vinho/80 uppercase font-bold tracking-tight mb-1">Telefone (Chave PIX)</p>
+            <p id="gifts-pix-label" class="text-[0.65rem] text-vinho/80 uppercase font-bold tracking-tight mb-1">Telefone (Chave PIX)</p>
             <p id="pix-number" class="text-xl font-mono text-vinho font-bold tracking-tighter blur-sm select-none">00000000000</p>
           </div>
 
@@ -148,22 +151,62 @@
   <script src="./js/config.js" defer></script>
   <script src="./js/shared.js" defer></script>
   <script>
+    let currentGiftsPixIdx = 0;
+    let isGiftsPixRevealed = false;
+
+    function renderGiftsPix() {
+      const keys = typeof getPixKeys === 'function' ? getPixKeys() : [{ name: 'Jefferson', key: getPixKey(), formatted: '(44) 99927-7915' }];
+      const current = keys[currentGiftsPixIdx] || keys[0];
+      if (!current) return;
+
+      const tabs = document.getElementById('gifts-pix-tabs');
+      if (tabs && keys.length > 1) {
+        tabs.innerHTML = keys.map((k, idx) => `
+          <button type="button" onclick="selectGiftsPix(${idx})" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all ${idx === currentGiftsPixIdx ? 'bg-vinho text-white shadow-sm' : 'bg-vinho/5 text-vinho/70 hover:bg-vinho/10'}">
+            ${k.name}
+          </button>
+        `).join('');
+      }
+
+      const labelEl = document.getElementById('gifts-pix-label');
+      if (labelEl) labelEl.textContent = `Chave PIX (${current.name})`;
+
+      if (isGiftsPixRevealed) {
+        const qrImg = document.getElementById('qr-img');
+        if (qrImg) qrImg.src = `https://quickchart.io/qr?size=250&text=${encodeURIComponent(current.key)}`;
+        const pix = document.getElementById('pix-number');
+        if (pix) {
+          pix.textContent = current.formatted || current.key;
+          pix.classList.remove('blur-sm', 'select-none');
+        }
+      }
+    }
+
+    function selectGiftsPix(idx) {
+      currentGiftsPixIdx = idx;
+      renderGiftsPix();
+    }
+
     function revealPix() {
+      isGiftsPixRevealed = true;
       document.getElementById('qr-placeholder').classList.add('hidden');
       const qrReal = document.getElementById('qr-real');
-      qrReal.classList.remove('hidden');
-      const pixKey = getPixKey();
-      document.getElementById('qr-img').src = `https://quickchart.io/qr?size=250&text=${encodeURIComponent(pixKey)}`;
-      const pix = document.getElementById('pix-number');
-      pix.textContent = pixKey;
-      pix.classList.remove('blur-sm', 'select-none');
-      document.getElementById('btnPix').disabled = false;
+      if (qrReal) qrReal.classList.remove('hidden');
+      const btn = document.getElementById('btnPix');
+      if (btn) btn.disabled = false;
+      renderGiftsPix();
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderGiftsPix();
+    });
 
     const btnPix = document.getElementById('btnPix');
     if (btnPix) {
       btnPix.addEventListener('click', async () => {
-        const ok = await copyToClipboard(getPixKey());
+        const keys = typeof getPixKeys === 'function' ? getPixKeys() : [];
+        const current = keys[currentGiftsPixIdx] || keys[0];
+        const ok = await copyToClipboard(current?.key || getPixKey());
         const original = btnPix.textContent;
         btnPix.textContent = ok ? 'Chave copiada! \u2713' : 'Falha ao copiar';
         btnPix.classList.add(ok ? 'bg-green-600' : 'bg-red-600');

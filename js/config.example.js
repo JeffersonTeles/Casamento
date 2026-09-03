@@ -25,6 +25,10 @@ window.WEDDING_CONFIG = {
 
   // Dados centralizados do casamento
   pixKey: '44999277915',
+  pixKeys: [
+    { name: 'Jefferson', key: '44999277915', formatted: '(44) 99927-7915' },
+    { name: 'Beatriz', key: '45998378691', formatted: '(45) 99837-8691' },
+  ],
   venue: {
     name: 'Capela São Maximiliano Maria Kolbe',
     address: 'R. Frei Maximiliano kolbe, 970 — Cascavel, PR',

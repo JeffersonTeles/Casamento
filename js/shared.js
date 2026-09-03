@@ -47,7 +47,15 @@ function getConfig(key, fallback) {
 }
 
 function getPixKey() {
-  return getConfig('pixKey', '44999277915');
+  const keys = getPixKeys();
+  return keys[0]?.key || getConfig('pixKey', '44999277915');
+}
+
+function getPixKeys() {
+  const keys = getConfig('pixKeys', null);
+  if (Array.isArray(keys) && keys.length > 0) return keys;
+  const single = getConfig('pixKey', '44999277915');
+  return [{ name: 'Jefferson', key: single, formatted: '(44) 99927-7915' }];
 }
 
 function getVenue() {

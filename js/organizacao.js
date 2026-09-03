@@ -1314,10 +1314,24 @@ function getGuestPersonCount(g) {
       toggleEditModal(false); fetchGuests();
     }
     async function deleteGuest(id) { 
-      showUndoToast('Convidado removido', async () => {
+      showUndoToast('Excluir convidado?', async () => {
+        try {
+          // Desvincula parceiro caso algum convidado aponte para este
+          await supabaseClient.from('guests').update({ partner_id: null }).eq('partner_id', id);
+          // Remove registros de visualizações prévias
+          await supabaseClient.from('guest_views').delete().eq('guest_id', id);
+        } catch (cleanErr) {
+          console.warn('Aviso na limpeza prévia:', cleanErr);
+        }
+
         const { error } = await supabaseClient.from('guests').delete().eq('id', id); 
-        if (error) { console.error('Erro delete guest:', error); showToast('Erro ao remover convidado', 'error'); return; }
+        if (error) { 
+          console.error('Erro delete guest:', error); 
+          showToast('Erro ao remover convidado: ' + (error.message || 'Verifique as permissões do banco'), 'error'); 
+          return; 
+        }
         await logAudit('guests', id, 'DELETE');
+        showToast('Convidado removido com sucesso!', 'success');
         fetchGuests(); 
       });
     }

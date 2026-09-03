@@ -16,7 +16,7 @@ create table if not exists public.guests (
   invite_token text unique,
   invited_by text,
   "group" text,
-  partner_id uuid references public.guests(id),
+  partner_id uuid references public.guests(id) on delete set null,
   partner_name text,
   plus_ones integer default 0,
   is_vip boolean default false,
@@ -234,7 +234,7 @@ create policy "documents_admin" on public.documents
 -- ---------- GUEST_VIEWS ----------
 create table if not exists public.guest_views (
   id uuid primary key default gen_random_uuid(),
-  guest_id uuid references public.guests(id),
+  guest_id uuid references public.guests(id) on delete cascade,
   viewed_at timestamptz not null default now(),
   ip_address text,
   user_agent text,
@@ -250,7 +250,7 @@ create policy "guest_views_admin" on public.guest_views
 -- Somente o admin grava logs. Leituras restritas a autenticados.
 create table if not exists public.rsvp_access_logs (
   id uuid primary key default gen_random_uuid(),
-  guest_id uuid references public.guests(id),
+  guest_id uuid references public.guests(id) on delete cascade,
   access_time timestamptz not null default now()
 );
 alter table public.rsvp_access_logs enable row level security;
@@ -262,6 +262,10 @@ create policy "rsvp_logs_select_admin" on public.rsvp_access_logs
 drop policy if exists "rsvp_logs_insert_anon" on public.rsvp_access_logs;
 create policy "rsvp_logs_insert_anon" on public.rsvp_access_logs
   for insert to anon, authenticated with check (true);
+
+drop policy if exists "rsvp_logs_delete_admin" on public.rsvp_access_logs;
+create policy "rsvp_logs_delete_admin" on public.rsvp_access_logs
+  for delete to authenticated using (public.is_admin());
 
 -- ---------- TIMELINE ----------
 create table if not exists public.timeline (
