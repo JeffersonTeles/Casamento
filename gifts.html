@@ -698,8 +698,29 @@
           throw new Error(data.error || 'Não foi possível conectar ao Mercado Pago.');
         }
 
+        // Garante que o SDK do MP está carregado antes de usar
+        if (typeof window.MercadoPago === 'undefined') {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://sdk.mercadopago.com/js/v2';
+            script.onload = () => {
+              if (typeof window.MercadoPago !== 'undefined') {
+                resolve();
+              } else {
+                reject(new Error('SDK do Mercado Pago carregado, mas objeto global indisponível.'));
+              }
+            };
+            script.onerror = () => reject(new Error('Falha ao carregar o SDK do Mercado Pago. Verifique sua conexão ou bloqueador de anúncios.'));
+            document.head.appendChild(script);
+          });
+        }
+
+        if (typeof window.MercadoPago === 'undefined') {
+          throw new Error('SDK do Mercado Pago não pôde ser inicializado.');
+        }
+
         // Renderiza o Payment Brick
-        const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' });
+        const mp = new window.MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' });
         const bricks = mp.bricks();
 
         document.getElementById('mp-brick-loading').classList.add('hidden');
@@ -771,7 +792,8 @@
         document.getElementById('mp-payment-brick-container').innerHTML = `
           <div class="text-xs text-red-600 bg-red-50 p-4 rounded-xl border border-red-200 text-center">
             <p class="font-bold mb-1">Erro ao carregar o formulário de pagamento.</p>
-            <p class="text-zinc-500">${err.message}</p>
+            <p class="text-zinc-600 mb-3">${err.message}</p>
+            <p class="text-zinc-500">Dica: Se estiver usando bloqueadores de anúncios (AdBlock) ou Brave, tente desativá-lós temporariamente para esta página, ou utilize nossa Chave PIX direta logo abaixo!</p>
           </div>`;
         if (btn) { btn.disabled = false; }
       }
