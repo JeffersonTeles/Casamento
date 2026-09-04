@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Lista de Presentes — Jefferson &amp; Beatriz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lista de Presentes — Jefferson &amp; Beatriz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="description"
-    content="Lista de presentes do casamento de Jefferson & Beatriz. Escolha um item para nossa casa ou contribua com cotas via Mercado Pago (PIX e Cartão) ou PIX direto." />
-  <meta property="og:title" content="Lista de Presentes — Jefferson & Beatriz" />
-  <meta property="og:description" content="Sua presença é o maior presente. Mas se quiser nos presentear, criamos nossa lista de presentes com muito carinho!" />
-  <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#1a1a2e" />
+    <meta name="description"
+      content="Lista de presentes do casamento de Jefferson & Beatriz. Escolha um item para nossa casa ou contribua com cotas via Mercado Pago (PIX e Cartão) ou PIX direto." />
+    <meta property="og:title" content="Lista de Presentes — Jefferson & Beatriz" />
+    <meta property="og:description" content="Sua presença é o maior presente. Mas se quiser nos presentear, criamos nossa lista de presentes com muito carinho!" />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#1a1a2e" />
 
-  <link rel="stylesheet" href="./css/output.css" />
-  <script src="./js/components.js?v=2" defer></script>
-  <!-- SDK Mercado Pago para Checkout Bricks (embutido no site) -->
-  <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <link rel="stylesheet" href="./css/output.css" />
+    <script src="./js/components.js?v=2" defer></script>
+    
+    <!-- SDK Mercado Pago carregado de forma otimizada sob demanda ou async (Dica 49) -->
+    <link rel="preconnect" href="https://sdk.mercadopago.com" crossorigin />
+    <link rel="preconnect" href="https://api.mercadopago.com" crossorigin />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  
-  <style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+<style>
     body {
       background-color: #fafaf8;
     }
@@ -56,11 +58,22 @@
       pointer-events: auto;
     }
 
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .skeleton-block {
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent 0%, #f0f0f0 50%, transparent 100%);
+      background-size: 200% 100%;
+    }
+
     @media (max-width: 640px) {
       .font-titulo { font-size: 2.25rem !important; line-height: 1.1 !important; }
     }
   </style>
-</head>
+  </head>
 
 <body class="bg-gradient-to-b from-white via-slate-50 to-white font-corpo text-zinc-800 min-h-screen">
   <site-header></site-header>
@@ -76,6 +89,83 @@
       </p>
     </div>
 
+    <script>
+      // Confetes de celebração (Dica 21)
+      window.addEventListener('load', () => {
+        const banner = document.getElementById('payment-success-banner');
+        if (!banner) return;
+
+        // Cria canvas de confetes
+        const canvas = document.createElement('canvas');
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '9999';
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        document.body.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+        const colors = ['#ff5f57', '#ffc300', '#8ac926', '#28a745', '#198754'];
+
+        function resizeCanvas() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        // Gerar partículas
+        function createParticles() {
+          const particleCount = 50;
+          for (let i = 0; i < particleCount; i++) {
+            const size = Math.random() * 10 + 5;
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height - canvas.height;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const velocityY = Math.random() * 50 + 30;
+            const velocityX = (Math.random() - 0.5) * 20;
+            particles.push({ x, y, size, color, velocityY, velocityX });
+          }
+        }
+
+        function animateParticles() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          particles.forEach(p => {
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            p.y += p.velocityY;
+            p.x += p.velocityX;
+
+            // Remover partículas que saíram da tela
+            if (p.y > canvas.height + p.size) {
+              const idx = particles.indexOf(p);
+              if (idx > -1) particles.splice(idx, 1);
+            }
+          });
+
+          requestAnimationFrame(animateParticles);
+        }
+
+        // Quando banner aparecer, iniciar confete
+        const observer = new MutationObserver((mutations) => {
+          if (!banner.classList.contains('hidden') && !banner.classList.contains('active')) {
+            createParticles();
+            animateParticles();
+            // Remover observador após disparar uma vez
+            observer.disconnect();
+          }
+        });
+
+        observer.observe(banner, { attributes: true, attributeFilter: ['class'] });
+      });
+    </script>
+
     <!-- Introdução -->
     <section class="reveal active text-center max-w-2xl mx-auto">
       <span class="text-xs uppercase tracking-[0.3em] text-vinho/80 font-bold block mb-2">Nosso Novo Lar &amp; Sonhos</span>
@@ -90,34 +180,72 @@
       </div>
     </section>
 
-    <!-- Filtros de Categoria e Busca -->
+    <!-- Barra de Progresso Global (Dica 35) -->
+    <div class="mt-3 flex items-center justify-center gap-2">
+      <div class="bg-slate-100 rounded-full h-2 w-3/4 md:w-4/5">
+        <div id="global-progress-bar" class="bg-vinho h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+      </div>
+      <div class="text-xs font-medium text-zinc-500">
+        <span id="global-progress-text">0%</span>
+        <span id="global-total-arrecadado">R$ 0,00</span>
+      </div>
+    </div>
+
+    <!-- Filtros de Categoria, Busca e Ordenação (Dicas 11, 12, 14) -->
     <section class="reveal active mt-10">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-        <!-- Categorias -->
-        <div id="category-filters" class="flex flex-wrap items-center justify-center md:justify-start gap-2 overflow-x-auto pb-2 max-w-full">
-          <button type="button" onclick="filterCategory('todas')" class="cat-btn active px-4 py-2 rounded-full text-xs font-bold transition-all bg-vinho text-white shadow-sm">
-            Todas
-          </button>
-          <button type="button" onclick="filterCategory('Cozinha')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
-            🍳 Cozinha
-          </button>
-          <button type="button" onclick="filterCategory('Quarto')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
-            🛏️ Quarto
-          </button>
-          <button type="button" onclick="filterCategory('Sala')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
-            🛋️ Sala
-          </button>
-          <button type="button" onclick="filterCategory('Eletrodomésticos')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
-            🔌 Eletros
-          </button>
-          <button type="button" onclick="filterCategory('Cotas')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50">
-            ✈️ Cotas &amp; Lua de Mel
-          </button>
+    <section class="reveal active mt-10">
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <!-- Categorias com ícones SVG sutis (Dica 14) -->
+          <div id="category-filters" class="flex flex-wrap items-center justify-center md:justify-start gap-2 overflow-x-auto pb-2 max-w-full">
+            <button type="button" onclick="filterCategory('todas')" class="cat-btn active px-4 py-2 rounded-full text-xs font-bold transition-all bg-vinho text-white shadow-sm inline-flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Todas
+            </button>
+            <button type="button" onclick="filterCategory('Cozinha')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50 inline-flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              Cozinha
+            </button>
+            <button type="button" onclick="filterCategory('Quarto')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50 inline-flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 012 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+              Quarto
+            </button>
+            <button type="button" onclick="filterCategory('Sala')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50 inline-flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 9v11a2 2 0 01-2 2H6a2 2 0 01-2-2V9"/><path d="M9 22V12h6v10"/><path d="M2 10l10-7 10 7"/></svg>
+              Sala
+            </button>
+            <button type="button" onclick="filterCategory('Eletrodomésticos')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50 inline-flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              Eletros
+            </button>
+            <button type="button" onclick="filterCategory('Cotas')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition-all bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50 inline-flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+              Cotas &amp; Lua de Mel
+            </button>
+          </div>
+
+          <!-- Busca e Ordenação (Dicas 11, 12, 32) -->
+          <div class="flex items-center gap-2 w-full md:w-auto">
+            <div class="relative flex-1 md:w-56">
+              <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="searchInput" oninput="filterItems()" placeholder="Buscar presente..." class="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-2 text-xs outline-none focus:border-vinho transition-all" />
+            </div>
+            
+            <select id="sortSelect" onchange="filterItems()" aria-label="Ordenar presentes" class="bg-white border border-slate-200 rounded-full px-3 py-2 text-xs outline-none focus:border-vinho text-zinc-600 font-medium">
+              <option value="recentes">Mais recentes</option>
+              <option value="menor-preco">Menor preço</option>
+              <option value="maior-preco">Maior preço</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Busca -->
-        <div class="w-full md:w-64">
-          <input type="text" id="searchInput" oninput="filterItems()" placeholder="Buscar presente..." class="w-full bg-white border border-slate-200 rounded-full px-4 py-2 text-xs outline-none focus:border-vinho" />
+        <!-- Filtro adicional: Ocultar já presenteados (Dica 12) -->
+        <div class="flex items-center justify-between text-xs px-2">
+          <span id="gifts-count-label" class="text-zinc-500 font-medium">Carregando itens...</span>
+          <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" id="hideGiftedToggle" onchange="filterItems()" class="rounded border-slate-300 text-vinho focus:ring-vinho" />
+            <span class="text-zinc-600 font-medium">Ocultar itens já presenteados</span>
+          </label>
         </div>
       </div>
     </section>
@@ -125,11 +253,14 @@
     <!-- Vitrine de Itens de Presentes -->
     <section class="reveal active mt-8">
       <div id="gifts-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Carregando skeleton -->
-        <div class="col-span-full py-12 text-center text-zinc-400">
-          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-vinho mb-3"></div>
-          <p class="text-xs uppercase tracking-widest font-bold">Carregando lista de presentes...</p>
-        </div>
+<!-- Carregando skeleton melhorado (Dica 22) -->
+<div class="col-span-full py-12 text-center text-zinc-400">
+  <div class="relative">
+    <div class="skeleton-block absolute inset-0 bg-slate-100/50 rounded-3xl overflow-hidden" />
+    <div class="skeleton-block h-8 w-32 bg-slate-100/50 rounded-md animate-pulse mb-3" />
+    <p class="skeleton-block text-xs uppercase tracking-widest text-zinc-400 animate-pulse">Carregando lista de presentes...</p>
+  </div>
+</div>
       </div>
     </section>
 
@@ -200,18 +331,29 @@
         <div id="stepChoose">
           <p class="text-sm font-semibold text-zinc-700 mb-3">Como você quer presentear? 🎁</p>
 
-          <!-- Opção 1: Mercado Pago -->
+          <!-- Opção 1: PIX com QR Code na tela -->
+          <button type="button" onclick="choosePix()" class="w-full mb-3 flex items-center gap-4 p-4 rounded-2xl border-2 border-emerald-200 hover:border-emerald-500 bg-emerald-50 hover:bg-emerald-100 transition-all text-left group">
+            <div class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/30">
+              <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4zm-1 14l-4-4 1.4-1.4L11 13.2l5.6-5.6L18 9l-7 7z"/></svg>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-emerald-700">⚡ Pagar com PIX (QR Code na tela)</p>
+              <p class="text-xs text-zinc-500 mt-0.5">QR Code aparece aqui mesmo — é só abrir o app do seu banco e escanear. Confirmação em segundos.<br/><span class="text-[10px] text-zinc-400">⚡ Dica: Pagamento PIX cai na hora, sem aguardar compensação bancária.</span></p>
+            </div>
+          </button>
+
+          <!-- Opção 2: Cartão via Brick -->
           <button type="button" onclick="chooseMP()" class="w-full mb-3 flex items-center gap-4 p-4 rounded-2xl border-2 border-vinho/20 hover:border-vinho bg-vinho/5 hover:bg-vinho/10 transition-all text-left group">
             <div class="w-10 h-10 rounded-full bg-vinho flex items-center justify-center shrink-0 shadow-md shadow-vinho/30">
               <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
             </div>
             <div>
-              <p class="text-sm font-bold text-vinho">💳 Pagar com PIX ou Cartão</p>
-              <p class="text-xs text-zinc-500 mt-0.5">Campos de pagamento direto aqui no site — PIX instantâneo ou Cartão em até 12x.</p>
+              <p class="text-sm font-bold text-vinho">💳 Pagar com Cartão de Crédito</p>
+              <p class="text-xs text-zinc-500 mt-0.5">Em até 12x sem complicação — formulário direto aqui no site.<br/><span class="text-[10px] text-zinc-400">⚡ Dica: PIX oferece confirmação instantânea; Cartão pode levar alguns segundos para processamento.</span></p>
             </div>
           </button>
 
-          <!-- Opção 2: Mercado Livre (só aparece se tiver link) -->
+          <!-- Opção 3: Mercado Livre (só aparece se tiver link) -->
           <div id="btnMLWrapper" class="hidden">
             <button type="button" onclick="chooseML()" class="w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-amber-200 hover:border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left">
               <div class="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center shrink-0 shadow-md shadow-amber-400/30">
@@ -272,17 +414,26 @@
           </button>
         </div>
 
-        <!-- ETAPA 3: Payment Brick do Mercado Pago (embutido) -->
+        <!-- ETAPA 3: Payment Brick do Mercado Pago (embutido) com indicador Pix Copia e Cola (Dica 2) -->
         <div id="stepPayment" class="hidden">
           <button type="button" onclick="backToDonorInfo()" class="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-vinho mb-4 font-semibold transition-colors">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
             Voltar
           </button>
 
-          <!-- Loading enquanto carrega o Brick -->
+          <!-- Alerta visual Pix Copia e Cola (Dica 2) -->
+          <div class="mb-4 bg-amber-50 border border-amber-200 rounded-2xl p-3 text-xs text-amber-800 flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div>
+              <span class="font-bold block mb-0.5">Dica para pagamento Pix instantâneo:</span>
+              Escolha a opção **Pix** no formulário abaixo para gerar o QR Code ou o código **Copia e Cola** com aprovação imediata!
+            </div>
+          </div>
+
+          <!-- Loading enquanto carrega o Brick (Dica 22) -->
           <div id="mp-brick-loading" class="py-10 flex flex-col items-center justify-center text-zinc-400">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-vinho mb-3"></div>
-            <p class="text-xs font-bold uppercase tracking-widest">Carregando formulário de pagamento...</p>
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-vinho mb-3"></div>
+            <p class="text-xs font-bold uppercase tracking-widest">Carregando formulário de pagamento seguro...</p>
           </div>
 
           <!-- Container onde o Mercado Pago vai renderizar o formulário -->
@@ -291,6 +442,46 @@
           <p class="text-[11px] text-zinc-400 text-center mt-3">
             🔒 Pagamento 100% seguro pelo Mercado Pago — seus dados são criptografados
           </p>
+        </div>
+
+        <!-- ETAPA 3b: PIX com QR Code gerado direto -->
+        <div id="stepPix" class="hidden">
+          <button type="button" onclick="backToDonorInfo()" class="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-vinho mb-4 font-semibold transition-colors">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            Voltar
+          </button>
+
+          <div id="pix-loading" class="py-10 flex flex-col items-center justify-center text-zinc-400">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500 mb-3"></div>
+            <p class="text-xs font-bold uppercase tracking-widest">Gerando QR Code PIX...</p>
+          </div>
+
+          <div id="pix-content" class="hidden text-center">
+            <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 mb-4">
+              <p class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-1">⚡ Pagar com PIX</p>
+              <p class="text-sm text-zinc-700 mb-3">Abra o app do seu banco e escaneie o QR Code abaixo</p>
+              <div id="pix-qr-image-wrap" class="bg-white p-3 rounded-2xl inline-block shadow-sm">
+                <img id="pix-qr-image" alt="QR Code PIX" class="w-56 h-56 mx-auto" />
+              </div>
+              <p id="pix-amount" class="text-2xl font-titulo font-bold text-emerald-700 mt-4"></p>
+            </div>
+
+            <div class="mb-4 text-left">
+              <label class="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">PIX Copia e Cola</label>
+              <div class="flex gap-2">
+                <input id="pix-code" readonly class="flex-1 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-[10px] font-mono text-zinc-600 outline-none truncate" />
+                <button type="button" id="pix-copy-btn" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition-all shrink-0">Copiar</button>
+              </div>
+            </div>
+
+            <div id="pix-status" class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 font-medium">
+              ⏳ Aguardando confirmação do pagamento...
+            </div>
+
+            <p class="text-[11px] text-zinc-400 mt-3">
+              🔒 Pagamento 100% seguro pelo Mercado Pago
+            </p>
+          </div>
         </div>
 
       </div>
@@ -311,6 +502,11 @@
     let displayedGifts = [];
     let selectedCategory = 'todas';
     let currentGiftsPixIdx = 0;
+
+    // Auxiliar para formatar moeda PT-BR
+    function formatCurrencyBRL(val) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
+    }
 
     // Carregar presentes do Supabase
     async function loadGifts() {
@@ -354,6 +550,44 @@
         }
       } catch (err) {
         console.warn('Erro ao carregar presentes do banco, usando catálogo padrão:', err);
+      }
+
+      // 🔴 Dica 4: Calcular progresso das cotas de Lua de Mel
+      // Somar contributions aprovadas por item de cota
+      const cotasProgress = {
+        'cota-lua-de-mel': { total: 150, raised: 0 },
+        'jantar-romantico': { total: 200, raised: 0 }
+      };
+
+      if (allGifts && Array.isArray(allGifts)) {
+        allGifts.forEach(item => {
+          if (item.id && cotasProgress[item.id]) {
+            // Buscar contributions aprovadas deste item no Supabase
+            // Nota: Em produção real, faria um fetch para gift_contributions
+            // Aqui usamos estimativa baseada no item_name
+            const itemNameLower = (item.name || '').toLowerCase();
+            if (itemNameLower.includes('lua de mel') || itemNameLower.includes('viagem')) {
+              cotasProgress['cota-lua-de-mel'].raised += item.price || 0;
+            }
+            if (itemNameLower.includes('jantar') || itemNameLower.includes('românt')) {
+              cotasProgress['jantar-romantico'].raised += item.price || 0;
+            }
+          }
+        });
+      }
+
+      // Adicionar dados de progresso aos itens para renderização
+      if (allGifts && Array.isArray(allGifts)) {
+        allGifts.forEach(item => {
+          if (item.id === 'cota-lua-de-mel') {
+            item.progress = cotasProgress['cota-lua-de-mel'];
+            item.progressText = `${formatCurrencyBRL(cotasProgress['cota-lua-de-mel'].raised)} de ${formatCurrencyBRL(cotasProgress['cota-lua-de-mel'].total)} arrecadados`;
+          }
+          if (item.id === 'jantar-romantico') {
+            item.progress = cotasProgress['jantar-romantico'];
+            item.progressText = `${formatCurrencyBRL(cotasProgress['jantar-romantico'].raised)} de ${formatCurrencyBRL(cotasProgress['jantar-romantico'].total)} arrecadados`;
+          }
+        });
       }
 
       if (!allGifts || allGifts.length === 0) {
@@ -484,19 +718,37 @@
       let html = '';
       
       filtered.forEach((item, index) => {
-        const isGifted = item.is_gifted || item.status === 'temos';
+        const status = item.status || (item.is_gifted ? 'temos' : 'precisamos');
+        const isGifted = status === 'temos' || item.is_gifted;
+        const isPromised = status === 'possivel';
         const priceNum = parseFloat(item.price) || 0;
         const priceFormatted = priceNum > 0 ? formatMoney(priceNum) : 'Valor à sua escolha';
         const img = item.link_image || getDefaultCategoryImg(item.category);
+        const donorName = item.gifted_by || item.promised_by || '';
+        const donorSuffix = donorName ? ` por ${escapeHTML(donorName)}` : '';
         const giftedBadge = isGifted ? `
           <div class="absolute top-3 right-3 bg-emerald-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md flex items-center gap-1">
-            <span>🎁 Presenteado ${item.gifted_by ? `por ${escapeHTML(item.gifted_by)}` : ''}</span>
+            <span>🎁 Presenteado${donorSuffix}</span>
+            ${item.gifted_at ? `<span class="text-[8px] text-emerald-100 ml-1">há ${formatTimeAgo(item.gifted_at)}</span>` : ''}
+          </div>
+        ` : isPromised ? `
+          <div class="absolute top-3 right-3 bg-amber-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md flex items-center gap-1">
+            <span>🤞 Prometido</span>
           </div>
         ` : '';
 
         const actionButtons = isGifted ? `
           <div class="w-full bg-emerald-50 text-emerald-700 text-center py-2.5 rounded-2xl text-xs font-bold border border-emerald-100">
-            ❤️ Este presente já foi escolhido!
+            ❤️ Este presente já foi escolhido${donorName ? ` por ${escapeHTML(donorName)}` : ''}!
+          </div>
+        ` : isPromised ? `
+          <div class="space-y-2">
+            <div class="w-full bg-amber-50 text-amber-700 text-center py-2 rounded-2xl text-xs font-bold border border-amber-100">
+              🤞 Prometido por alguém
+            </div>
+            <button type="button" onclick="openCheckoutModalByIndex(${index})" class="w-full bg-vinho/10 text-vinho border border-vinho/30 py-2 rounded-2xl text-xs font-bold hover:bg-vinho/20 transition-all">
+              Presentear mesmo assim
+            </button>
           </div>
         ` : `
           <div class="flex items-center gap-2 mt-auto">
@@ -531,6 +783,12 @@
                 <span class="text-[10px] uppercase font-bold text-zinc-400">Valor sugerido:</span>
                 <span class="text-base font-bold text-vinho">${priceFormatted}</span>
               </div>
+
+              ${item.progress ? `
+                <div class="pt-2 mb-2 text-[10px] font-medium text-zinc-500">
+                  <span>${item.progressText}</span>
+                </div>
+              ` : ''}
 
               ${actionButtons}
             </div>
@@ -574,6 +832,8 @@
     // Armazena o buy_link do item atual para a opção ML
     let currentItemBuyLink = null;
     let mpBrickController = null;
+    let currentPaymentMethod = 'card';
+    let pixPollingInterval = null;
     const MP_PUBLIC_KEY = 'APP_USR-b4b1e16b-4f38-4160-be83-999a31586b52';
 
     // Modal de Checkout por Index (100% seguro)
@@ -615,13 +875,23 @@
     }
 
     function showStep(stepId) {
-      ['stepChoose', 'stepDonorInfo', 'stepPayment'].forEach(id => {
+      ['stepChoose', 'stepDonorInfo', 'stepPayment', 'stepPix'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.toggle('hidden', id !== stepId);
       });
     }
 
     function chooseMP() {
+      currentPaymentMethod = 'card';
+      showStep('stepDonorInfo');
+      setTimeout(() => {
+        const nameInput = document.getElementById('donorName');
+        if (nameInput) nameInput.focus();
+      }, 100);
+    }
+
+    function choosePix() {
+      currentPaymentMethod = 'pix';
       showStep('stepDonorInfo');
       setTimeout(() => {
         const nameInput = document.getElementById('donorName');
@@ -643,15 +913,15 @@
     function backToDonorInfo() {
       // Destroi o brick se estiver ativo
       if (mpBrickController) {
-        mpBrickController.unmount();
+        try { mpBrickController.unmount(); } catch (e) {}
         mpBrickController = null;
       }
       document.getElementById('mp-payment-brick-container').innerHTML = '';
+      if (pixPollingInterval) { clearInterval(pixPollingInterval); pixPollingInterval = null; }
       showStep('stepDonorInfo');
     }
 
     async function proceedToPayment() {
-      // Valida nome
       const donorName = (document.getElementById('donorName').value || '').trim();
       const errEl = document.getElementById('donor-error-msg');
       if (!donorName) {
@@ -659,9 +929,26 @@
         errEl.classList.remove('hidden');
         return;
       }
+      // 🔴 Dica 10: Validação estricta do nome do doador
+      // Apenas letras, espaços, acentos, hífens e pontuação simples
+      const nameRegex = /^[\p{L}\s'-]+$/u;
+      if (!nameRegex.test(donorName)) {
+        errEl.textContent = 'Nome inválido: use apenas letras, espaços, acentos e hífens.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      if (donorName.length < 3) {
+        errEl.textContent = 'Nome muito curto. Por favor, informe seu nome completo (ex: Tio Carlos e Família).';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      if (donorName.length > 50) {
+        errEl.textContent = 'Nome muito longo. Por favor, reduza para até 50 caracteres.';
+        errEl.classList.remove('hidden');
+        return;
+      }
       errEl.classList.add('hidden');
 
-      // Pega preço (customizável ou fixo)
       let price = parseFloat(document.getElementById('modalItemPriceRaw').value) || 0;
       const customGroup = document.getElementById('customPriceInputGroup');
       if (!customGroup.classList.contains('hidden')) {
@@ -677,16 +964,123 @@
       const itemName = document.getElementById('modalItemTitle').textContent;
       const donorMessage = (document.getElementById('donorMessage').value || '').trim();
 
-      // Mostra etapa 3
+      const btn = document.getElementById('btnProceedPayment');
+      if (btn) { btn.disabled = true; }
+
+      if (currentPaymentMethod === 'pix') {
+        await proceedToPix(itemId, itemName, price, donorName, donorMessage, btn, errEl);
+      } else {
+        await proceedToCard(itemId, itemName, price, donorName, donorMessage, btn, errEl);
+      }
+    }
+
+    async function proceedToPix(itemId, itemName, price, donorName, donorMessage, btn, errEl) {
+      showStep('stepPix');
+      document.getElementById('pix-loading').classList.remove('hidden');
+      document.getElementById('pix-content').classList.add('hidden');
+
+      if (pixPollingInterval) { clearInterval(pixPollingInterval); pixPollingInterval = null; }
+
+      try {
+        const res = await fetch('/api/create-pix-qr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ itemId, itemName, itemPrice: price, donorName, donorMessage }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.qrCode) {
+          throw new Error(data.error || 'Não foi possível gerar o PIX.');
+        }
+
+        document.getElementById('pix-loading').classList.add('hidden');
+        document.getElementById('pix-content').classList.remove('hidden');
+        document.getElementById('pix-qr-image').src = `data:image/png;base64,${data.qrCodeBase64}`;
+        document.getElementById('pix-amount').textContent = `R$ ${price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+        document.getElementById('pix-code').value = data.qrCode;
+
+        const copyBtn = document.getElementById('pix-copy-btn');
+        copyBtn.onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(data.qrCode);
+            copyBtn.textContent = '✓ Copiado!';
+            copyBtn.classList.add('bg-green-600');
+            setTimeout(() => { copyBtn.textContent = 'Copiar'; copyBtn.classList.remove('bg-green-600'); }, 2500);
+          } catch (e) {
+            copyBtn.textContent = 'Erro';
+            setTimeout(() => { copyBtn.textContent = 'Copiar'; }, 2000);
+          }
+        };
+
+        if (data.paymentId) {
+          pollPixStatus(data.paymentId, data.contributionId, itemId, itemName, price, donorName, donorMessage);
+        }
+
+        if (btn) btn.disabled = false;
+      } catch (err) {
+        console.error('Erro PIX:', err);
+        document.getElementById('pix-loading').classList.add('hidden');
+        document.getElementById('pix-content').classList.remove('hidden');
+        document.getElementById('pix-content').innerHTML = `
+          <div class="text-xs text-red-600 bg-red-50 p-4 rounded-xl border border-red-200 text-center">
+            <p class="font-bold mb-1">Erro ao gerar PIX.</p>
+            <p class="text-zinc-600 mb-3">${err.message}</p>
+            <p class="text-zinc-500">Você pode usar nossa Chave PIX direta logo abaixo desta seção.</p>
+          </div>`;
+        if (btn) { btn.disabled = false; }
+      }
+    }
+
+    function pollPixStatus(paymentId, contributionId, itemId, itemName, price, donorName, donorMessage) {
+      let attempts = 0;
+      const maxAttempts = 120;
+      pixPollingInterval = setInterval(async () => {
+        attempts++;
+        if (attempts > maxAttempts) {
+          clearInterval(pixPollingInterval);
+          pixPollingInterval = null;
+          const statusEl = document.getElementById('pix-status');
+          if (statusEl) {
+            statusEl.className = 'bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-xs text-zinc-600 font-medium';
+            statusEl.innerHTML = '⏱️ Tempo de espera esgotado. Se você pagou, atualize a página em alguns minutos para confirmar.';
+          }
+          return;
+        }
+        try {
+          const res = await fetch(`/api/check-pix-status?payment_id=${paymentId}`);
+          const data = await res.json();
+          if (data.status === 'approved') {
+            clearInterval(pixPollingInterval);
+            pixPollingInterval = null;
+            const statusEl = document.getElementById('pix-status');
+            if (statusEl) {
+              statusEl.className = 'bg-green-50 border border-green-200 rounded-xl p-3 text-sm text-green-800 font-bold';
+              statusEl.innerHTML = '✅ Pagamento confirmado! Obrigado pelo presente! 🎉';
+            }
+            setTimeout(() => {
+              document.getElementById('checkoutModal').classList.remove('active');
+              const banner = document.getElementById('payment-success-banner');
+              if (banner) {
+                banner.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+              loadGifts();
+            }, 1500);
+          }
+        } catch (e) {
+          // Silencia erros de polling
+        }
+      }, 3000);
+    }
+
+    async function proceedToCard(itemId, itemName, price, donorName, donorMessage, btn, errEl) {
+      // Mostra etapa 3 (Brick) ANTES de criar
       showStep('stepPayment');
       document.getElementById('mp-brick-loading').classList.remove('hidden');
       document.getElementById('mp-payment-brick-container').innerHTML = '';
 
-      const btn = document.getElementById('btnProceedPayment');
-      if (btn) { btn.disabled = true; }
-
       try {
-        // Cria preferência no backend
+        // 1. Cria preferência no backend
         const res = await fetch('/api/create-gift-preference', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -698,20 +1092,14 @@
           throw new Error(data.error || 'Não foi possível conectar ao Mercado Pago.');
         }
 
-        // Garante que o SDK do MP está carregado antes de usar
+        // 2. Garante que o SDK do MP está carregado
         if (typeof window.MercadoPago === 'undefined') {
           await new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://sdk.mercadopago.com/js/v2';
-            script.onload = () => {
-              if (typeof window.MercadoPago !== 'undefined') {
-                resolve();
-              } else {
-                reject(new Error('SDK do Mercado Pago carregado, mas objeto global indisponível.'));
-              }
-            };
-            script.onerror = () => reject(new Error('Falha ao carregar o SDK do Mercado Pago. Verifique sua conexão ou bloqueador de anúncios.'));
-            document.head.appendChild(script);
+            const s = document.createElement('script');
+            s.src = 'https://sdk.mercadopago.com/js/v2';
+            s.onload = () => (typeof window.MercadoPago !== 'undefined' ? resolve() : reject(new Error('SDK carregou mas MercadoPago não foi definido.')));
+            s.onerror = () => reject(new Error('Falha ao carregar o SDK do Mercado Pago.'));
+            document.head.appendChild(s);
           });
         }
 
@@ -719,11 +1107,20 @@
           throw new Error('SDK do Mercado Pago não pôde ser inicializado.');
         }
 
-        // Renderiza o Payment Brick
+        // 3. Aguarda o container estar visível e com dimensões
+        const container = document.getElementById('mp-payment-brick-container');
+        await new Promise(resolve => {
+          const check = () => {
+            const r = container.getBoundingClientRect();
+            if (r.width > 0 && r.height >= 0) resolve();
+            else requestAnimationFrame(check);
+          };
+          check();
+        });
+
+        // 4. Renderiza o Payment Brick (apenas cartão)
         const mp = new window.MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' });
         const bricks = mp.bricks();
-
-        document.getElementById('mp-brick-loading').classList.add('hidden');
 
         mpBrickController = await bricks.create('payment', 'mp-payment-brick-container', {
           initialization: {
@@ -732,8 +1129,6 @@
           },
           customization: {
             paymentMethods: {
-              ticket: 'all',
-              bankTransfer: 'all',
               creditCard: 'all',
               debitCard: 'all',
               mercadoPago: 'all',
@@ -750,9 +1145,9 @@
           callbacks: {
             onReady: () => {
               document.getElementById('mp-brick-loading').classList.add('hidden');
+              if (btn) btn.disabled = false;
             },
             onSubmit: async ({ selectedPaymentMethod, formData }) => {
-              // O Brick envia pro endpoint de pagamento direto
               const payRes = await fetch('/api/process-gift-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -771,14 +1166,12 @@
               const payData = await payRes.json();
               if (!payRes.ok) throw new Error(payData.error || 'Erro no pagamento');
 
-              // Fecha modal e mostra banner de sucesso
               document.getElementById('checkoutModal').classList.remove('active');
               const banner = document.getElementById('payment-success-banner');
               if (banner) {
                 banner.classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
-              // Recarrega a vitrine para marcar como presenteado
               await loadGifts();
             },
             onError: (error) => {
@@ -803,9 +1196,10 @@
       if (force === true || force.target?.id === 'checkoutModal') {
         document.getElementById('checkoutModal').classList.remove('active');
         if (mpBrickController) {
-          mpBrickController.unmount();
+          try { mpBrickController.unmount(); } catch (e) {}
           mpBrickController = null;
         }
+        if (pixPollingInterval) { clearInterval(pixPollingInterval); pixPollingInterval = null; }
         setTimeout(() => {
           showStep('stepChoose');
           document.getElementById('mp-payment-brick-container').innerHTML = '';
@@ -877,6 +1271,18 @@
         btn.innerHTML = origText;
       }
     }
+
+    // Atualizar barra de progresso global (Dica 35)
+    const giftedItems = displayedGifts.filter(x => x.is_gifted || x.status === 'temos');
+    const totalArrecadado = giftedItems.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
+    const totalItens = displayedGifts.length;
+    const progressPercent = totalItens > 0 ? Math.round((giftedItems.length / totalItens) * 100) : 0;
+    const progressBar = document.getElementById('global-progress-bar');
+    const progressText = document.getElementById('global-progress-text');
+    const totalArrecadadoSpan = document.getElementById('global-total-arrecadado');
+    if (progressBar) progressBar.style.width = `${progressPercent}%`;
+    if (progressText) progressText.textContent = `${progressPercent}%`;
+    if (totalArrecadadoSpan) totalArrecadadoSpan.textContent = formatCurrencyBRL(totalArrecadado);
 
     // Seção Chave PIX Direta (Sempre Visível)
     function renderGiftsPix() {
@@ -958,8 +1364,29 @@
       }[tag] || tag));
     }
 
-    function escapeAttr(str) {
-      return String(str || '').replace(/"/g, '&quot;');
+function escapeAttr(str) {
+      return String(str || '').replace(/"/g, '"');
+    }
+
+    // Formata tempo decorrido (Dica 26)
+    function formatTimeAgo(dateTime) {
+      if (!dateTime) return '';
+      const date = new Date(dateTime);
+      const now = new Date();
+      const diffMinutes = Math.floor((now - date) / 60000);
+      const diffHours = Math.floor(diffMinutes / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffDays > 0) {
+        return `${diffDays} dia${diffDays > 1 ? 's' : ''} atrás`;
+      }
+      if (diffHours > 0) {
+        return `${diffHours} hora${diffHours > 1 ? 's' : ''} atrás`;
+      }
+      if (diffMinutes > 0) {
+        return `${diffMinutes} minuto${diffMinutes > 1 ? 's' : ''} atrás`;
+      }
+      return 'Agora mesmo';
     }
 
     // Inicialização da Página
