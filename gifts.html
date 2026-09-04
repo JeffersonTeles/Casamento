@@ -344,7 +344,7 @@
           </button>
 
           <!-- Opção 2: Cartão via Brick -->
-          <button type="button" onclick="chooseMP()" class="w-full mb-3 flex items-center gap-4 p-4 rounded-2xl border-2 border-vinho/20 hover:border-vinho bg-vinho/5 hover:bg-vinho/10 transition-all text-left group">
+          <button type="button" id="btnCardPayment" onclick="chooseMP()" class="w-full mb-3 flex items-center gap-4 p-4 rounded-2xl border-2 border-vinho/20 hover:border-vinho bg-vinho/5 hover:bg-vinho/10 transition-all text-left group">
             <div class="w-10 h-10 rounded-full bg-vinho flex items-center justify-center shrink-0 shadow-md shadow-vinho/30">
               <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
             </div>
@@ -353,6 +353,10 @@
               <p class="text-xs text-zinc-500 mt-0.5">Em até 12x sem complicação — formulário direto aqui no site.<br/><span class="text-[10px] text-zinc-400">⚡ Dica: PIX oferece confirmação instantânea; Cartão pode levar alguns segundos para processamento.</span></p>
             </div>
           </button>
+          <div id="cardBlockedMsg" class="hidden w-full mb-3 p-3 rounded-2xl border border-amber-200 bg-amber-50 text-center">
+            <p class="text-xs font-bold text-amber-700">🔒 Pagamento por cartão temporariamente indisponível</p>
+            <p class="text-[10px] text-amber-600 mt-1">Seu navegador bloqueou o script de pagamento. Use o <strong>PIX</strong> ou desative o bloqueador de anúncios para este site.</p>
+          </div>
 
           <!-- Opção 3: Mercado Livre (só aparece se tiver link) -->
           <div id="btnMLWrapper" class="hidden">
@@ -1531,6 +1535,20 @@ function escapeAttr(str) {
     document.addEventListener('DOMContentLoaded', () => {
       renderGiftsPix();
       loadGifts();
+
+      // Detecta se o SDK do Mercado Pago foi bloqueado
+      setTimeout(() => {
+        if (typeof window.MercadoPago === 'undefined') {
+          const btnCard = document.getElementById('btnCardPayment');
+          const msgBlocked = document.getElementById('cardBlockedMsg');
+          if (btnCard) {
+            btnCard.classList.add('hidden');
+          }
+          if (msgBlocked) {
+            msgBlocked.classList.remove('hidden');
+          }
+        }
+      }, 3000);
 
       // Checa retorno do Mercado Pago
       const urlParams = new URLSearchParams(window.location.search);
