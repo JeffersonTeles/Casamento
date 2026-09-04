@@ -43,9 +43,9 @@
     gtag('config', 'G-T4JLWH2930');
   </script>
 
-  <link rel="stylesheet" href="./css/output.css" />
+  <link rel="stylesheet" href="./css/output.css?v=3" />
   <script src="./js/sanitize.js"></script>
-  <script src="./js/components.js?v=2" defer></script>
+  <script src="./js/components.js?v=3" defer></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -321,7 +321,39 @@
       </p>
     </section>
 
-    
+
+    <section id="programacao" class="max-w-5xl mx-auto px-4 py-12 reveal">
+      <div class="text-center mb-6">
+        <h2 class="font-titulo text-3xl text-[#1a1a2e]">Programação</h2>
+        <p class="text-xs text-zinc-500 mt-1">06 de Fevereiro de 2027</p>
+      </div>
+
+      <div class="max-w-md mx-auto premium-glass rounded-3xl p-6">
+        <ol class="space-y-5">
+          <li class="flex items-start gap-4">
+            <div class="shrink-0 w-12 h-12 rounded-full bg-vinho/10 flex items-center justify-center">
+              <span class="text-vinho font-bold text-sm">08h</span>
+            </div>
+            <div class="flex-1 pt-1">
+              <p class="font-bold text-sm text-[#1a1a2e]">⛪ Cerimônia</p>
+              <p class="text-xs text-zinc-600 mt-0.5">Capela São Maximiliano Maria Kolbe</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="shrink-0 w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+              <span class="text-amber-700 font-bold text-sm">11h30</span>
+            </div>
+            <div class="flex-1 pt-1">
+              <p class="font-bold text-sm text-[#1a1a2e]">🍽️ Recepção / Almoço</p>
+              <p class="text-xs text-zinc-600 mt-0.5">Restaurante Casa do Marquês</p>
+              <p class="text-[10px] text-zinc-400 mt-0.5 italic">Por adesão — cada convidado arcará com a sua despesa</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+
     <section id="presentes" class="max-w-5xl mx-auto px-4 py-16 reveal">
       <div class="text-center mb-8">
         <h2 class="font-titulo text-4xl text-[#1a1a2e]">Presentes</h2>
@@ -330,27 +362,14 @@
       <div class="premium-glass p-8 rounded-[2rem] text-center max-w-sm mx-auto">
         <p class="text-sm text-zinc-600 leading-relaxed mb-6 italic">
           Sua presença é o maior presente que podemos receber.<br/>
-          Se quiser nos homenagear com um mimo, nosso PIX está disponível.
+          Mas se quiser nos homenagear com um mimo, preparamos uma lista de presentes com muito carinho!
         </p>
 
-        <!-- Seletor de Chaves PIX -->
-        <div id="pix-tabs" class="flex justify-center gap-2 mb-5"></div>
-        
-        <img id="pix-qr" src="" alt="QR Code PIX" class="w-40 h-40 rounded-xl mx-auto mb-4" loading="lazy" width="160" height="160" />
-        
-        <p id="pix-label" class="text-[0.65rem] text-[#1a1a2e]/50 uppercase font-bold tracking-tight mb-1">Telefone (Chave PIX)</p>
-        <p id="phone-text" class="text-lg font-mono text-[#1a1a2e] font-bold tracking-tighter mb-4">••••••••••</p>
-        
-        <div class="flex flex-col sm:flex-row gap-2 justify-center">
-          <button id="btn-show-phone" onclick="showPhone()" class="inline-flex items-center justify-center gap-2 bg-[#1a1a2e] text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/90 transition-all">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            Mostrar
-          </button>
-          <button onclick="copyPIX(this)" class="inline-flex items-center justify-center gap-2 bg-[#1a1a2e]/10 text-[#1a1a2e] px-5 py-2.5 rounded-full text-xs font-bold hover:bg-[#1a1a2e]/20 transition-all">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-            Copiar
-          </button>
-        </div>
+        <a href="./gifts.html" class="inline-flex items-center justify-center gap-2 bg-vinho text-white px-6 py-3.5 rounded-full text-sm font-bold shadow-lg shadow-vinho/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+          Ver Lista de Presentes
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
       </div>
     </section>
 
@@ -385,67 +404,9 @@
     </div>
   </footer>
   <script src="./js/countdown.js"></script>
-  <script src="./js/config.js"></script>
-  <script src="./js/shared.js"></script>
+  <script src="./js/config.js?v=3"></script>
+  <script src="./js/shared.js?v=3"></script>
   <script>
-    let currentPixIdx = 0;
-    let isPhoneShown = false;
-
-    function renderPix() {
-      const keys = getPixKeys();
-      const current = keys[currentPixIdx] || keys[0];
-      if (!current) return;
-
-      const qr = document.getElementById('pix-qr');
-      if (qr) qr.src = `https://quickchart.io/qr?size=160&text=${encodeURIComponent(current.key)}&margin=1`;
-
-      const labelEl = document.getElementById('pix-label');
-      if (labelEl) labelEl.textContent = `Chave PIX (${current.name})`;
-
-      const phoneEl = document.getElementById('phone-text');
-      const btn = document.getElementById('btn-show-phone');
-      if (phoneEl) {
-        phoneEl.textContent = isPhoneShown ? (current.formatted || current.key) : '••••••••••';
-      }
-      if (btn) {
-        if (isPhoneShown) btn.classList.add('hidden');
-        else btn.classList.remove('hidden');
-      }
-
-      const tabs = document.getElementById('pix-tabs');
-      if (tabs && keys.length > 1) {
-        tabs.innerHTML = keys.map((k, idx) => `
-          <button type="button" onclick="selectPix(${idx})" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all ${idx === currentPixIdx ? 'bg-[#1a1a2e] text-white shadow-sm' : 'bg-[#1a1a2e]/5 text-[#1a1a2e]/70 hover:bg-[#1a1a2e]/10'}">
-            ${k.name}
-          </button>
-        `).join('');
-      }
-    }
-
-    function selectPix(idx) {
-      currentPixIdx = idx;
-      renderPix();
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      renderPix();
-    });
-
-    async function copyPIX(btn) {
-      const keys = getPixKeys();
-      const current = keys[currentPixIdx] || keys[0];
-      const ok = await copyToClipboard(current?.key || getPixKey());
-      if (ok) {
-        const orig = btn.innerHTML;
-        btn.innerHTML = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Copiado!';
-        setTimeout(() => btn.innerHTML = orig, TOAST_DURATION_MS);
-      }
-    }
-
-    function showPhone() {
-      isPhoneShown = true;
-      renderPix();
-    }
     function openCalendarModal() {
       document.getElementById('calendar-modal').classList.add('active');
     }
