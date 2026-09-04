@@ -1056,7 +1056,21 @@
         try {
           const res = await fetch(`/api/check-pix-status?payment_id=${paymentId}`);
           const raw = await res.text();
-          const data = JSON.parse(raw);
+          let data = null;
+          try {
+            data = JSON.parse(raw);
+          } catch (_) {
+            data = null;
+          }
+
+          if (!res.ok || !data) {
+            const statusEl = document.getElementById('pix-status');
+            if (statusEl) {
+              statusEl.className = 'bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-700 font-medium';
+              statusEl.innerHTML = '⚠️ Não foi possível confirmar o status agora. Se você já pagou, aguarde alguns minutos e atualize a página.';
+            }
+            return;
+          }
           if (data.status === 'approved') {
             clearInterval(pixPollingInterval);
             pixPollingInterval = null;
