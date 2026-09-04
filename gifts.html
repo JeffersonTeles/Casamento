@@ -988,9 +988,16 @@
           body: JSON.stringify({ itemId, itemName, itemPrice: price, donorName, donorMessage }),
         });
 
-        const data = await res.json();
-        if (!res.ok || !data.qrCode) {
-          throw new Error(data.error || 'Não foi possível gerar o PIX.');
+        const raw = await res.text();
+        let data = null;
+        try {
+          data = JSON.parse(raw);
+        } catch (_) {
+          data = null;
+        }
+
+        if (!res.ok || !data?.qrCode) {
+          throw new Error(data?.error || 'Não foi possível gerar o PIX no momento. Tente novamente.');
         }
 
         document.getElementById('pix-loading').classList.add('hidden');
@@ -1048,7 +1055,8 @@
         }
         try {
           const res = await fetch(`/api/check-pix-status?payment_id=${paymentId}`);
-          const data = await res.json();
+          const raw = await res.text();
+          const data = JSON.parse(raw);
           if (data.status === 'approved') {
             clearInterval(pixPollingInterval);
             pixPollingInterval = null;
