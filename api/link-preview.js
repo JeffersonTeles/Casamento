@@ -32,7 +32,27 @@ export default async function handler(request, response) {
   }
 
   try {
-    const res = await fetch(url, {
+    // Expande short URLs (s.shopee.com.br, shp.ee, etc.) seguindo o redirect manualmente
+    let fetchUrl = url;
+    if (/^https?:\/\/(s\.shopee\.com\.br|shp\.ee)\b/i.test(parsedUrl.hostname)) {
+      try {
+        const headRes = await fetch(url, {
+          method: 'GET',
+          redirect: 'manual',
+          headers: { 'User-Agent': 'Mozilla/5.0' },
+          signal: AbortSignal.timeout(5000),
+        });
+        const loc = headRes.headers.get('location');
+        if (loc) {
+          fetchUrl = new URL(loc, url).toString();
+          parsedUrl = new URL(fetchUrl);
+        }
+      } catch {
+        // Continua com a URL original
+      }
+    }
+
+    const res = await fetch(fetchUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; WeddingPlannerBot/1.0; +https://casamento.vercel.app)',
         Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -93,6 +113,34 @@ export default async function handler(request, response) {
     const image = getMeta('og:image', 'twitter:image:src', 'twitter:image');
     const description = getMeta('og:description', 'twitter:description', 'description');
     const domain = parsedUrl.hostname.replace(/^www\./, '');
+
+    // Se não achou metadados (SPAs tipo Shopee, ML, Amazon), tenta Microlink como fallback
+    if (!title || !image) {
+      try {
+        const mlRes = await fetch(
+          `https://api.microlink.io/?url=${encodeURIComponent(url)}`,
+          { signal: AbortSignal.timeout(7000) }
+        );
+        if (mlRes.ok) {
+          const mlData = await mlRes.json();
+          if (mlData.status === 'success' && mlData.data) {
+            const d = mlData.data;
+            const finalTitle = title || d.title || '';
+            const finalImage = image || d.image?.url || '';
+            return response.status(200).json({
+              title: finalTitle,
+              image: finalImage,
+              description: description || d.description || '',
+              domain,
+              url,
+              source: 'microlink',
+            });
+          }
+        }
+      } catch {
+        // Silencia — devolve o que tiver
+      }
+    }
 
     response.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     return response.status(200).json({ title, image, description, domain, url });
