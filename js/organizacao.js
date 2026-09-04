@@ -2149,6 +2149,40 @@ function getGuestPersonCount(g) {
         .order('created_at', { ascending: false });
       if (error) { console.error('Erro fetch home_items:', error); return; }
       renderHomeItems(data || []);
+
+      // Carregar preços das cotas do settings
+      try {
+        const { data: settings } = await supabaseClient
+          .from('settings')
+          .select('key, value')
+          .in('key', ['cota_lua_de_mel_price', 'cota_jantar_romantico_price']);
+        if (settings) {
+          settings.forEach(s => {
+            if (s.key === 'cota_lua_de_mel_price') {
+              const el = document.getElementById('cotaLuaPrice');
+              if (el) el.value = s.value;
+            }
+            if (s.key === 'cota_jantar_romantico_price') {
+              const el = document.getElementById('cotaJantarPrice');
+              if (el) el.value = s.value;
+            }
+          });
+        }
+      } catch (e) { console.warn('Erro ao carregar preços das cotas:', e); }
+    }
+
+    async function saveCotaPrice(key, inputId) {
+      const val = document.getElementById(inputId)?.value;
+      if (!val || isNaN(parseFloat(val))) { showToast('Informe um valor válido.', 'error'); return; }
+      try {
+        const { error } = await supabaseClient
+          .from('settings')
+          .upsert({ key, value: val }, { onConflict: 'key' });
+        if (error) throw error;
+        showToast('Preço da cota atualizado!', 'success');
+      } catch (e) {
+        showToast('Erro ao salvar: ' + e.message, 'error');
+      }
     }
 
     function renderHomeItems(items) {
@@ -2443,13 +2477,31 @@ function getGuestPersonCount(g) {
       if (!item) return;
       const cycle = { precisamos: 'possivel', possivel: 'temos', temos: 'precisamos' };
       const newStatus = cycle[item.status] || 'precisamos';
+      const updateData = { status: newStatus, updated_at: new Date().toISOString() };
+
+      // Ao marcar como "Já temos", se houver "prometido por", copia para gifted_by
+      if (newStatus === 'temos' && item.promised_by && !item.gifted_by) {
+        updateData.gifted_by = item.promised_by;
+        updateData.is_gifted = true;
+        updateData.gifted_at = new Date().toISOString();
+      }
+
+      // Ao voltar para "precisamos", limpa gifted_by/is_gifted
+      if (newStatus === 'precisamos' && item.gifted_by && !item.promised_by) {
+        updateData.gifted_by = null;
+        updateData.is_gifted = false;
+        updateData.gifted_at = null;
+      }
+
       const { error } = await supabaseClient
         .from('home_items')
-        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .update(updateData)
         .eq('id', id);
       if (error) { showToast('Erro ao atualizar status', 'error'); return; }
       const toastMsg = {
-        temos:     '✅ Marcado como "Já temos"!',
+        temos:     item.promised_by
+                    ? `✅ Marcado como "Já temos" por ${item.promised_by}!`
+                    : '✅ Marcado como "Já temos"!',
         possivel:  '🤞 Marcado como "Possível / Prometido"',
         precisamos: '🛒 Movido para "Precisamos"'
       };
@@ -2501,19 +2553,20 @@ function getGuestPersonCount(g) {
         el.innerHTML = `
           <div class="p-3 bg-amber-50 rounded-xl text-xs text-amber-600 flex items-center gap-2">
             <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-            O site não disponibilizou prévia para este link. O link será salvo mesmo assim.
+            Não foi possível carregar a prévia do link. O link será salvo mesmo assim.
           </div>`;
         el.classList.remove('hidden');
         if (window.lucide) lucide.createIcons();
         return;
       }
+      const displayTitle = data.title || `Produto em ${data.domain}`;
       el.innerHTML = `
         <a href="${sanitizeAttr(data.url || '')}" target="_blank" rel="noopener noreferrer"
            class="block rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-all">
           ${data.image ? `<img src="${sanitizeAttr(data.image)}" alt="" class="w-full h-44 object-cover" onerror="this.style.display='none'" />` : ''}
           <div class="p-3 border-t border-slate-100">
             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">${sanitizeHTML(data.domain || '')}</p>
-            ${data.title ? `<p class="text-sm font-semibold text-slate-800 leading-snug line-clamp-2">${sanitizeHTML(data.title)}</p>` : ''}
+            ${displayTitle ? `<p class="text-sm font-semibold text-slate-800 leading-snug line-clamp-2">${sanitizeHTML(displayTitle)}</p>` : ''}
             ${data.description ? `<p class="text-xs text-slate-500 mt-1 line-clamp-2">${sanitizeHTML(data.description)}</p>` : ''}
           </div>
         </a>

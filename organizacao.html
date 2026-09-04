@@ -616,7 +616,7 @@
               <div class="flex gap-2">
                 <input type="url" id="hiBuyLink"
                   aria-label="Link de compra"
-                  placeholder="Cole o link da loja aqui..."
+                  placeholder="Cole o link completo do produto (ex: shopee.com.br/...)"
                   class="flex-1 input-base  text-sm"
                   oninput="debounceLinkPreview(this.value)" />
                 <button onclick="triggerLinkPreview()"
@@ -688,6 +688,32 @@
                 <p class="text-[10px] uppercase tracking-widest font-bold text-vinho mb-1">💡 Investimento est.</p>
                 <p class="text-lg font-bold text-vinho leading-tight" id="hi-budget-net">R$ —</p>
                 <p class="text-[10px] text-slate-400 mt-0.5">a comprar − prometidos</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuração de Cotas -->
+          <div class="rounded-2xl border border-amber-200 bg-amber-50 shadow-sm mb-5 overflow-hidden">
+            <div class="px-4 pt-4 pb-3 border-b border-amber-200 flex items-center justify-between">
+              <h3 class="text-sm font-bold text-amber-700 flex items-center gap-2">
+                <i data-lucide="settings" class="w-4 h-4"></i> Configurar Cotas (Lua de Mel)
+              </h3>
+              <span class="text-[10px] text-amber-500">Valores exibidos na lista de presentes</span>
+            </div>
+            <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-1">✈️ Cota Lua de Mel (R$)</label>
+                <div class="flex gap-2">
+                  <input type="number" id="cotaLuaPrice" min="10" step="10" placeholder="150" class="flex-1 p-3 rounded-xl border border-amber-300 outline-none focus:border-amber-500 bg-white text-sm font-bold" />
+                  <button onclick="saveCotaPrice('cota_lua_de_mel_price', 'cotaLuaPrice')" class="bg-amber-500 text-white px-4 py-3 rounded-xl text-xs font-bold hover:bg-amber-600 transition-all">Salvar</button>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-amber-700 uppercase tracking-wider mb-1">🍷 Cota Jantar Romântico (R$)</label>
+                <div class="flex gap-2">
+                  <input type="number" id="cotaJantarPrice" min="10" step="10" placeholder="200" class="flex-1 p-3 rounded-xl border border-amber-300 outline-none focus:border-amber-500 bg-white text-sm font-bold" />
+                  <button onclick="saveCotaPrice('cota_jantar_romantico_price', 'cotaJantarPrice')" class="bg-amber-500 text-white px-4 py-3 rounded-xl text-xs font-bold hover:bg-amber-600 transition-all">Salvar</button>
+                </div>
               </div>
             </div>
           </div>
