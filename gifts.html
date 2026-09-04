@@ -1026,12 +1026,16 @@
         if (btn) btn.disabled = false;
       } catch (err) {
         console.error('Erro PIX:', err);
+        const rawMessage = err?.message || '';
+        const safeMessage = /Unexpected token|not valid JSON|JSON/i.test(rawMessage)
+          ? 'Não foi possível conectar ao serviço de pagamento agora. Tente novamente em alguns instantes.'
+          : rawMessage || 'Não foi possível gerar o PIX no momento. Tente novamente.';
         document.getElementById('pix-loading').classList.add('hidden');
         document.getElementById('pix-content').classList.remove('hidden');
         document.getElementById('pix-content').innerHTML = `
           <div class="text-xs text-red-600 bg-red-50 p-4 rounded-xl border border-red-200 text-center">
             <p class="font-bold mb-1">Erro ao gerar PIX.</p>
-            <p class="text-zinc-600 mb-3">${err.message}</p>
+            <p class="text-zinc-600 mb-3">${safeMessage}</p>
             <p class="text-zinc-500">Você pode usar nossa Chave PIX direta logo abaixo desta seção.</p>
           </div>`;
         if (btn) { btn.disabled = false; }
