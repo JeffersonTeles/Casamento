@@ -1,4 +1,4 @@
-const CACHE_NAME = 'casamento-v11';
+const CACHE_NAME = 'casamento-v12';
 const ASSETS = [
   '/',
   '/index.html',
@@ -40,6 +40,12 @@ self.addEventListener('fetch', (event) => {
 
   // Deixa requests externos passarem direto (CDN, fonts, etc.)
   if (url.origin !== self.location.origin) return;
+
+  // Nunca interceptar APIs e requests não-GET
+  if (url.pathname.startsWith('/api/') || event.request.method !== 'GET') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
   // Nunca cachear config (pode mudar a cada deploy sem novo SW)
   if (NETWORK_ONLY.includes(url.pathname)) {
