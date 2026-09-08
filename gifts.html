@@ -26,6 +26,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     
 <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background-color: #fafaf8;
     }
@@ -181,15 +185,13 @@
       </div>
     </section>
 
-    <!-- Barra de Progresso Global (Dica 35) -->
-    <div class="mt-3 flex items-center justify-center gap-2">
-      <div class="bg-slate-100 rounded-full h-2 w-3/4 md:w-4/5">
-        <div id="global-progress-bar" class="bg-vinho h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
-      </div>
-      <div class="text-xs font-medium text-zinc-500">
-        <span id="global-progress-text">0%</span>
-        <span id="global-total-arrecadado">R$ 0,00</span>
-      </div>
+    <!-- Botao para o Mural de Mensagens (acessa #mural-section) -->
+    <div class="mt-8 flex items-center justify-center">
+      <a href="#mural-section" class="inline-flex items-center gap-2 bg-white border-2 border-vinho/15 text-vinho px-5 py-2.5 rounded-full text-xs font-bold hover:bg-vinho/5 hover:scale-[1.02] transition-all">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Ver Mural de Mensagens
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+      </a>
     </div>
 
     <!-- Filtros de Categoria, Busca e Ordenação (Dicas 11, 12, 14) -->
@@ -1529,6 +1531,14 @@ function escapeAttr(str) {
 
     // Inicialização da Página
     document.addEventListener('DOMContentLoaded', () => {
+      // Se acessou direto com #mural-section, garante que a secao nao fique escondida
+      // (ela tem class='hidden' que so e removida quando carrega as mensagens via fetch)
+      const hash = window.location.hash;
+      if (hash === '#mural-section') {
+        const mural = document.getElementById('mural-section');
+        if (mural) mural.classList.remove('hidden');
+      }
+
       renderGiftsPix();
       loadGifts();
 
