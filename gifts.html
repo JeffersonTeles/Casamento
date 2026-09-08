@@ -753,6 +753,25 @@ async function loadGifts() {
       ];
     }
 
+    function updateGiftsCountLabel(filtered) {
+      const countLabel = document.getElementById('gifts-count-label');
+      if (!countLabel) return;
+
+      const totalGeral = (allGifts || []).length;
+      const totalFiltrado = (filtered || []).length;
+      const giftedCount = (allGifts || []).filter(x => x.is_gifted || x.status === 'temos').length;
+
+      if (totalGeral === 0) {
+        countLabel.textContent = 'Nenhum presente cadastrado';
+      } else if (totalFiltrado === 0) {
+        countLabel.textContent = `Nenhum encontrado · ${totalGeral} presentes ao total`;
+      } else if (totalFiltrado === totalGeral) {
+        countLabel.textContent = `${totalGeral} presentes ao total · ${giftedCount} já presenteados · ${totalGeral - giftedCount} disponíveis`;
+      } else {
+        countLabel.textContent = `${totalFiltrado} encontrados de ${totalGeral} presentes`;
+      }
+    }
+
     function renderGifts() {
       const grid = document.getElementById('gifts-grid');
       if (!grid) return;
@@ -767,6 +786,22 @@ async function loadGifts() {
         filtered = filtered.filter(x => (x.name || '').toLowerCase().includes(q) || (x.category || '').toLowerCase().includes(q));
       }
 
+      if (document.getElementById('hideGiftedToggle')?.checked) {
+        filtered = filtered.filter(x => {
+          const status = x.status || (x.is_gifted ? 'temos' : 'precisamos');
+          return status !== 'temos' && !x.is_gifted;
+        });
+      }
+
+      const sortBy = document.getElementById('sortSelect')?.value || 'recentes';
+      filtered = [...filtered].sort((a, b) => {
+        const priceA = parseFloat(a.price) || 0;
+        const priceB = parseFloat(b.price) || 0;
+        if (sortBy === 'menor-preco') return priceA - priceB;
+        if (sortBy === 'maior-preco') return priceB - priceA;
+        return 0;
+      });
+
       displayedGifts = filtered;
 
       if (filtered.length === 0) {
@@ -775,6 +810,7 @@ async function loadGifts() {
             <p class="text-sm font-medium">Nenhum presente encontrado nesta categoria.</p>
           </div>
         `;
+        updateGiftsCountLabel(filtered);
         return;
       }
 
@@ -875,6 +911,8 @@ async function loadGifts() {
       if (progressBar) progressBar.style.width = `${progressPercent}%`;
       if (progressText) progressText.textContent = `${progressPercent}%`;
       if (totalArrecadadoSpan) totalArrecadadoSpan.textContent = formatCurrencyBRL(totalArrecadado);
+
+      updateGiftsCountLabel(filtered);
     }
 
     function getDefaultCategoryImg(cat) {
