@@ -546,7 +546,7 @@
 async function loadGifts() {
       const config = window.WEDDING_CONFIG || {};
       const url = config.supabaseUrl || 'https://ysadooisujkjindusjbu.supabase.co';
-      const key = config.supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8';
+      const key = config.supabaseAnonKey;
       const headers = { 'apikey': key, 'Authorization': `Bearer ${key}` };
 
       // Carregar preços das cotas do settings
@@ -665,7 +665,7 @@ async function loadGifts() {
     async function loadMural() {
       const config = window.WEDDING_CONFIG || {};
       const url = config.supabaseUrl || 'https://ysadooisujkjindusjbu.supabase.co';
-      const key = config.supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8';
+      const key = config.supabaseAnonKey;
 
       try {
         const res = await fetch(`${url}/rest/v1/gift_contributions?select=donor_name,donor_message,item_name,created_at&payment_status=eq.approved&donor_message=neq.&order=created_at.desc&limit=9`, {
@@ -1379,7 +1379,7 @@ async function loadGifts() {
 
       const config = window.WEDDING_CONFIG || {};
       const url = config.supabaseUrl || 'https://ysadooisujkjindusjbu.supabase.co';
-      const key = config.supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzYWRvb2lzdWpramluZHVzamJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MDIyNDEsImV4cCI6MjA5MTE3ODI0MX0.TPlrNgmGxcvnFLDrD4fvar_MwXoL2VR9_ydpocEhCr8';
+      const key = config.supabaseAnonKey;
 
       try {
         const res = await fetch(`${url}/rest/v1/home_items?id=eq.${itemId}`, {
