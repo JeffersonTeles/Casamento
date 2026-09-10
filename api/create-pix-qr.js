@@ -101,7 +101,20 @@ export default async function handler(req, res) {
 
     const tx = mpData.point_of_interaction?.transaction_data || {};
     const qrCode = tx.qr_code;
-    const qrCodeBase64 = tx.qr_code_base64;
+    let qrCodeBase64 = tx.qr_code_base64;
+
+    // Fallback: gerar QR via quickchart.io se o MP nao retornar base64
+    if (!qrCodeBase64 && qrCode) {
+      try {
+        const qrRes = await fetch(`https://quickchart.io/qr?size=300&format=png&text=${encodeURIComponent(qrCode)}`);
+        if (qrRes.ok) {
+          const buf = await qrRes.arrayBuffer();
+          qrCodeBase64 = Buffer.from(buf).toString('base64');
+        }
+      } catch (e) {
+        console.error('Fallback QR failed:', e);
+      }
+    }
 
     if (contributionId && mpData.id && supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);

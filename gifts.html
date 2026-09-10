@@ -1111,7 +1111,11 @@ async function loadGifts() {
 
         document.getElementById('pix-loading').classList.add('hidden');
         document.getElementById('pix-content').classList.remove('hidden');
-        document.getElementById('pix-qr-image').src = `data:image/png;base64,${data.qrCodeBase64}`;
+        if (data.qrCodeBase64) {
+          document.getElementById('pix-qr-image').src = `data:image/png;base64,${data.qrCodeBase64}`;
+        } else {
+          document.getElementById('pix-qr-image').src = `https://quickchart.io/qr?size=300&format=png&text=${encodeURIComponent(data.qrCode)}`;
+        }
         document.getElementById('pix-amount').textContent = `R$ ${price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
         document.getElementById('pix-code').value = data.qrCode;
 
