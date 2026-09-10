@@ -1,21 +1,19 @@
-const CACHE_NAME = 'casamento-v11';
+const CACHE_NAME = 'casamento-v12';
 const ASSETS = [
   '/',
   '/index.html',
   '/convite.html',
   '/faq.html',
   '/gifts.html',
-  '/gallery.html',
   '/organizacao.html',
   '/css/output.css',
   '/js/shared.js',
-  '/js/sanitize.js',
   '/js/countdown.js',
   '/manifest.json'
 ];
 
 // Arquivos que SEMPRE devem vir da rede (credenciais/dinâmicos):
-const NETWORK_ONLY = ['/js/config.js'];
+const NETWORK_ONLY = ['/js/config.js', '/js/sanitize.js', '/js/components.js'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

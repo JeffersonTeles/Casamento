@@ -342,8 +342,8 @@
           <div class="field">
             <label class="field-label" for="rsvp-lunch">Recepção após cerimônia</label>
             <div style="font-size: 0.65rem; color: var(--text-soft); margin-bottom: 0.6rem; line-height: 1.4;">
-              Após a cerimônia, nos reuniremos no <strong>Recanto Família Souza</strong><br/>
-              <span style="font-size: 0.55rem; color: var(--text-faint);">Recepção com café e convívio</span>
+              Após a cerimônia, nos reuniremos no <strong>Recanto Família Souza</strong>.<br/>
+              <span style="font-size: 0.55rem; color: var(--text-faint);">A localização está na <a href="index.html#programacao" style="color: inherit; text-decoration: underline;">página inicial</a>.</span>
             </div>
             <select class="field-input" id="rsvp-lunch">
               <option value="sim">Sim, participarei da recepção</option>
@@ -509,7 +509,6 @@
           finalMsg = baseMsg ? lunchText + ' - ' + baseMsg : lunchText;
         }
         
-        sendPushNotification(currentGuest.name, selectedStatus, parseInt(document.getElementById('rsvp-plusones').value) || 0, finalMsg);
         setRsvpRateLimit(GUEST_TOKEN);
         document.getElementById('rsvp-form').classList.remove('active');
         document.getElementById('rsvp-success').classList.add('active');

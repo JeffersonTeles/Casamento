@@ -6,12 +6,20 @@
  * Uso: GET /api/link-preview?url=https://exemplo.com.br/produto
  */
 
+import { rateLimit, getClientIp } from './_rate-limit.js';
+
 export default async function handler(request, response) {
-  response.setHeader('Access-Control-Allow-Origin', '*');
+  const ALLOWED_ORIGIN = 'https://casamento-ten-rho.vercel.app';
+  response.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
   response.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
 
   if (request.method === 'OPTIONS') {
     return response.status(200).end();
+  }
+
+  const ip = getClientIp(request);
+  if (!rateLimit(ip, 20, 60000)) {
+    return response.status(429).json({ error: 'Muitas requisições. Tente novamente em 1 minuto.' });
   }
 
   const { url } = request.query;
@@ -29,6 +37,18 @@ export default async function handler(request, response) {
     }
   } catch {
     return response.status(400).json({ error: 'URL inválida.' });
+  }
+
+  // Bloquear IPs privados/loopback (SSRF)
+  const hostname = parsedUrl.hostname;
+  const PRIVATE_IP_PATTERNS = [
+    /^127\./, /^10\./, /^172\.(1[6-9]|2\d|3[01])\./, /^192\.168\./,
+    /^0\./, /^localhost$/i, /^::1$/, /^\[::1\]$/, /^169\.254\./,
+    /^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./,
+    /^198\.18\./, /^198\.19\./, /^metadata\.google\.internal$/i,
+  ];
+  if (PRIVATE_IP_PATTERNS.some(p => p.test(hostname))) {
+    return response.status(403).json({ error: 'URL de rede interna não permitida.' });
   }
 
   try {

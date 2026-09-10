@@ -10,7 +10,6 @@ const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL && SUPAB
   : null;
 
 // === CONSTANTS ===
-const NTFY_TOPIC = 'casamento-jefferson-bia-notificacoes';
 const RSVP_RATE_LIMIT_MS = 60000;
 const TOAST_DURATION_MS = 3000;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -119,21 +118,6 @@ function showToastGlobal(msg, type = 'info') {
     t.style.opacity = '0';
     t.style.transform = 'translateX(-50%) translateY(20px)';
   }, TOAST_DURATION_MS);
-}
-
-// === NOTIFICATIONS ===
-async function sendPushNotification(name, status, plusOnes, message) {
-  if (!NTFY_TOPIC) return;
-  const safeName = String(name || '').slice(0, 100);
-  const safeMsg = String(message || '').slice(0, 500);
-  const body = `Convidado: ${safeName}\nResposta: ${status === 'confirmado' ? 'Confirmado!' : 'Não vai'}\nAcompanhantes: ${plusOnes}\nRecado: ${safeMsg}`;
-  try {
-    await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
-      method: 'POST',
-      body,
-      headers: { 'Title': `Novo RSVP: ${safeName}`, 'Priority': 'high', 'Tags': status === 'confirmado' ? 'tada,ring' : 'pensive' }
-    });
-  } catch (err) { console.warn('Notificação push falhou:', err); }
 }
 
 async function logAccess(guestId) {

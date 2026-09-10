@@ -1,12 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
+import { rateLimit, getClientIp } from './_rate-limit.js';
 
-const MP_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN || 'APP_USR-3886791216697051-090315-ba3f743dba69715276fd0c52712379a1-1254097619';
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || process.env.SUPABASE_URL || 'https://ysadooisujkjindusjbu.supabase.co';
+const MP_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.REACT_APP_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  const ip = getClientIp(req);
+  if (!rateLimit(ip, 60, 60000)) {
+    return res.status(429).json({ error: 'Rate limit exceeded.' });
   }
 
   // Mercado Pago pode enviar GET ou POST

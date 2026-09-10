@@ -1,6 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(request, response) {
+  // Bloquear requests que não vieram do cron do Vercel
+  const isVercelCron = request.headers['x-vercel-cron'] || request.headers['x-vercel-deployment-url'];
+  if (!isVercelCron) {
+    return response.status(403).json({ error: 'Acesso restrito a cron jobs.' });
+  }
+
   const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || process.env.SUPABASE_URL;
   const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 

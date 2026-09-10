@@ -1543,7 +1543,12 @@ async function loadGifts() {
     }
 
 function escapeAttr(str) {
-      return String(str || '').replace(/"/g, '"');
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/'/g, '&#39;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
     }
 
     // Formata tempo decorrido (Dica 26)

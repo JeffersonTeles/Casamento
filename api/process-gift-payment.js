@@ -1,15 +1,23 @@
 import { createClient } from '@supabase/supabase-js';
+import { rateLimit, getClientIp } from './_rate-limit.js';
 
-const MP_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN || 'APP_USR-3886791216697051-090315-ba3f743dba69715276fd0c52712379a1-1254097619';
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || process.env.SUPABASE_URL || 'https://ysadooisujkjindusjbu.supabase.co';
+const MP_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.REACT_APP_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const ALLOWED_ORIGIN = 'https://casamento-ten-rho.vercel.app';
+  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
+
+  const ip = getClientIp(req);
+  if (!rateLimit(ip, 10, 60000)) {
+    return res.status(429).json({ error: 'Muitas requisições. Tente novamente em 1 minuto.' });
+  }
+
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {

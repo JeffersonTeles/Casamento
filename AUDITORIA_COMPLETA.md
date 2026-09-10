@@ -98,7 +98,6 @@
 - Design de convite com folhas decorativas SVG
 - Personalização via token (nome do convidado)
 - Integração Supabase RPC
-- Notificação ntfy.sh
 - Já confirmação exibida se já respondeu
 - Print-friendly CSS
 - `robots: noindex, nofollow`
@@ -217,7 +216,6 @@
 - Personalização com nome do convidado
 - RSVP inline no cartão
 - Integração Supabase
-- Notificação ntfy.sh
 
 **O que falta:**
 1. ❌ **`noindex, nofollow`** — Deveria ser oculto dos buscadores
@@ -268,7 +266,6 @@
 |---------|--------|------|
 | RSVP com token personalizado | ✅ | Excelente |
 | Integração Supabase | ✅ | Bom |
-| Notificações push (ntfy) | ✅ | Inovador |
 | Painel admin completo | ✅ | Muito bom |
 | Budget tracker | ✅ | Bom |
 | FAQ com JSON-LD | ✅ | Excelente para SEO |
