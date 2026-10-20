@@ -1,67 +1,153 @@
 # 💍 Casamento Jefferson & Beatriz
 
-Site e painel de organização do casamento. Deploy em produção na [Vercel](https://casamento-ten-rho.vercel.app/).
+Site institucional, confirmação de presença (RSVP), lista de presentes com pagamentos via Pix / Mercado Pago e painel administrativo para organização de casamento.
 
-## 📁 Estrutura
+Deploy em produção na [Vercel](https://casamento-ten-rho.vercel.app/).
 
-- **`casamento-jefferson-bia/`** — App React com painel administrativo, RSVP individual, exportação de convites (PDF/Excel/CSV), QR Code e login dos noivos (Supabase Auth).
-- **Raiz do repositório** — Site estático em HTML/CSS/JS (Tailwind via CDN):
-  - `index.html` — página inicial com countdown e convite
-  - `rsvp.html` — confirmação de presença por link individual
-  - `organizacao.html` — painel de organização (tarefas, convidados, financeiro, notas, auditoria)
-  - `faq.html` / `gifts.html` — dúvidas frequentes e lista de presentes
-- **`api/keep-alive.js`** — cron da Vercel para manter o Supabase ativo.
+---
 
-## 🚀 Rodando o app React
+## 📋 Visão Geral
 
-```bash
-cd casamento-jefferson-bia
-npm install
-npm start
+Projeto fullstack serverless desenvolvido para centralizar a comunicação com os convidados e a gestão completa do evento pelos noivos:
+
+- **Página Principal (`index.html`):** Contagem regressiva, história do casal, cronograma, informações de local e integração com mapas.
+- **Convite & RSVP (`convite.html`):** Confirmação de presença individualizada por código de convite com leitura e atualização em tempo real no Supabase.
+- **Lista de Presentes (`gifts.html`):** Catálogo de cotas e presentes com checkout transparente, geração de Pix copia-e-cola / QR Code dinâmico e integração com Mercado Pago.
+- **Painel de Organização (`organizacao.html`):** Painel protegido por autenticação (Supabase Auth) para controle de convidados, confirmações, finanças, presentes recebidos, tarefas e log de auditoria.
+- **PWA:** Suporte a Progressive Web App com `manifest.json` e Service Worker (`sw.js`).
+- **Keep-Alive Serverless (`api/keep-alive.js`):** Endpoint acionado periodicamente via Vercel Cron para manter o projeto Supabase ativo sem pausas por inatividade.
+
+---
+
+## 🛠️ Tecnologias e Arquitetura
+
+- **Frontend:** HTML5 semântico, JavaScript moderno (ES Modules), Tailwind CSS v3 (compilado via CLI) e Lucide Icons / FontAwesome.
+- **Backend Serverless (Vercel Functions):**
+  - `api/create-pix-qr.js` — Criação de cobrança Pix imediata via API do Mercado Pago.
+  - `api/check-pix-status.js` — Consulta do status de transação Pix.
+  - `api/create-gift-preference.js` — Criação de preferência de checkout no Mercado Pago.
+  - `api/process-gift-payment.js` — Processamento de pagamento de presentes.
+  - `api/mp-webhook.js` — Webhook de notificação do Mercado Pago com atualização de status no Supabase via chave de serviço (`SUPABASE_SERVICE_ROLE_KEY`).
+  - `api/keep-alive.js` — Heartbeat programado via Cron para persistência de conexão no Supabase.
+- **Banco de Dados & Autenticação:** Supabase (PostgreSQL) com Row Level Security (RLS) estrito, autenticação por e-mail/senha e migrations versionadas em `db/`.
+
+---
+
+## 📁 Estrutura do Repositório
+
+```text
+.
+├── api/                   # Serverless Functions (Mercado Pago, Pix, Webhooks, Cron)
+├── css/                   # Folhas de estilo compiladas (output.css)
+├── db/                    # Scripts SQL de schema e migrations incrementais
+│   ├── schema.sql         # Schema principal com tabelas e políticas RLS
+│   └── migrations/        # Migrações versionadas (001 a 009)
+├── img/                   # Imagens e assets do casal e local
+├── js/                    # Módulos frontend em JavaScript
+│   ├── config.example.js  # Modelo de configuração para ambiente local
+│   ├── config.js          # Configuração gerada (ignorado no git)
+│   ├── main.js            # Lógica principal das páginas
+│   ├── organizacao.js     # Lógica do painel administrativo
+│   └── gifts.js           # Lógica do catálogo e checkout de presentes
+├── src/
+│   └── input.css          # Ponto de entrada das diretivas Tailwind
+├── build-config.js        # Script de injeção de variáveis de ambiente no build
+├── convite.html           # Página de convite individual e RSVP
+├── faq.html               # Dúvidas frequentes para os convidados
+├── gifts.html             # Lista de presentes e pagamento Pix
+├── index.html             # Landing page do casamento
+├── organizacao.html       # Painel administrativo dos noivos
+├── manifest.json          # Manifesto do PWA
+├── sw.js                  # Service Worker
+├── tailwind.config.js     # Configuração do Tailwind CSS
+└── vercel.json            # Configuração de rotas, headers e crons na Vercel
 ```
 
-O app usa Supabase. Configure as variáveis no `.env` (veja `src/lib/supabaseClient.js`):
-`REACT_APP_SUPABASE_URL`, `REACT_APP_SUPABASE_ANON_KEY`, `REACT_APP_ADMIN_EMAIL`, `REACT_APP_ADMIN_USERNAME`.
+---
 
-## 🧰 Rodando o site estático
+## 🚀 Como Executar Localmente
 
-Basta abrir `index.html` no navegador — não precisa de servidor.
+### Pré-requisitos
+- Node.js 18+ instalado
+- Conta no [Supabase](https://supabase.com/) com as tabelas criadas a partir de `db/schema.sql`
 
-### Configuração do Supabase (páginas estáticas)
+### 1. Clonar e instalar dependências
 
-As páginas `index.html`, `rsvp.html` e `organizacao.html` leem as credenciais de `js/config.js`
-(excluído do git). Para rodar localmente:
+```bash
+git clone https://github.com/JeffersonTeles/Casamento.git
+cd Casamento
+npm install
+```
+
+### 2. Configurar variáveis para o frontend
+
+Copie o arquivo de exemplo e preencha as variáveis de acesso público do Supabase:
 
 ```bash
 cp js/config.example.js js/config.js
-# edite js/config.js com sua URL e chave anon
 ```
 
-**Nunca** commite `js/config.js` — ele está no `.gitignore`.
+Edite `js/config.js` com a sua URL do Supabase, chave pública `anon` e e-mails autorizados para a área administrativa:
 
-### Em produção (Vercel)
+```javascript
+window.ENV = {
+  SUPABASE_URL: "https://seu-projeto.supabase.co",
+  SUPABASE_ANON_KEY: "sua-chave-anon-publica",
+  ADMIN_EMAILS: ["noivo@email.com", "noiva@email.com"]
+};
+```
 
-`js/config.js` é gerado automaticamente no build pelo `build-config.js`
-(script `npm run build`), a partir das variáveis de ambiente:
+> **Aviso de segurança:** O arquivo `js/config.js` está listado no `.gitignore` e nunca deve ser versionado.
 
-| Variável | Descrição |
-| --- | --- |
-| `REACT_APP_SUPABASE_URL` (ou `SUPABASE_URL`) | URL do projeto Supabase |
-| `REACT_APP_SUPABASE_ANON_KEY` (ou `SUPABASE_ANON_KEY`) | Chave anon pública |
-| `REACT_APP_ADMIN_EMAIL` (ou `SUPABASE_ADMIN_EMAIL`) | E-mail do noivo (admin) |
-| `REACT_APP_SECOND_ADMIN_EMAIL` (ou `SUPABASE_SECOND_ADMIN_EMAIL`) | E-mail da noiva (admin) |
+### 3. Compilar os estilos e assets
 
-Se `adminEmails` ficar vazio, o painel aceita qualquer e-mail autenticado no Supabase
-(fallback para testes — preencha os e-mails para restringir o acesso).
+```bash
+npm run build
+```
 
-### Banco de dados (RLS)
+O comando executa `build-config.js` (gerando `js/config.js` a partir de variáveis de ambiente quando executado em CI/Vercel) e compila o CSS minificado do Tailwind em `css/output.css`.
 
-As políticas de segurança (Row Level Security) e as funções RPC usadas pelo site estão em
-`db/schema.sql`. Execute o conteúdo desse arquivo no **SQL Editor** do Supabase.
+### 4. Executar localmente
 
-- Chave `anon` é pública por design — a segurança real vem das políticas RLS + Supabase Auth.
-- Crie os usuários dos noivos em **Authentication → Users** (ou via painel `organizacao.html`).
+Você pode servir a pasta raiz com qualquer servidor estático HTTP:
 
-## 📅 Evento
+```bash
+# Exemplo com npx serve:
+npx serve .
 
-06 de fevereiro de 2027 às 08:00 • Cascavel - PR
+# Ou com Python:
+python3 -m http.server 3000
+```
+
+Abra `http://localhost:3000` no seu navegador.
+
+---
+
+## ☁️ Deploy e Variáveis de Ambiente (Vercel)
+
+Na Vercel, o script `npm run build` gera automaticamente o `js/config.js` a partir das variáveis configuradas no painel do projeto:
+
+| Variável | Escopo | Descrição |
+| --- | --- | --- |
+| `REACT_APP_SUPABASE_URL` | Frontend | URL pública do projeto Supabase |
+| `REACT_APP_SUPABASE_ANON_KEY` | Frontend | Chave pública `anon` do Supabase |
+| `REACT_APP_ADMIN_EMAIL` | Frontend | E-mail do noivo com permissão de admin |
+| `REACT_APP_SECOND_ADMIN_EMAIL` | Frontend | E-mail da noiva com permissão de admin |
+| `SUPABASE_SERVICE_ROLE_KEY` | Backend (API) | Chave com privilégios de serviço (usada exclusivamente no webhook para atualizar pagamentos confirmados) |
+| `MP_ACCESS_TOKEN` | Backend (API) | Token de produção ou teste da API do Mercado Pago |
+| `CRON_SECRET` | Backend (API) | Chave de proteção para o endpoint `api/keep-alive` |
+
+---
+
+## 🔒 Segurança e Boas Práticas
+
+- **Row Level Security (RLS):** Toda manipulação de dados de convidados, confirmações e finanças é validada no PostgreSQL via políticas de RLS e funções RPC.
+- **Isolamento de Chaves:** Chaves de privilégio elevado (`SUPABASE_SERVICE_ROLE_KEY` e `MP_ACCESS_TOKEN`) são restritas ao ambiente das serverless functions (`api/`), nunca expostas no código cliente do navegador.
+- **Painel Administrativo:** O acesso ao painel de organização valida tanto a sessão autenticada no Supabase Auth quanto a lista explícita de e-mails em `ADMIN_EMAILS`.
+
+---
+
+## 📅 Informações do Evento
+
+- **Data:** 06 de fevereiro de 2027 às 08:00
+- **Local:** Cascavel - PR
