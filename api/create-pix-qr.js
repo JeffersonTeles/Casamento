@@ -36,10 +36,11 @@ export default async function handler(req, res) {
     let contributionId = null;
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(itemId || '');
       const { data, error } = await supabase
         .from('gift_contributions')
         .insert([{
-          item_id: itemId || null,
+          item_id: isUuid ? itemId : null,
           item_name: itemName,
           donor_name: donor,
           donor_message: message,
@@ -50,6 +51,7 @@ export default async function handler(req, res) {
         .select('id')
         .single();
 
+      if (error) console.error('[create-pix-qr] ERRO ao criar contribuição:', error);
       if (!error && data?.id) {
         contributionId = data.id;
       }

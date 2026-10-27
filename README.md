@@ -1,6 +1,12 @@
 # 💍 Casamento Jefferson & Beatriz
 
-Site institucional, confirmação de presença (RSVP), lista de presentes com pagamentos via Pix / Mercado Pago e painel administrativo para organização de casamento.
+[![Vercel](https://img.shields.io/badge/Deploy-Vercel-black?logo=vercel)](https://casamento-ten-rho.vercel.app/)
+[![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?logo=supabase)](https://supabase.com/)
+[![Mercado Pago](https://img.shields.io/badge/Payments-Mercado_Pago-009EE3)](https://www.mercadopago.com.br/)
+[![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS_v3-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
+[![PWA](https://img.shields.io/badge/PWA-Ready-purple?logo=pwa)](https://web.dev/progressive-web-apps/)
+
+Plataforma web fullstack serverless de alta disponibilidade desenvolvida para o evento de casamento dos noivos Jefferson & Beatriz, contemplando RSVP individualizado, lista de presentes com checkout transparente Pix / Mercado Pago, autenticação segura e painel administrativo de gestão integrado ao Supabase (PostgreSQL com RLS).
 
 Deploy em produção na [Vercel](https://casamento-ten-rho.vercel.app/).
 

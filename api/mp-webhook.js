@@ -49,12 +49,15 @@ export default async function handler(req, res) {
         const donorMessage = metadata.donor_message || '';
         const amount = payment.transaction_amount;
 
-        if (supabaseUrl && supabaseKey) {
+        if (!supabaseUrl || !supabaseKey) {
+          console.error('[MP Webhook] ERRO: SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY ausentes. Pagamento', payment.id, 'NAO registrado.');
+        } else {
           const supabase = createClient(supabaseUrl, supabaseKey);
 
           // 1. Atualizar ou inserir na tabela gift_contributions
+          let dbError = null;
           if (contributionId) {
-            await supabase
+            ({ error: dbError } = await supabase
               .from('gift_contributions')
               .update({
                 payment_status: 'approved',
@@ -62,12 +65,12 @@ export default async function handler(req, res) {
                 payment_method: payment.payment_method_id || 'mercadopago',
                 updated_at: new Date().toISOString(),
               })
-              .eq('id', contributionId);
+              .eq('id', contributionId));
           } else {
-            await supabase
+            ({ error: dbError } = await supabase
               .from('gift_contributions')
               .insert([{
-                item_id: itemId || null,
+                item_id: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(itemId || '') ? itemId : null,
                 item_name: payment.description || 'Presente de Casamento',
                 donor_name: donorName,
                 donor_message: donorMessage,
@@ -75,12 +78,15 @@ export default async function handler(req, res) {
                 payment_status: 'approved',
                 payment_method: payment.payment_method_id || 'mercadopago',
                 mp_payment_id: String(payment.id),
-              }]);
+              }]));
+          }
+          if (dbError) {
+            console.error('[MP Webhook] ERRO ao gravar gift_contributions (pagamento', payment.id + '):', dbError);
           }
 
           // 2. Se for um item da casa específico, marcar como presenteado!
           if (itemId && itemId !== 'gift-custom') {
-            await supabase
+            const { error: itemError } = await supabase
               .from('home_items')
               .update({
                 is_gifted: true,
@@ -90,8 +96,12 @@ export default async function handler(req, res) {
                 gifted_message: donorMessage,
               })
               .eq('id', itemId);
-            
-            console.log(`[MP Webhook] Item ${itemId} marcado com sucesso como presenteado por ${donorName}!`);
+
+            if (itemError) {
+              console.error('[MP Webhook] ERRO ao marcar item', itemId, '(pagamento', payment.id + '):', itemError);
+            } else {
+              console.log(`[MP Webhook] Item ${itemId} marcado com sucesso como presenteado por ${donorName}!`);
+            }
           }
         }
       }
